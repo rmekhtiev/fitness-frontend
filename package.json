@@ -13,6 +13,8 @@
   "dependencies": {
     "@nuxtjs/auth": "^4.8.1",
     "@nuxtjs/axios": "^5.3.6",
+    "@reststate/client": "^0.0.8",
+    "@reststate/vuex": "^0.1.1",
     "nuxt": "^2.0.0"
   },
   "devDependencies": {

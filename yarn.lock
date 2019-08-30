@@ -998,6 +998,18 @@
     mustache "^2.3.0"
     stack-trace "0.0.10"
 
+"@reststate/client@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@reststate/client/-/client-0.0.8.tgz#e5b0c2786adb4cda425d28cd4b6a1421d8b8270e"
+  integrity sha512-j7qw2nNvWvGQTRRfhTvfvSAUOoDKoBJ2SNAXcFw1XWk9bogFXXGg4NZzpgIqqqf9LBYrt74Rv8v5VfcrAiq/1g==
+
+"@reststate/vuex@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@reststate/vuex/-/vuex-0.1.1.tgz#0d97fe56afa186e270d2de6a17bb8d9d35dc5ef4"
+  integrity sha512-qqvmgBTtnib+QImIvTFyHzU+CwXNX6y6gaNsBYAesurKGg26Vt0WiTtRgoNhRzCL4uNYHkf1oGlqDaxXU2Szug==
+  dependencies:
+    "@reststate/client" "^0.0.8"
+
 "@types/q@^1.5.1":
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.2.tgz#690a1475b84f2a884fd07cd797c00f5f31356ea8"
