@@ -1,12 +1,32 @@
 <template>
   <div id="clients">
-    <v-data-iterator :items="clients" :items-per-page-options="[25, 50, 100]">
+    <v-data-iterator :items="clients" :items-per-page="50">
       <template v-slot:header>
-        <v-layout class="px-3 mb-3" style="color: rgba(0, 0, 0, .54);">
+        <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
           <v-flex xs8 md3>
             <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="text-truncate">
+              <div style="flex: 1 1 0%;" class="overline text-truncate">
                 ФИО
+              </div>
+            </div>
+          </v-flex>
+
+          <v-flex md3>
+            <div style="display: flex; width: 100%">
+              <div style="flex: 1 1 0%;" class="overline text-truncate">
+                Абонемент
+              </div>
+            </div>
+          </v-flex>
+
+          <v-flex md3>
+
+          </v-flex>
+
+          <v-flex md3>
+            <div style="display: flex; width: 100%">
+              <div style="flex: 1 1 0%;" class="overline text-truncate text-right">
+                Последнее посещение
               </div>
             </div>
           </v-flex>
@@ -43,7 +63,10 @@
         },
 
         fetch({store}) {
-            return store.dispatch('clients/loadAll');
+            return Promise.all([
+                store.dispatch('clients/loadAll'),
+                store.dispatch('halls/loadAll'),
+            ]);
         },
     }
 </script>

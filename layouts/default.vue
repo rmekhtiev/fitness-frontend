@@ -2,8 +2,8 @@
   <v-app dark>
     <v-navigation-drawer
       v-model="drawer"
-      fixed
       app
+      fixed
     >
       <drawer-profile></drawer-profile>
 
