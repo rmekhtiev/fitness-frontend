@@ -14,7 +14,11 @@ export default {
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700|Material+Icons'
+      }
     ]
   },
   /*
@@ -43,13 +47,39 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
+    '@nuxtjs/auth',
   ],
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
+    host: 'fitness.test',
+    prefix: '/api/',
+    port: '80',
   },
+
+  auth: {
+    redirect: {
+      login: '/auth/login',
+      logout: '/',
+      callback: '/auth/login',
+      home: '/'
+    },
+
+    strategies: {
+      local: {
+        endpoints: {
+          login: {url: '/auth/jwt/login', method: 'post', propertyName: 'data.jwt'},
+          logout: {url: '/auth/jwt/token', method: 'delete'},
+          user: {url: '/auth/me', method: 'get', propertyName: 'data'}
+        },
+      },
+      watchLoggedIn: true,
+      rewriteRedirects: true
+    }
+  },
+
   /*
   ** vuetify module configuration
   ** https://github.com/nuxt-community/vuetify-module
