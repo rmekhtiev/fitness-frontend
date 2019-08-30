@@ -19,6 +19,16 @@
         <v-list-item-title>Клиенты</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
+
+    <v-list-item nuxt :to="{name: 'halls'}" exact>
+      <v-list-item-icon>
+        <v-icon>persons</v-icon>
+      </v-list-item-icon>
+
+      <v-list-item-content>
+        <v-list-item-title>Залы</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
   </v-list>
 </template>
 
