@@ -59,6 +59,10 @@ export default {
     port: '80',
   },
 
+  router: {
+    middleware: ['auth']
+  },
+
   auth: {
     redirect: {
       login: '/auth/login',
@@ -87,7 +91,7 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: true,
+      dark: false,
       themes: {
         dark: {
           primary: colors.blue.darken2,
