@@ -63,6 +63,7 @@
             return Promise.all([
                 store.dispatch('employees/loadAll'),
                 store.dispatch('halls/loadAll'),
+                store.dispatch('users/loadAll'),
             ]);
         },
     }
