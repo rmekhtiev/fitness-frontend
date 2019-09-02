@@ -22,6 +22,14 @@
           <v-flex md1>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
+                Шкафчики
+              </div>
+            </div>
+          </v-flex>
+
+          <v-flex md1>
+            <div style="display: flex; width: 100%">
+              <div style="flex: 1 1 0%;" class="overline text-truncate">
                 Сотрудники
               </div>
             </div>
