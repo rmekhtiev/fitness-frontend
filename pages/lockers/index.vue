@@ -10,6 +10,22 @@
               </div>
             </div>
           </v-flex>
+
+          <v-flex xs6 md3>
+            <div style="display: flex; width: 100%">
+              <div style="flex: 1 1 0%;" class="overline text-truncate">
+                Статус
+              </div>
+            </div>
+          </v-flex>
+
+          <v-flex xs4 md3>
+            <div style="display: flex; width: 100%">
+              <div style="flex: 1 1 0%;" class="overline text-truncate">
+                Клиент
+              </div>
+            </div>
+          </v-flex>
         </v-layout>
       </template>
 
@@ -47,6 +63,7 @@
         fetch({store}) {
             return Promise.all([
                 store.dispatch('lockers/loadAll'),
+                store.dispatch('clients/loadAll'),
             ]);
         },
     }
