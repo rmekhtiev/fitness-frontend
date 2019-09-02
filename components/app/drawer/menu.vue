@@ -39,6 +39,16 @@
         <v-list-item-title>Сотрудники</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
+
+    <v-list-item nuxt :to="{name: 'lockers'}" exact>
+      <v-list-item-icon>
+        <v-icon>persons</v-icon>
+      </v-list-item-icon>
+
+      <v-list-item-content>
+        <v-list-item-title>Шкафчики</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
   </v-list>
 </template>
 

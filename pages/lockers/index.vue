@@ -1,0 +1,57 @@
+<template>
+  <div id="lockers">
+    <v-data-iterator :items="lockers" :items-per-page="50">
+      <template v-slot:header>
+        <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
+          <v-flex xs2 md1>
+            <div style="display: flex; width: 100%">
+              <div style="flex: 1 1 0%;" class="overline text-truncate">
+                №
+              </div>
+            </div>
+          </v-flex>
+        </v-layout>
+      </template>
+
+      <template v-slot:default="props">
+        <v-card>
+          <v-list>
+            <template v-for="item in props.items">
+              <locker-list-item :locker="item"></locker-list-item>
+              <v-divider></v-divider>
+            </template>
+          </v-list>
+        </v-card>
+      </template>
+    </v-data-iterator>
+  </div>
+</template>
+
+<script>
+    import {mapGetters} from 'vuex';
+    import LockerListItem from "../../components/lockers/LockerListItem";
+
+    export default {
+        name: "index",
+
+        components: {
+            LockerListItem,
+        },
+
+        computed: {
+            ...mapGetters({
+                lockers: 'lockers/all',
+            }),
+        },
+
+        fetch({store}) {
+            return Promise.all([
+                store.dispatch('lockers/loadAll'),
+            ]);
+        },
+    }
+</script>
+
+<style scoped>
+
+</style>
