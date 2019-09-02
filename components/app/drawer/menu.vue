@@ -1,65 +1,89 @@
 <template>
-  <v-list dense nav>
-    <v-list-item nuxt :to="{name: 'index'}" exact>
-      <v-list-item-icon>
-        <v-icon>home</v-icon>
-      </v-list-item-icon>
+  <div>
+    <v-list dense nav>
+      <v-list-item
+        v-for="item in mainActions"
+        :key="item.title"
+        link nuxt :to="item.to" exact
+      >
+        <v-list-item-icon>
+          <v-icon>{{ item.icon }}</v-icon>
+        </v-list-item-icon>
 
-      <v-list-item-content>
-        <v-list-item-title>Главная</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
 
-    <v-list-item nuxt :to="{name: 'clients'}" exact>
-      <v-list-item-icon>
-        <v-icon>persons</v-icon>
-      </v-list-item-icon>
+    <v-divider></v-divider>
 
-      <v-list-item-content>
-        <v-list-item-title>Клиенты</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+    <v-list dense nav subheader>
+      <v-subheader>Зал</v-subheader>
 
-    <v-list-item nuxt :to="{name: 'halls'}" exact>
-      <v-list-item-icon>
-        <v-icon>persons</v-icon>
-      </v-list-item-icon>
+      <v-list-item
+        v-for="item in hallActions"
+        :key="item.title"
+        link nuxt :to="item.to" exact
+      >
+        <v-list-item-icon>
+          <v-icon>{{ item.icon }}</v-icon>
+        </v-list-item-icon>
 
-      <v-list-item-content>
-        <v-list-item-title>Залы</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
 
-    <v-list-item nuxt :to="{name: 'employees'}" exact>
-      <v-list-item-icon>
-        <v-icon>persons</v-icon>
-      </v-list-item-icon>
+    <template v-if="isOwner">
+      <v-divider></v-divider>
 
-      <v-list-item-content>
-        <v-list-item-title>Сотрудники</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+      <v-list dense nav subheader>
+        <v-subheader>Управление</v-subheader>
 
-    <v-list-item nuxt :to="{name: 'lockers'}" exact>
-      <v-list-item-icon>
-        <v-icon>persons</v-icon>
-      </v-list-item-icon>
+        <v-list-item
+          v-for="item in adminActions"
+          :key="item.title"
+          link nuxt :to="item.to" exact
+        >
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
 
-      <v-list-item-content>
-        <v-list-item-title>Шкафчики</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-  </v-list>
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </template>
+  </div>
 </template>
 
 <script>
-  import auth from '../../../mixins/auth'
+    import auth from '../../../mixins/auth'
 
-  export default {
-    mixins: [
-      auth,
-    ],
-  }
+    export default {
+        mixins: [
+            auth,
+        ],
+
+        data: () => ({
+            mainActions: [
+                {title: 'Главная', icon: 'mdi-home-outline', to: {name: 'index'}},
+            ],
+
+            hallActions: [
+                {title: 'Клиенты', icon: 'mdi-account-group-outline', to: {name: 'clients'}},
+                {title: 'Шкафчики', icon: 'mdi-locker-multiple', to: {name: 'lockers'}},
+                {title: 'Сотрудники', icon: 'mdi-account-badge-horizontal-outline', to: {name: 'employees'}},
+            ],
+
+            adminActions: [
+                {title: 'Залы', icon: 'mdi-domain', to: {name: 'halls'}},
+            ],
+        }),
+    }
 </script>
 
 <style scoped>

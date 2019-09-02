@@ -6,7 +6,8 @@
         <v-list-item-content>
           <v-list-item-title class="title">{{ me.name }}</v-list-item-title>
 
-          <v-list-item-subtitle>{{ me.primary_role.description }}</v-list-item-subtitle>
+          <v-list-item-subtitle v-if="isOwner">{{ me.primary_role.description }}</v-list-item-subtitle>
+          <v-list-item-subtitle v-else-if="isHallAdmin" :title="hall.address">{{ hall.title }}</v-list-item-subtitle>
         </v-list-item-content>
 
         <v-list-item-action>

@@ -30,12 +30,17 @@
 <script>
     import Profile from "../components/app/drawer/profile";
     import Menu from "../components/app/drawer/menu";
+    import auth from "../mixins/auth";
 
     export default {
         components: {
             'drawer-profile': Profile,
             'drawer-menu': Menu,
         },
+
+        mixins: [
+            auth,
+        ],
 
         data() {
             return {
@@ -46,6 +51,20 @@
                 },
                 title: 'Фитнесс'
             }
+        },
+
+        beforeMount() {
+            this.$store.dispatch('employees/loadById', { id: this.me.associated_employee.id }).then(() => {
+                const employee = this.$store.getters['employees/byId']({ id: this.me.associated_employee.id });
+                console.log(employee);
+
+                this.$store.dispatch('halls/loadById', { id: employee.hall_id }).then(() => {
+                    const hall = this.$store.getters['halls/byId']({ id: employee.hall_id });
+                    console.log(hall);
+                });
+            });
+
+
         }
     }
 </script>
