@@ -30,12 +30,17 @@
 <script>
     import Profile from "../components/app/drawer/profile";
     import Menu from "../components/app/drawer/menu";
+    import auth from "../mixins/auth";
 
     export default {
         components: {
             'drawer-profile': Profile,
             'drawer-menu': Menu,
         },
+
+        mixins: [
+            auth,
+        ],
 
         data() {
             return {

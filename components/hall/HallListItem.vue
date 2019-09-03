@@ -22,6 +22,14 @@
       <v-flex md1>
         <div style="display: flex; width: 100%">
           <div style="flex: 1 1 0%;" class="text-truncate">
+            <div class="body-2" >{{ hall.lockers_count }} <span class="grey--text">({{ hall.lockers_count_free }})</span></div>
+          </div>
+        </div>
+      </v-flex>
+
+      <v-flex md1>
+        <div style="display: flex; width: 100%">
+          <div style="flex: 1 1 0%;" class="text-truncate">
             <div class="body-2" >{{ hall.employees_count }}</div>
           </div>
         </div>
