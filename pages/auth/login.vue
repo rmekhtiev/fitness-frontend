@@ -45,7 +45,7 @@
     export default {
         auth: false,
 
-        template: 'fullscreen',
+        layout: 'fullscreen',
 
         data: () => ({
             form: {

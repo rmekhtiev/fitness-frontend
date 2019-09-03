@@ -51,20 +51,6 @@
                 },
                 title: 'Фитнесс'
             }
-        },
-
-        beforeMount() {
-            this.$store.dispatch('employees/loadById', { id: this.me.associated_employee.id }).then(() => {
-                const employee = this.$store.getters['employees/byId']({ id: this.me.associated_employee.id });
-                console.log(employee);
-
-                this.$store.dispatch('halls/loadById', { id: employee.hall_id }).then(() => {
-                    const hall = this.$store.getters['halls/byId']({ id: employee.hall_id });
-                    console.log(hall);
-                });
-            });
-
-
         }
     }
 </script>
