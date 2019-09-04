@@ -1,0 +1,90 @@
+<template>
+    <div id="issues">
+        <v-data-iterator :items="issues" :items-per-page="50">
+            <template v-slot:header>
+                <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
+                    <v-flex xs8 md3>
+                        <div style="display: flex; width: 100%">
+                            <div style="flex: 1 1 0%;" class="overline text-truncate">
+                                ФИО
+                            </div>
+                        </div>
+                    </v-flex>
+
+                    <v-flex md3>
+                        <div style="display: flex; width: 100%">
+                            <div style="flex: 1 1 0%;" class="overline text-truncate">
+                                Зал
+                            </div>
+                        </div>
+                    </v-flex>
+
+                    <v-flex md3>
+                        <div style="display: flex; width: 100%">
+                            <div style="flex: 1 1 0%;" class="overline text-truncate">
+                                Статус
+                            </div>
+                        </div>
+                    </v-flex>
+
+                    <v-flex xs8 md3>
+
+                    </v-flex>
+
+                    <v-flex xs8 md3>
+
+                    </v-flex>
+
+                    <v-flex md3>
+                        <div style="display: flex; width: 100%">
+                            <div style="flex: 1 1 0%;" class="overline text-truncate text-right">
+                                Посл.обновление
+                            </div>
+                        </div>
+                    </v-flex>
+                </v-layout>
+            </template>
+
+            <template v-slot:default="props">
+                <v-card>
+                    <v-list>
+                        <template v-for="item in props.items">
+                            <issue-list-item :issue="item"></issue-list-item>
+                            <v-divider></v-divider>
+                        </template>
+                    </v-list>
+                </v-card>
+            </template>
+        </v-data-iterator>
+    </div>
+</template>
+
+<script>
+    import {mapGetters} from 'vuex';
+    import IssueListItem from "../../components/issues/IssueListItem";
+
+    export default {
+        name: "index",
+        components: {
+            IssueListItem,
+        },
+
+        computed: {
+            ...mapGetters({
+                issues: 'issues/all',
+            }),
+        },
+
+        fetch({store}) {
+            return Promise.all([
+                store.dispatch('issues/loadAll'),
+                store.dispatch('users/loadAll'),
+                store.dispatch('halls/loadAll'),
+            ]);
+        },
+    }
+</script>
+
+<style scoped>
+
+</style>
