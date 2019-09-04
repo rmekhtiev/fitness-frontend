@@ -1,5 +1,5 @@
 <template>
-  <v-list-item>
+  <v-list-item :to="{name: 'clients-id', params: {id: client.id}}">
     <v-layout>
       <v-flex xs8 md3>
         <div style="display: flex; width: 100%">

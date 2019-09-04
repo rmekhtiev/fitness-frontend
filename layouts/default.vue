@@ -20,7 +20,7 @@
       <v-toolbar-title v-text="title"/>
     </v-app-bar>
     <v-content>
-      <v-container>
+      <v-container grid-list-md>
         <nuxt/>
       </v-container>
     </v-content>

@@ -43,14 +43,14 @@
 
 <script>
     import locker from "../../mixins/locker";
-    import booking from "../../mixins/booking";
+    import lockerClaim from "../../mixins/locker-claim";
 
     export default {
         name: "hall-list-item",
 
         mixins: [
             locker,
-            booking,
+            lockerClaim,
         ],
 
         props: {
@@ -61,10 +61,14 @@
         },
 
         computed: {
-            booking() {
-                return this.locker.booking;
+            claim() {
+                return this.locker.claim;
             },
-        }
+
+            client() {
+                return this.$store.getters['clients/byId']({ id: this.claim.client_id });
+            },
+        },
     }
 </script>
 
