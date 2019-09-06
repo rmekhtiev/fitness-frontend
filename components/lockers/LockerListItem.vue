@@ -1,5 +1,5 @@
 <template>
-  <v-list-item>
+  <v-list-item :to="{name: 'lockers-id', params: {id: locker.id}}">
     <v-layout>
       <v-flex xs2 md1>
         <div style="display: flex; width: 100%">
@@ -15,8 +15,8 @@
             <div class="body-2 green--text" v-if="locker.free"><v-icon small color="green">check</v-icon> Свободен</div>
             <div class="pr-4" v-else>
               <v-progress-linear
-                :value="100 - (durationLeft / duration) * 100"
-                color="deep-purple accent-4"
+                :value="durationPercent"
+                color="blue-grey"
                 rounded
                 height="18"
               >

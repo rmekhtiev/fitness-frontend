@@ -1,6 +1,6 @@
 <template>
   <div id="clients">
-    <v-data-iterator :items="clients" :items-per-page="50">
+    <v-data-iterator :items="clients" :items-per-page="15">
       <template v-slot:header>
         <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
           <v-flex xs8 md3>

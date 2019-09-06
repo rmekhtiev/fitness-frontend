@@ -10,6 +10,10 @@ export default {
 
     past() {
       return this.durationLeft <= 0;
+    },
+
+    durationPercent() {
+      return 100 - (this.durationLeft / this.duration) * 100;
     }
   }
 }

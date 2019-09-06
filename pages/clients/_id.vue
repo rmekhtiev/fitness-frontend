@@ -81,7 +81,7 @@
                         filter: lockerClaimsFilter
                     })).map(claim => claim.locker_id).uniq();
 
-                    // console.log(lockerIds);
+                    console.info('Gonna load next lockers: ' + lockerIds);
 
                     return Promise.all(lockerIds.map(lockerId => store.dispatch('lockers/loadById', { id: lockerId })));
                 })
