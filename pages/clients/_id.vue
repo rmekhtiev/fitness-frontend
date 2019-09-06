@@ -1,34 +1,64 @@
 <template>
-  <v-layout row wrap>
-    <v-flex xs12 md6 lg4 xl3>
-      <client-info-card
-        :client="client"
-        class="mb-2 mx-auto">
-      </client-info-card>
-    </v-flex>
+  <div :id="'client' + client.id">
+    <v-layout row wrap>
+      <v-flex xs12 sm6 lg4 xl3>
+        <client-info-card
+          :client="client"
+          class="mb-2 mx-auto">
+        </client-info-card>
+      </v-flex>
 
-    <v-flex xs12 md6 lg4 xl3>
-      <v-card>
-        <v-card-text>
-          <div class="overline">Шкафчики</div>
-        </v-card-text>
+      <v-flex xs12 sm6 lg4 xl3>
+        <v-card>
+          <v-card-text>
+            <div class="overline">Шкафчики</div>
+          </v-card-text>
 
-        <template
-          v-for="(claim, index) in lockerClaims">
-          <locker-claim-list-item
-            :key="'claim' + claim.id"
-            :claim="claim">
-          </locker-claim-list-item>
+          <template
+            v-for="(claim, index) in lockerClaims">
+            <locker-claim-list-item
+              :key="'claim' + claim.id"
+              :claim="claim">
+            </locker-claim-list-item>
 
-          <v-divider
-            v-if="index + 1 < lockerClaims.length"
-            :key="index"
-          ></v-divider>
+            <v-divider
+              v-if="index + 1 < lockerClaims.length"
+              :key="index"
+            ></v-divider>
+          </template>
+        </v-card>
+      </v-flex>
+
+    </v-layout>
+
+    <v-speed-dial
+      v-model="fab"
+      fixed
+      bottom
+      right>
+      <template v-slot:activator>
+        <v-btn
+          v-model="fab"
+          color="primary"
+          dark
+          fab
+        >
+          <v-icon v-if="fab">mdi-close</v-icon>
+          <v-icon v-else>mdi-plus</v-icon>
+        </v-btn>
+      </template>
+      <v-tooltip
+        left
+        :value="tooltips">
+        <template v-slot:activator="{ on }">
+          <v-btn fab dark small color="green">
+            <v-icon>mdi-locker</v-icon>
+          </v-btn>
         </template>
-      </v-card>
-    </v-flex>
-
-  </v-layout>
+        <span>Шкафчик</span>
+      </v-tooltip>
+    </v-speed-dial>
+  </div>
 </template>
 
 <script>
@@ -48,6 +78,12 @@
             client,
         ],
 
+        data: () => ({
+            fab: false,
+            tooltips: false,
+            tooltipsDisabled: false
+        }),
+
         computed: {
             client() {
                 return this.$store.getters['clients/byId']({id: this.$route.params.id});
@@ -59,6 +95,17 @@
                         client_id: this.$route.params.id,
                     }
                 });
+            },
+        },
+
+        watch: {
+            fab (val) {
+                this.tooltips = false;
+                this.tooltipsDisabled = false;
+                val && setTimeout(() => {
+                    this.tooltips = true;
+                    this.$nextTick(() => this.tooltipsDisabled = true)
+                }, 250)
             },
         },
 
@@ -83,7 +130,7 @@
 
                     console.info('Gonna load next lockers: ' + lockerIds);
 
-                    return Promise.all(lockerIds.map(lockerId => store.dispatch('lockers/loadById', { id: lockerId })));
+                    return Promise.all(lockerIds.map(lockerId => store.dispatch('lockers/loadById', {id: lockerId})));
                 })
             ]);
         },

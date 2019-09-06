@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs12 md6 lg4 xl3>
+    <v-flex xs12 sm6 lg4 xl3>
       <v-card>
         <v-list-item>
           <v-list-item-content>
@@ -11,7 +11,7 @@
       </v-card>
     </v-flex>
 
-    <v-flex xs12 md6 lg4 xl3>
+    <v-flex xs12 sm6 lg4 xl3>
       <v-card class="mb-2">
         <v-card-text>
           <div class="overline mb-4">Текущая бронь</div>
@@ -24,7 +24,7 @@
           <v-progress-linear
             v-else
             :value="durationPercent"
-            color="blue-grey"
+            color="primary"
             height="25"
             rounded
             reactive

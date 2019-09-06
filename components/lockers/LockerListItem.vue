@@ -16,7 +16,7 @@
             <div class="pr-4" v-else>
               <v-progress-linear
                 :value="durationPercent"
-                color="blue-grey"
+                color="primary"
                 rounded
                 height="18"
               >
