@@ -18,7 +18,8 @@
     "@reststate/vuex": "^0.1.1",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "nuxt": "^2.0.0"
+    "nuxt": "^2.0.0",
+    "vuelidate": "^0.7.4"
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.0.0",

@@ -51,13 +51,15 @@
         left
         :value="tooltips">
         <template v-slot:activator="{ on }">
-          <v-btn fab dark small color="green">
+          <v-btn fab dark small color="green" @click.native="openLockerClaimDialog">
             <v-icon>mdi-locker</v-icon>
           </v-btn>
         </template>
         <span>Шкафчик</span>
       </v-tooltip>
     </v-speed-dial>
+
+    <locker-claim-dialog ref="lockerClaimDialog" :client="client"></locker-claim-dialog>
   </div>
 </template>
 
@@ -67,11 +69,13 @@
     import client from "../../mixins/client";
     import ClientInfoCard from "../../components/clients/ClientInfoCard";
     import LockerClaimListItem from "../../components/locker-claims/LockerClaimListItem";
+    import LockerClaimDialog from "../../components/locker-claims/LockerClaimDialog";
 
     export default {
         components: {
             ClientInfoCard,
             LockerClaimListItem,
+            LockerClaimDialog,
         },
 
         mixins: [
@@ -81,7 +85,11 @@
         data: () => ({
             fab: false,
             tooltips: false,
-            tooltipsDisabled: false
+            tooltipsDisabled: false,
+
+            dialogs: {
+                lockerClaim: false,
+            }
         }),
 
         computed: {
@@ -107,6 +115,18 @@
                     this.$nextTick(() => this.tooltipsDisabled = true)
                 }, 250)
             },
+        },
+
+        methods: {
+            openLockerClaimDialog() {
+                this.$refs.lockerClaimDialog.open().then(() => {
+                    this.$store.dispatch('locker-claims/loadWhere', {
+                        filter: {
+                            client_id: this.$route.params.id,
+                        }
+                    });
+                });
+            }
         },
 
         fetch: ({store, params}) => {

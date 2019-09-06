@@ -27,6 +27,16 @@
             auth,
         ],
 
+        computed: {
+            employee() {
+                return this.$store.getters['employees/byId']({id: this.me.associated_employee.id});
+            },
+
+            hall() {
+                return this.$store.getters['halls/byId']({id: this.me.associated_employee.hall_id});
+            }
+        },
+
         methods: {
             logout() {
                 return this.$auth.logout().then(value => {
@@ -47,8 +57,6 @@
                     console.debug(hall);
                 });
             });
-
-
         }
     }
 </script>

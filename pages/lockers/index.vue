@@ -33,7 +33,9 @@
         <v-card>
           <v-list>
             <template v-for="item in props.items">
-              <locker-list-item :locker="item"></locker-list-item>
+              <v-list-item :to="{name: 'lockers-id', params: {id: item.id}}">
+                <locker-list-item :locker="item"></locker-list-item>
+              </v-list-item>
               <v-divider></v-divider>
             </template>
           </v-list>
