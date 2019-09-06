@@ -33,7 +33,7 @@
         <div style="display: flex; width: 100%">
           <div style="flex: 1 1 0%;" class="text-truncate">
             <div class="body-2 grey--text" v-if="locker.free">&mdash;</div>
-            <div class="body-2" v-else>{{ client.name }}</div>
+            <div class="body-2" v-else :title="client.full_name"><nuxt-link :to="{name: 'clients-id', params: {id: client.id}}">{{ client.name }}</nuxt-link></div>
           </div>
         </div>
       </v-flex>

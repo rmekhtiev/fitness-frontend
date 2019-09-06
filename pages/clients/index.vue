@@ -36,9 +36,12 @@
       <template v-slot:default="props">
         <v-card>
           <v-list>
-            <template v-for="item in props.items">
+            <template v-for="(item, index) in props.items">
               <client-list-item :client="item"></client-list-item>
-              <v-divider></v-divider>
+              <v-divider
+                v-if="index + 1 < props.items.length"
+                :key="index"
+              ></v-divider>
             </template>
           </v-list>
         </v-card>

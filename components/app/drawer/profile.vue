@@ -26,6 +26,7 @@
         mixins: [
             auth,
         ],
+
         methods: {
             logout() {
                 return this.$auth.logout().then(value => {

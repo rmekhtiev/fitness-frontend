@@ -2,18 +2,12 @@
   <v-card
     :class="classes"
     :to="to">
-    <v-list-item three-line>
+    <v-list-item>
+      <v-list-item-avatar color="grey"></v-list-item-avatar>
       <v-list-item-content>
-        <div class="overline mb-4">Клиент</div>
-        <v-list-item-title class="headline mb-1">{{ client.name }}</v-list-item-title>
+        <v-list-item-title class="headline">{{ client.name }}</v-list-item-title>
         <v-list-item-subtitle>{{ client.full_name }}</v-list-item-subtitle>
       </v-list-item-content>
-
-      <v-list-item-avatar
-        tile
-        size="80"
-        color="grey"
-      ></v-list-item-avatar>
     </v-list-item>
   </v-card>
 </template>
