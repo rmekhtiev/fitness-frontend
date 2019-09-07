@@ -35,6 +35,7 @@ export default {
   */
   plugins: [
     '@/plugins/reststate-vuex',
+    '@/plugins/vuelidate',
   ],
   /*
   ** Nuxt.js dev-modules

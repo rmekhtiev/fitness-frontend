@@ -1,6 +1,6 @@
 <template>
   <div id="clients">
-    <v-data-iterator :items="clients" :items-per-page="50">
+    <v-data-iterator :items="clients" :items-per-page="15">
       <template v-slot:header>
         <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
           <v-flex xs8 md3>
@@ -36,14 +36,18 @@
       <template v-slot:default="props">
         <v-card>
           <v-list>
-            <template v-for="item in props.items">
+            <template v-for="(item, index) in props.items">
               <client-list-item :client="item"></client-list-item>
-              <v-divider></v-divider>
+              <v-divider
+                v-if="index + 1 < props.items.length"
+                :key="index"
+              ></v-divider>
             </template>
           </v-list>
         </v-card>
       </template>
     </v-data-iterator>
+
   </div>
 </template>
 

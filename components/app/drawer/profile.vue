@@ -26,6 +26,17 @@
         mixins: [
             auth,
         ],
+
+        computed: {
+            employee() {
+                return this.$store.getters['employees/byId']({id: this.me.associated_employee.id});
+            },
+
+            hall() {
+                return this.$store.getters['halls/byId']({id: this.me.associated_employee.hall_id});
+            }
+        },
+
         methods: {
             logout() {
                 return this.$auth.logout().then(value => {
@@ -37,17 +48,17 @@
         },
 
         beforeMount() {
-            this.$store.dispatch('employees/loadById', {id: this.me.associated_employee.id}).then(() => {
-                const employee = this.$store.getters['employees/byId']({id: this.me.associated_employee.id});
-                console.log(employee);
+            if (this.me.associated_employee) {
+                this.$store.dispatch('employees/loadById', {id: this.me.associated_employee.id}).then(() => {
+                    const employee = this.$store.getters['employees/byId']({id: this.me.associated_employee.id});
+                    console.debug(employee);
 
-                this.$store.dispatch('halls/loadById', {id: employee.hall_id}).then(() => {
-                    const hall = this.$store.getters['halls/byId']({id: employee.hall_id});
-                    console.log(hall);
+                    this.$store.dispatch('halls/loadById', {id: employee.hall_id}).then(() => {
+                        const hall = this.$store.getters['halls/byId']({id: employee.hall_id});
+                        console.debug(hall);
+                    });
                 });
-            });
-
-
+            }
         }
     }
 </script>
