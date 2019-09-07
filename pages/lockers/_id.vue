@@ -16,7 +16,15 @@
         <v-card-text>
           <div class="overline mb-4">Текущая бронь</div>
 
-          <template v-if="display.claims">
+          <template v-if="loading.claims">
+            <v-progress-linear
+              height="16"
+              rounded
+              color="primary"
+              indeterminate
+            ></v-progress-linear>
+          </template>
+          <template v-else>
             <div
               v-if="!claim"
               class="green--text">
@@ -36,19 +44,11 @@
               </template>
             </v-progress-linear>
           </template>
-          <template v-else>
-            <v-progress-linear
-              height="16"
-              rounded
-              color="primary"
-              indeterminate
-            ></v-progress-linear>
-          </template>
 
         </v-card-text>
 
-        <template v-if="display.claims">
-          <locker-claim-list-item :claim="claim" is-client></locker-claim-list-item>
+        <template v-if="!loading.claims">
+          <locker-claim-list-item v-if="claim" :claim="claim" is-client></locker-claim-list-item>
         </template>
       </v-card>
 
@@ -57,22 +57,8 @@
           <div class="overline">История броней</div>
         </v-card-text>
 
-        <template
-          v-if="display.claims"
-          v-for="(claim, index) in claims">
-          <locker-claim-list-item
-            is-client
-            :key="index"
-            :claim="claim">
-          </locker-claim-list-item>
-
-          <v-divider
-            v-if="index + 1 < claims.length"
-            :key="index"
-          ></v-divider>
-        </template>
         <v-card-text
-          v-else
+          v-if="loading.claims"
           class="text-center">
           <v-progress-linear
             height="16"
@@ -81,6 +67,32 @@
             indeterminate
           ></v-progress-linear>
         </v-card-text>
+        <template
+          v-else>
+
+          <v-card-text
+            v-if="claims.length === 0"
+            class="text-center">
+            <v-icon style="font-size: 4rem">mdi-inbox</v-icon>
+            <br>
+            Пусто
+          </v-card-text>
+          <template
+            v-else
+            v-for="(claim, index) in claims">
+            <locker-claim-list-item
+              is-client
+              :key="index"
+              :claim="claim">
+            </locker-claim-list-item>
+
+            <v-divider
+              v-if="index + 1 < claims.length"
+              :key="index"
+            ></v-divider>
+          </template>
+
+        </template>
       </v-card>
     </v-flex>
   </v-layout>
@@ -128,12 +140,6 @@
             client() {
                 return this.$store.getters['clients/byId']({id: this.claim.client_id})
             },
-
-            display() {
-                return {
-                    claims: !this.loading.claims,
-                }
-            }
         },
 
         created() {
