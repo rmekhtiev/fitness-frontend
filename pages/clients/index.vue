@@ -48,22 +48,43 @@
       </template>
     </v-data-iterator>
 
+    <v-btn
+      color="primary"
+      dark
+      fab
+      fixed
+      bottom
+      right
+      @click="openCreateDialog"
+    >
+      <v-icon>mdi-plus</v-icon>
+    </v-btn>
+
+    <client-dialog ref="createDialog" title="Новый клиент"></client-dialog>
   </div>
 </template>
 
 <script>
     import {mapGetters} from 'vuex';
     import ClientListItem from '../../components/clients/ClientListItem';
+    import ClientDialog from "../../components/clients/ClientDialog";
 
     export default {
         components: {
-            'client-list-item': ClientListItem,
+            ClientDialog,
+            ClientListItem,
         },
 
         computed: {
             ...mapGetters({
                 clients: 'clients/all',
             }),
+        },
+
+        methods: {
+            openCreateDialog() {
+                this.$refs.createDialog.open()
+            }
         },
 
         fetch({store}) {
