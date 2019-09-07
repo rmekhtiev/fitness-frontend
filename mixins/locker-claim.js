@@ -9,7 +9,7 @@ export default {
     },
 
     past() {
-      return this.durationLeft <= 0;
+      return this.durationLeft < 0;
     },
 
     future() {

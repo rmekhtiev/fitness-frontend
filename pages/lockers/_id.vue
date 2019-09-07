@@ -16,31 +16,44 @@
         <v-card-text>
           <div class="overline mb-4">Текущая бронь</div>
 
-          <div
-            v-if="locker.free"
-          class="green--text">
-            <v-icon small color="green">check</v-icon> Свободен
-          </div>
-          <v-progress-linear
-            v-else
-            :value="durationPercent"
-            color="primary"
-            height="25"
-            rounded
-            reactive
-          >
-            <template v-slot="{ value }">
-              <strong>{{ durationLeft }} дней</strong>
-            </template>
-          </v-progress-linear>
+          <template v-if="display.claims">
+            <div
+              v-if="!claim"
+              class="green--text">
+              <v-icon small color="green">check</v-icon> Свободен
+            </div>
+            <v-progress-linear
+              v-else
+              :value="durationPercent"
+              color="primary"
+              height="25"
+              rounded
+              reactive
+            >
+              <template v-slot="{ value }">
+                <strong>{{ durationLeft }} дней</strong>
+              </template>
+            </v-progress-linear>
+          </template>
+          <template v-else>
+            <v-progress-linear
+              height="16"
+              rounded
+              color="primary"
+              indeterminate
+            ></v-progress-linear>
+          </template>
+
         </v-card-text>
 
-        <v-list-item v-if="!locker.free">
-          <v-list-item-content>
-            <v-list-item-title :title="client.full_name"><nuxt-link :to="{name: 'clients-id', params: {id: client.id}}">{{ client.name }}</nuxt-link></v-list-item-title>
-            <v-list-item-subtitle>{{ $moment(claim.claim_start).format('ll') }} &mdash; {{ $moment(claim.claim_end).format('ll') }}</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
+        <template v-if="display.claims">
+          <v-list-item v-if="claim">
+            <v-list-item-content>
+              <v-list-item-title :title="client.full_name"><nuxt-link :to="{name: 'clients-id', params: {id: client.id}}">{{ client.name }}</nuxt-link></v-list-item-title>
+              <v-list-item-subtitle>{{ $moment(claim.claim_start).format('ll') }} &mdash; {{ $moment(claim.claim_end).format('ll') }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
       </v-card>
 
       <v-card>
@@ -49,11 +62,12 @@
         </v-card-text>
 
         <template
+          v-if="display.claims"
           v-for="(claim, index) in claims">
           <locker-claim-list-item
-            :key="'claim' + claim.id"
-            :claim="claim"
-            is-client>
+            is-client
+            :key="index"
+            :claim="claim">
           </locker-claim-list-item>
 
           <v-divider
@@ -61,6 +75,16 @@
             :key="index"
           ></v-divider>
         </template>
+        <v-card-text
+          v-else
+          class="text-center">
+          <v-progress-linear
+            height="16"
+            rounded
+            color="primary"
+            indeterminate
+          ></v-progress-linear>
+        </v-card-text>
       </v-card>
     </v-flex>
   </v-layout>
@@ -82,6 +106,12 @@
             lockerClaim,
         ],
 
+        data: () => ({
+            loading: {
+                claims: true
+            }
+        }),
+
         computed: {
             locker() {
                 return this.$store.getters['lockers/byId']({id: this.$route.params.id});
@@ -96,18 +126,49 @@
             },
 
             claim() {
-                return this.$store.getters['locker-claims/byId']({id: this.locker.claim.id})
+                return this.locker.claim ? this.$store.getters['locker-claims/byId']({id: this.locker.claim.id}) : null
             },
 
             client() {
                 return this.$store.getters['clients/byId']({id: this.claim.client_id})
+            },
+
+            display() {
+                return {
+                    claims: !this.$store.getters['lockers/isLoading'] && !this.$store.getters['lockers-claims/isLoading'] && !this.loading.claims,
+                }
+            }
+        },
+
+        created() {
+            this.loadLockerClaims();
+        },
+
+        methods: {
+            loadLockerClaims() {
+                this.loading.claims = true;
+
+                let lockerClaimsFilter = {
+                    locker_id: this.$route.params.id,
+                };
+
+                return this.$store.dispatch('locker-claims/loadWhere', {
+                    filter: lockerClaimsFilter
+                }).then(async () => {
+                    let clientIds = _(this.$store.getters['locker-claims/where']({
+                        filter: lockerClaimsFilter
+                    })).map(claim => claim.client_id).uniq();
+
+                    console.info('Gonna load next clients: ' + clientIds);
+
+                    return Promise.all(clientIds.map(lockerId => this.$store.dispatch('clients/loadById', { id: lockerId }))).then(() => {
+                        this.loading.claims = false;
+                    });
+                })
             }
         },
 
         fetch: ({store, params}) => {
-            let lockerClaimsFilter = {
-                locker_id: params.id,
-            };
 
             return Promise.all([
                 store.dispatch('lockers/loadById', {
@@ -116,18 +177,6 @@
                     let locker = store.getters['lockers/byId']({id: params.id});
 
                     return await store.dispatch('halls/loadById', { id: locker.hall_id});
-                }),
-
-                store.dispatch('locker-claims/loadWhere', {
-                    filter: lockerClaimsFilter
-                }).then(async () => {
-                    let clientIds = _(store.getters['locker-claims/where']({
-                        filter: lockerClaimsFilter
-                    })).map(claim => claim.client_id).uniq();
-
-                    console.info('Gonna load next clients: ' + clientIds);
-
-                    return Promise.all(clientIds.map(lockerId => store.dispatch('clients/loadById', { id: lockerId })));
                 })
             ]);
         },

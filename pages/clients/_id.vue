@@ -15,9 +15,10 @@
           </v-card-text>
 
           <template
+            v-if="display.lockers"
             v-for="(claim, index) in lockerClaims">
             <locker-claim-list-item
-              :key="'claim' + claim.id"
+              :key="index"
               :claim="claim">
             </locker-claim-list-item>
 
@@ -26,6 +27,16 @@
               :key="index"
             ></v-divider>
           </template>
+          <v-card-text
+            v-else
+            class="text-center">
+            <v-progress-linear
+              height="16"
+              rounded
+              color="primary"
+              indeterminate
+            ></v-progress-linear>
+          </v-card-text>
         </v-card>
       </v-flex>
 
@@ -89,6 +100,10 @@
 
             dialogs: {
                 lockerClaim: false,
+            },
+
+            loading: {
+                lockers: true,
             }
         }),
 
@@ -97,18 +112,28 @@
                 return this.$store.getters['clients/byId']({id: this.$route.params.id});
             },
 
+            lockerFilter() {
+                return {
+                    client_id: this.$route.params.id,
+                    after: this.$moment().format('YYYY-MM-DD')
+                };
+            },
+
             lockerClaims() {
                 return this.$store.getters['locker-claims/where']({
-                    filter: {
-                        client_id: this.$route.params.id,
-                        after: this.$moment().format('YYYY-MM-DD')
-                    }
+                    filter: this.lockerFilter,
                 });
             },
+
+            display() {
+                return {
+                    lockers: !this.$store.getters['lockers/isLoading'] && !this.$store.getters['lockers-claims/isLoading'] && !this.loading.lockers,
+                }
+            }
         },
 
         watch: {
-            fab (val) {
+            fab(val) {
                 this.tooltips = false;
                 this.tooltipsDisabled = false;
                 val && setTimeout(() => {
@@ -122,12 +147,34 @@
             openLockerClaimDialog() {
                 this.$refs.lockerClaimDialog.open().then(() => {
                     this.$store.dispatch('locker-claims/loadWhere', {
-                        filter: {
-                            client_id: this.$route.params.id,
-                        }
+                        filter: this.lockerFilter
                     });
                 });
+            },
+
+            loadLockerClaims() {
+                this.loading.lockers = true;
+
+                return this.$store.dispatch('locker-claims/loadWhere', {
+                    filter: this.lockerFilter,
+                }).then(() => {
+                    let lockerIds = _(this.$store.getters['locker-claims/where']({
+                        filter: this.lockerFilter
+                    })).map(claim => claim.locker_id).uniq();
+
+                    console.info('Gonna load next lockers: ' + lockerIds);
+
+                    return Promise.all(lockerIds.map(lockerId => this.$store.dispatch('lockers/loadById', {id: lockerId}))).then(() => {
+                        this.loading.lockers = false;
+                    });
+                })
             }
+        },
+
+        async mounted() {
+            await this.loadLockerClaims();
+
+            await this.$store.dispatch('halls/loadAll');
         },
 
         fetch: ({store, params, $moment, ...rest}) => {
@@ -142,20 +189,6 @@
                 store.dispatch('clients/loadById', {
                     id: params.id
                 }),
-
-                store.dispatch('halls/loadAll'),
-
-                store.dispatch('locker-claims/loadWhere', {
-                    filter: lockerClaimsFilter,
-                }).then(async () => {
-                    let lockerIds = _(store.getters['locker-claims/where']({
-                        filter: lockerClaimsFilter
-                    })).map(claim => claim.locker_id).uniq();
-
-                    console.info('Gonna load next lockers: ' + lockerIds);
-
-                    return Promise.all(lockerIds.map(lockerId => store.dispatch('lockers/loadById', {id: lockerId})));
-                })
             ]);
         },
     }
