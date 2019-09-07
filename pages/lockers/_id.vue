@@ -20,7 +20,8 @@
             <div
               v-if="!claim"
               class="green--text">
-              <v-icon small color="green">check</v-icon> Свободен
+              <v-icon small color="green">check</v-icon>
+              Свободен
             </div>
             <v-progress-linear
               v-else
@@ -47,12 +48,7 @@
         </v-card-text>
 
         <template v-if="display.claims">
-          <v-list-item v-if="claim">
-            <v-list-item-content>
-              <v-list-item-title :title="client.full_name"><nuxt-link :to="{name: 'clients-id', params: {id: client.id}}">{{ client.name }}</nuxt-link></v-list-item-title>
-              <v-list-item-subtitle>{{ $moment(claim.claim_start).format('ll') }} &mdash; {{ $moment(claim.claim_end).format('ll') }}</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
+          <locker-claim-list-item :claim="claim" is-client></locker-claim-list-item>
         </template>
       </v-card>
 
@@ -135,7 +131,7 @@
 
             display() {
                 return {
-                    claims: !this.$store.getters['lockers/isLoading'] && !this.$store.getters['lockers-claims/isLoading'] && !this.loading.claims,
+                    claims: !this.loading.claims,
                 }
             }
         },
@@ -161,7 +157,7 @@
 
                     console.info('Gonna load next clients: ' + clientIds);
 
-                    return Promise.all(clientIds.map(lockerId => this.$store.dispatch('clients/loadById', { id: lockerId }))).then(() => {
+                    return Promise.all(clientIds.map(lockerId => this.$store.dispatch('clients/loadById', {id: lockerId}))).then(() => {
                         this.loading.claims = false;
                     });
                 })
@@ -169,14 +165,13 @@
         },
 
         fetch: ({store, params}) => {
-
             return Promise.all([
                 store.dispatch('lockers/loadById', {
                     id: params.id
                 }).then(async () => {
                     let locker = store.getters['lockers/byId']({id: params.id});
 
-                    return await store.dispatch('halls/loadById', { id: locker.hall_id});
+                    return await store.dispatch('halls/loadById', {id: locker.hall_id});
                 })
             ]);
         },

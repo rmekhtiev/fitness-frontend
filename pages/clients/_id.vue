@@ -18,13 +18,13 @@
             v-if="display.lockers"
             v-for="(claim, index) in lockerClaims">
             <locker-claim-list-item
-              :key="index"
+              :key="'claim' + index"
               :claim="claim">
             </locker-claim-list-item>
 
             <v-divider
               v-if="index + 1 < lockerClaims.length"
-              :key="index"
+              :key="'claim-divider' + index"
             ></v-divider>
           </template>
           <v-card-text
@@ -70,7 +70,7 @@
       </v-tooltip>
     </v-speed-dial>
 
-    <locker-claim-dialog ref="lockerClaimDialog" :client="client"></locker-claim-dialog>
+    <locker-claim-dialog ref="lockerClaimDialog" title="Новая бронь шкафчика" :client="client"></locker-claim-dialog>
   </div>
 </template>
 
@@ -127,7 +127,7 @@
 
             display() {
                 return {
-                    lockers: !this.$store.getters['lockers/isLoading'] && !this.$store.getters['lockers-claims/isLoading'] && !this.loading.lockers,
+                    lockers: !this.loading.lockers,
                 }
             }
         },
@@ -145,7 +145,12 @@
 
         methods: {
             openLockerClaimDialog() {
-                this.$refs.lockerClaimDialog.open().then(() => {
+                this.$refs.lockerClaimDialog.open().then((form) => {
+                    this.$axios.post('locker-claims', form)
+                        .then(async response => {
+                            await this.$store.dispatch('locker-claims/loadById', {id: response.data.data.id});
+                        });
+
                     this.$store.dispatch('locker-claims/loadWhere', {
                         filter: this.lockerFilter
                     });

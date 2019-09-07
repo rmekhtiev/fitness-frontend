@@ -38,6 +38,14 @@
           </template>
 
           <v-list dense flat>
+            <v-list-item @click="updateClaim()" v-if="!past">
+              <v-list-item-icon>
+                <v-icon>mdi-pencil</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content class="pr-6">
+                <v-list-item-title>Редактировать</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
             <v-list-item @click="deleteClaim()">
               <v-list-item-icon>
                 <v-icon>mdi-delete</v-icon>
@@ -51,7 +59,8 @@
       </v-list-item-action>
     </v-list-item>
 
-    <confirm ref="confirm"></confirm>
+    <locker-claim-dialog ref="edit" :claim="claim" title="Редактирование брони шкафчика" is-edit></locker-claim-dialog>
+    <confirm ref="delete"></confirm>
   </div>
 </template>
 
@@ -59,12 +68,14 @@
     import lockerClaim from '../../mixins/locker-claim'
 
     import Confirm from "../Confirm";
+    import LockerClaimDialog from "./LockerClaimDialog";
 
     export default {
         name: "LockerClaimListItem",
 
         components: {
             Confirm,
+            LockerClaimDialog,
         },
 
         mixins: [
@@ -98,13 +109,27 @@
 
         methods: {
             deleteClaim() {
-                this.$refs.confirm.open('Удалить бронь', 'Вы уверены?', { color: 'red' }).then((confirm) => {
-                    if(confirm) {
+                this.$refs.delete.open('Удалить бронь', 'Вы уверены?', {color: 'red'}).then((confirm) => {
+                    if (confirm) {
                         let lockerId = this.claim.locker_id;
+
                         this.$store.dispatch('locker-claims/delete', {id: this.claim.id});
                         this.$store.dispatch('lockers/loadById', {id: lockerId});
+
+                        this.$emit('delete');
                     }
                 })
+            },
+
+            updateClaim() {
+                this.$refs.edit.open().then((form) => {
+                    this.$axios.patch('locker-claims/' + this.claim.id, form)
+                        .then(async response => {
+                            await this.$store.dispatch('locker-claims/loadById', {id: response.data.data.id});
+                        });
+
+                    this.$emit('update');
+                });
             }
         }
     }

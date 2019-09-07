@@ -2,7 +2,7 @@
   <v-form>
     <v-autocomplete
       v-model="value.hall_id"
-      :disabled="isHallAdmin"
+      :disabled="isHallAdmin || isEdit"
       :items="halls"
 
       label="Зал"
@@ -12,6 +12,7 @@
 
     <v-autocomplete
       v-model="value.locker_id"
+      :disabled="isEdit"
       :items="lockers"
 
       label="Шкафчик"
@@ -104,6 +105,11 @@
             lockers: {
                 type: Array,
             },
+
+            isEdit: {
+                type: Boolean,
+                default: false,
+            },
         },
 
         data: () => ({
@@ -131,8 +137,6 @@
                     newVal[index] = item;
                 }
             });
-
-            console.log(newVal);
 
             this.$emit('input', newVal)
         },

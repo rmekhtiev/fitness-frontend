@@ -5,7 +5,7 @@
         <v-btn icon dark @click="cancel()">
           <v-icon>mdi-close</v-icon>
         </v-btn>
-        <v-toolbar-title>Новая бронь шкафчика</v-toolbar-title>
+        <v-toolbar-title>{{ title }}</v-toolbar-title>
         <div class="flex-grow-1"></div>
         <v-toolbar-items>
           <v-btn dark text @click="save">Сохранить</v-btn>
@@ -13,7 +13,7 @@
       </v-toolbar>
 
       <v-card-text>
-        <locker-claim-form v-model="form" :halls="halls" :lockers="lockers"></locker-claim-form>
+        <locker-claim-form v-model="form" :halls="halls" :lockers="lockers" :is-edit="isEdit"></locker-claim-form>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -31,9 +31,23 @@
                 default: true,
             },
 
+            title: {
+                type: String,
+            },
+
             client: {
                 type: Object,
                 required: false,
+            },
+
+            claim: {
+                type: Object,
+                required: false
+            },
+
+            isEdit: {
+                type: Boolean,
+                default: false,
             }
         },
 
@@ -59,7 +73,7 @@
         computed: {
             lockersFilter() {
                 return {
-                    free: true,
+                    free: !this.isEdit,
                     hall_id: this.form.hall_id,
                 }
             },
@@ -90,7 +104,13 @@
         },
 
         created() {
-            this.form.client_id = this.client.id;
+            if(this.client) {
+                this.form.client_id = this.client.id;
+            }
+
+            if(this.claim) {
+                Object.assign(this.form, this.claim);
+            }
         },
 
         methods: {
@@ -104,18 +124,8 @@
             },
 
             save() {
-                this.$axios.post('locker-claims', this.form)
-                    .then(async response => {
-                        console.log(response);
-
-                        await this.$store.dispatch('locker-claims/loadById', {id: response.data.data.id});
-                        let claim = this.$store.getters['locker-claims/byId']({id: response.data.data.id});
-
-                        console.log(claim);
-
-                        this.resolve(response);
-                        this.dialog = false;
-                    })
+                this.resolve(this.form);
+                this.dialog = false;
             },
 
             cancel() {
