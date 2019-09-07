@@ -101,6 +101,7 @@
                 return this.$store.getters['locker-claims/where']({
                     filter: {
                         client_id: this.$route.params.id,
+                        after: this.$moment().format('YYYY-MM-DD')
                     }
                 });
             },
@@ -129,9 +130,12 @@
             }
         },
 
-        fetch: ({store, params}) => {
+        fetch: ({store, params, $moment, ...rest}) => {
+            // console.log(rest);
+
             let lockerClaimsFilter = {
                 client_id: params.id,
+                after: $moment().format('YYYY-MM-DD')
             };
 
             return Promise.all([
@@ -142,7 +146,7 @@
                 store.dispatch('halls/loadAll'),
 
                 store.dispatch('locker-claims/loadWhere', {
-                    filter: lockerClaimsFilter
+                    filter: lockerClaimsFilter,
                 }).then(async () => {
                     let lockerIds = _(store.getters['locker-claims/where']({
                         filter: lockerClaimsFilter
