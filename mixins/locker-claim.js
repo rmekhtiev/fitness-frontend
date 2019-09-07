@@ -12,6 +12,10 @@ export default {
       return this.durationLeft <= 0;
     },
 
+    future() {
+      return this.$moment(this.claim.claim_start).isAfter(this.$moment());
+    },
+
     durationPercent() {
       return 100 - (this.durationLeft / this.duration) * 100;
     }

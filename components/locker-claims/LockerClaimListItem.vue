@@ -14,6 +14,11 @@
         {{ $moment(claim.claim_start).format('ll') }} &mdash; {{ $moment(claim.claim_end).format('ll') }}
       </v-list-item-subtitle>
       <v-list-item-subtitle
+        v-else-if="future"
+        :title="$moment(claim.claim_start).format('ll') + ' - ' + $moment(claim.claim_end).format('ll')">
+        <strong>{{ $moment(this.claim.claim_start).diff($moment(), 'days') }} дней</strong> до начала брони
+      </v-list-item-subtitle>
+      <v-list-item-subtitle
         v-else
         :title="$moment(claim.claim_start).format('ll') + ' - ' + $moment(claim.claim_end).format('ll')">
         <strong>{{ durationLeft }} дней</strong> до окончания брони
