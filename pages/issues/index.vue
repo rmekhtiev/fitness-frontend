@@ -56,16 +56,31 @@
                 </v-card>
             </template>
         </v-data-iterator>
+        <v-btn
+                color="blue"
+                dark
+                absolute
+                bottom
+                right
+                fab
+                class="mb-12"
+                @click.native="openIssueDialog">
+            <v-icon>mdi-plus</v-icon>
+        </v-btn>
+        <issue-dialog ref="issueDialog" title="Проблема"></issue-dialog>
     </div>
 </template>
 
 <script>
+
     import {mapGetters} from 'vuex';
     import IssueListItem from "../../components/issues/IssueListItem";
+    import IssueDialog from "../../components/issues/IssueDialog";
 
     export default {
         name: "index",
         components: {
+            IssueDialog,
             IssueListItem,
         },
 
@@ -73,6 +88,13 @@
             ...mapGetters({
                 issues: 'issues/all',
             }),
+        },
+
+        methods: {
+            openIssueDialog() {
+                this.$refs.issueDialog.open()
+            },
+
         },
 
         fetch({store}) {
