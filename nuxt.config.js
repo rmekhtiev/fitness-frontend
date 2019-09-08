@@ -36,6 +36,7 @@ export default {
   plugins: [
     '@/plugins/reststate-vuex',
     '@/plugins/vuelidate',
+    '@/plugins/vue-the-mask',
   ],
   /*
   ** Nuxt.js dev-modules

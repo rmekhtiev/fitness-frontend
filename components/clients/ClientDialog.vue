@@ -13,17 +13,20 @@
       </v-toolbar>
 
       <v-card-text>
-        <locker-claim-form v-model="form" :halls="$store.getters['halls/all']" :lockers="lockers" :is-edit="isEdit"></locker-claim-form>
+        <client-form v-model="form" :halls="$store.getters['halls/all']" :is-edit="isEdit"></client-form>
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-    import LockerClaimForm from "./LockerClaimForm";
-
+    import ClientForm from "./ClientForm";
     export default {
-        name: "LockerClaimDialog",
+        name: "ClientDialog",
+
+        components: {
+            ClientForm
+        },
 
         props: {
             fullscreen: {
@@ -40,19 +43,10 @@
                 required: false,
             },
 
-            claim: {
-                type: Object,
-                required: false
-            },
-
             isEdit: {
                 type: Boolean,
                 default: false,
-            }
-        },
-
-        components: {
-            LockerClaimForm,
+            },
         },
 
         data: () => ({
@@ -62,50 +56,13 @@
             reject: null,
 
             form: {
-                client_id: null,
-                hall_id: null,
-                locker_id: null,
-                claim_start: null,
-                claim_end: null,
+
             },
         }),
 
-        computed: {
-            lockersFilter() {
-                return {
-                    free: !this.isEdit,
-                    hall_id: this.form.hall_id,
-                }
-            },
-
-            lockers() {
-                return this.$store.getters['lockers/where']({
-                    filter: this.lockersFilter
-                })
-            },
-        },
-
-        watch: {
-            'form.hall_id': function (newVal, oldVal) {
-                this.$store.dispatch('lockers/loadWhere', {
-                    filter: this.lockersFilter
-                });
-            }
-        },
-
-        beforeMount() {
-            return Promise.all([ // todo
-                this.$store.dispatch('halls/loadAll'),
-            ])
-        },
-
         created() {
             if(this.client) {
-                this.form.client_id = this.client.id;
-            }
-
-            if(this.claim) {
-                Object.assign(this.form, this.claim);
+                Object.assign(this.form, this.client);
             }
         },
 
@@ -127,7 +84,7 @@
             cancel() {
                 this.dialog = false;
             }
-        }
+        },
     }
 </script>
 

@@ -6,6 +6,7 @@
       :items="halls"
 
       label="Зал"
+      name="hall_id"
       item-text="title"
       item-value="id">
     </v-autocomplete>
@@ -16,6 +17,7 @@
       :items="lockers"
 
       label="Шкафчик"
+      name="locker_id"
       item-text="number"
       item-value="id">
       <template v-slot:selection="{ item }">
@@ -38,6 +40,7 @@
         <v-text-field
           :value="$moment(value.claim_start).format('ll')"
           label="Начало брони"
+          name="claim_start"
           readonly
           v-on="on"
         ></v-text-field>
@@ -61,6 +64,7 @@
         <v-text-field
           :value="$moment(value.claim_end).format('ll')"
           label="Окончание брони"
+          name="claim_end"
           readonly
           v-on="on"
         ></v-text-field>
