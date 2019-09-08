@@ -173,7 +173,7 @@
                         this.loading.lockers = false;
                     });
                 })
-            }
+            },
         },
 
         async mounted() {
@@ -183,8 +183,6 @@
         },
 
         fetch: ({store, params, $moment, ...rest}) => {
-            // console.log(rest);
-
             let lockerClaimsFilter = {
                 client_id: params.id,
                 after: $moment().format('YYYY-MM-DD')

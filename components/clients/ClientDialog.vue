@@ -38,6 +38,11 @@
                 type: String,
             },
 
+            client: {
+                type: Object,
+                required: false,
+            },
+
             isEdit: {
                 type: Boolean,
                 default: false,
@@ -54,6 +59,12 @@
 
             },
         }),
+
+        created() {
+            if(this.client) {
+                Object.assign(this.form, this.client);
+            }
+        },
 
         methods: {
             open(options) {
