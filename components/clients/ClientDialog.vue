@@ -13,7 +13,7 @@
       </v-toolbar>
 
       <v-card-text>
-        <client-form v-model="form" :is-edit="isEdit"></client-form>
+        <client-form v-model="form" :halls="$store.getters['halls/all']" :is-edit="isEdit"></client-form>
       </v-card-text>
     </v-card>
   </v-dialog>

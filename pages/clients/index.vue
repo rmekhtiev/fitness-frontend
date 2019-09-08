@@ -83,7 +83,13 @@
 
         methods: {
             openCreateDialog() {
-                this.$refs.createDialog.open()
+                this.$refs.createDialog.open().then(form => {
+                    this.$axios.post('clients', form)
+                        .then(async response => {
+                            await this.$store.dispatch('clients/loadById', {id: response.data.data.id});
+                            this.$router.push({name: 'clients-id', params: {id: response.data.data.id}})
+                        });
+                })
             }
         },
 

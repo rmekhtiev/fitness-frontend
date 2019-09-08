@@ -13,7 +13,7 @@
       </v-toolbar>
 
       <v-card-text>
-        <locker-claim-form v-model="form" :halls="halls" :lockers="lockers" :is-edit="isEdit"></locker-claim-form>
+        <locker-claim-form v-model="form" :halls="$store.getters['halls/all']" :lockers="lockers" :is-edit="isEdit"></locker-claim-form>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -82,10 +82,6 @@
                 return this.$store.getters['lockers/where']({
                     filter: this.lockersFilter
                 })
-            },
-
-            halls() {
-                return this.$store.getters['halls/all'];
             },
         },
 

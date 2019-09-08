@@ -1,5 +1,5 @@
 <template>
-  <div :id="'client' + client.id">
+  <div id="client" v-if="client">
     <v-layout row wrap>
       <v-flex xs12 sm6 lg4 xl3>
         <client-info-card
