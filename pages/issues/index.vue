@@ -106,8 +106,8 @@
         fetch({store}) {
             return Promise.all([
                 store.dispatch('issues/loadAll'),
-                store.dispatch('users/loadAll'),
                 store.dispatch('halls/loadAll'),
+                store.dispatch('employees/loadAll'),
             ]);
         },
     }

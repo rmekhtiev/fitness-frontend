@@ -13,7 +13,7 @@
             </v-toolbar>
 
             <v-card-text>
-                <issue-form v-model="form" :halls="halls" :users="users" :is-edit="isEdit"></issue-form>
+                <issue-form v-model="form" :halls="halls" :employees="employees" :is-edit="isEdit"></issue-form>
             </v-card-text>
         </v-card>
     </v-dialog>
@@ -32,8 +32,8 @@
             halls() {
                 return this.$store.getters['halls/all'];
             },
-            users() {
-                return this.$store.getters['users/all'];
+            employees() {
+                return this.$store.getters['employees/all'];
             },
 
         },
@@ -53,11 +53,11 @@
             },
         },
 
-        beforeMount() {
-            return Promise.all([ // todo
-                this.$store.dispatch('halls/loadAll'),
-            ])
-        },
+        // beforeMount() {
+        //     return Promise.all([ // todo
+        //         this.$store.dispatch('halls/loadAll'),
+        //     ])
+        // },
         data: () => ({
             dialog: false,
 
@@ -66,7 +66,7 @@
 
             form: {
                 hall_id: null,
-                user_id: null,
+                employee_id: null,
                 description: null,
                 status: null,
             },

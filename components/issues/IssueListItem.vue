@@ -5,7 +5,7 @@
             <v-flex xs8 md3>
                 <div style="display: flex; width: 100%">
                     <div style="flex: 1 1 0%;" class="text-truncate">
-<!-- todo                       <div class="body-2 text-truncate" :title="user.name">{{user.name}}</div>-->
+                        <div class="body-2 text-truncate" :title="employee.name">{{employee.name}}</div>
                     </div>
                 </div>
             </v-flex>

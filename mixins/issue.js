@@ -1,8 +1,8 @@
 export default {
     computed: {
 
-        user() {
-            return this.$store.getters['users/byId']({id: this.issue.user_id});
+        employee() {
+            return this.$store.getters['employees/byId']({id: this.issue.employee_id});
         },
 
         hall() {

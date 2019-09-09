@@ -10,9 +10,8 @@
                 item-value="id">
         </v-autocomplete>
         <v-autocomplete
-                v-model="value.user_id"
-                :disabled="isHallAdmin"
-                :items="users"
+                v-model="value.employee_id"
+                :items="employees"
 
                 label="Сотрудник"
                 item-text="name"
@@ -38,7 +37,7 @@
             halls: {
                 type: Array,
             },
-            users: {
+            employees: {
                 type: Array,
             },
             description: {
@@ -63,7 +62,7 @@
             defaultForm() {
                 return {
                     hall_id: this.me.associated_employee ? this.me.associated_employee.hall_id : null,
-                    user_id: this.me.id,
+                    employee_id: null,
                     description: null,
                     status: 'pending',
 
