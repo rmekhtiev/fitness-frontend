@@ -1,10 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import createPersistedState from 'vuex-persistedstate'
+
 export default {
   state: () => ({
     selectedHallId: null,
   }),
+
+  plugins: [createPersistedState()],
 
   mutations: {
     SELECT_HALL(state, hallId) {
