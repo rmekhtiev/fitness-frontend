@@ -22,7 +22,7 @@
             <v-flex xs8 md3>
                 <div style="display: flex; width: 100%">
                     <div style="flex: 1 1 0%;" class="text-truncate">
-                        <div class="body-2 text-truncate" :title="issue.status">{{issue.status}}</div>
+                        <div class="body-2 text-truncate" :title="issue.status">{{$t('statuses.all.' + issue.status) }}</div>
                     </div>
                 </div>
             </v-flex>
