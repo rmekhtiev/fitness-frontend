@@ -44,19 +44,21 @@
 </template>
 
 <script>
-    import {mapGetters} from 'vuex';
-    import ClientListItem from '../../components/clients/ClientListItem';
+    import {filter} from 'lodash';
+
     import EmployeeListItem from "../../components/employees/EmployeeListItem";
 
     export default {
         components: {
-          EmployeeListItem,
+            EmployeeListItem,
         },
 
         computed: {
-            ...mapGetters({
-                employees: 'employees/all',
-            }),
+            employees() {
+                return this.$store.getters['selectedHall']
+                    ? filter(this.$store.getters['employees/all'], item => (item.hall_id === this.$store.getters['selectedHallIdForFilter']))
+                    : this.$store.getters['employees/all'];
+            },
         },
 
         fetch({store}) {

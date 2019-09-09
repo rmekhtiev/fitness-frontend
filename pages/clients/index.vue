@@ -65,7 +65,8 @@
 </template>
 
 <script>
-    import {mapGetters} from 'vuex';
+    import { filter } from 'lodash';
+
     import ClientListItem from '../../components/clients/ClientListItem';
     import ClientDialog from "../../components/clients/ClientDialog";
 
@@ -76,9 +77,11 @@
         },
 
         computed: {
-            ...mapGetters({
-                clients: 'clients/all',
-            }),
+            clients() {
+                return this.$store.getters['selectedHall']
+                    ? filter(this.$store.getters['clients/all'], item => (item.primary_hall_id === this.$store.getters['selectedHallIdForFilter']))
+                    : this.$store.getters['clients/all'];
+            },
         },
 
         methods: {
