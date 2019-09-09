@@ -32,11 +32,14 @@
       <template v-slot:default="props">
         <v-card>
           <v-list>
-            <template v-for="item in props.items">
+            <template v-for="(item, index) in props.items">
               <v-list-item :to="{name: 'lockers-id', params: {id: item.id}}">
                 <locker-list-item :locker="item"></locker-list-item>
               </v-list-item>
-              <v-divider></v-divider>
+              <v-divider
+                v-if="index + 1 < props.items.length"
+                :key="index"
+              ></v-divider>
             </template>
           </v-list>
         </v-card>
@@ -46,7 +49,7 @@
 </template>
 
 <script>
-    import {mapGetters} from 'vuex';
+    import { filter } from 'lodash';
     import LockerListItem from "../../components/lockers/LockerListItem";
 
     export default {
@@ -57,9 +60,11 @@
         },
 
         computed: {
-            ...mapGetters({
-                lockers: 'lockers/all',
-            }),
+            lockers() {
+                return this.$store.getters['selectedHall']
+                    ? filter(this.$store.getters['lockers/all'], item => (item.hall_id === this.$store.getters['selectedHallIdForFilter']))
+                    : this.$store.getters['lockers/all'];
+            }
         },
 
         fetch({store}) {
