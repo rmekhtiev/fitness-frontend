@@ -69,8 +69,18 @@
 
         fetch({store}) {
             return Promise.all([
-                store.dispatch('lockers/loadAll'),
-                store.dispatch('clients/loadAll'),
+                store.dispatch('lockers/loadAll').then(async () => {
+                    let clientIds =  store.getters['lockers/all']
+                        .filter(locker => (locker.claim))
+                        .map(locker => (locker.claim.client_id))
+                        .filter((value, index, self) => (self.indexOf(value) === index));
+
+                    return await store.dispatch('clients/loadWhere', {
+                        filter: {
+                            client_id: clientIds,
+                        }
+                    })
+                }),
             ]);
         },
     }
