@@ -1,7 +1,7 @@
 <template>
   <v-form>
     <v-autocomplete
-      v-model="value.hall_id"
+      v-model="value.primary_hall_id"
       :disabled="isHallAdmin || isEdit"
       :items="halls"
 
