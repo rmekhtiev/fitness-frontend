@@ -82,13 +82,13 @@
             v-for="(claim, index) in claims">
             <locker-claim-list-item
               is-client
-              :key="index"
+              :key="'claim' + index"
               :claim="claim">
             </locker-claim-list-item>
 
             <v-divider
               v-if="index + 1 < claims.length"
-              :key="index"
+              :key="'claim-divider' - index"
             ></v-divider>
           </template>
 
