@@ -67,6 +67,8 @@
             form: {
                 hall_id: null,
                 user_id: null,
+                description: null,
+                status: null,
             },
         }),
 

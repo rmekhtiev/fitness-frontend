@@ -92,7 +92,13 @@
 
         methods: {
             openIssueDialog() {
-                this.$refs.issueDialog.open()
+                this.$refs.issueDialog.open().then(form => {
+                    this.$axios.post('issues', form)
+                        .then(async response => {
+                            await this.$store.dispatch('issues/loadById', {id: response.data.data.id});
+                            this.$router.push({name: 'issues', params: {id: response.data.data.id}})
+                        });
+                })
             },
 
         },

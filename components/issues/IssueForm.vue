@@ -11,13 +11,16 @@
         </v-autocomplete>
         <v-autocomplete
                 v-model="value.user_id"
-                :disabled="isHallAdmin || isEdit"
+                :disabled="isHallAdmin"
                 :items="users"
 
                 label="Сотрудник"
                 item-text="name"
                 item-value="id">
         </v-autocomplete>
+        <v-textarea
+                v-model="value.description"
+        ></v-textarea>
     </v-form>
 </template>
 
@@ -38,7 +41,12 @@
             users: {
                 type: Array,
             },
-
+            description: {
+                type: String,
+            },
+            status: {
+                type: String,
+            },
             isEdit: {
                 type: Boolean,
                 default: false,
@@ -55,7 +63,9 @@
             defaultForm() {
                 return {
                     hall_id: this.me.associated_employee ? this.me.associated_employee.hall_id : null,
-                    user_id: this.user_id,
+                    user_id: this.me.id,
+                    description: null,
+                    status: 'pending',
 
                 }
             }
