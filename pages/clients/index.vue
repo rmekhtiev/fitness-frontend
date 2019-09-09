@@ -98,8 +98,8 @@
 
         fetch({store}) {
             return Promise.all([
-                store.dispatch('clients/loadAll'),
                 store.dispatch('halls/loadAll'),
+                store.dispatch('clients/loadAll'),
             ]);
         },
     }
