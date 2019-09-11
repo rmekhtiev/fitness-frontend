@@ -18,6 +18,10 @@ export default ({app, store}) => {
             "created": "Клиент {client} забронировал шкафчик {locker} на {duration}",
           },
 
+          "issues": {
+            "created": "Новая проблема в зале {hall}",
+          },
+
         },
         "statuses": {
           "all": {
