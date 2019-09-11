@@ -4,7 +4,7 @@
             <v-flex xs8 md3>
                 <div style="display: flex; width: 100%">
                     <div style="flex: 1 1 0%;" class="text-truncate">
-                        <div class="body-2 text-truncate" :title="trainer.last_name">{{trainer.last_name}}</div>
+                        <div class="body-2 text-truncate" :title="trainer.name">{{trainer.name}}</div>
                         <div class="caption text-truncate">{{ trainer.associated_employee_id }}</div>
                     </div>
                 </div>
