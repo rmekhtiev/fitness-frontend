@@ -6,7 +6,7 @@
   >
     <v-row justify="space-between" class="mr-0">
       <v-col cols="7">
-        {{ $t('activity.' + activity.subject_type + '.' + activity.description) }}
+        <slot>{{ $t('activity.' + activity.subject_type + '.' + activity.description, {subject: activity.subject}) }}</slot>
       </v-col>
       <v-col class="text-right" cols="5">
         <v-tooltip bottom nudge-left="15">
@@ -30,6 +30,17 @@
                 type: Object,
             }
         },
+
+        computed: {
+            subject() {
+                // return this.activity.subject;
+
+                return this.$store.getters[this.activity.subject_type + '/byId']({
+                    id: this.activity.subject_id
+                })
+            }
+        },
+
     }
 </script>
 

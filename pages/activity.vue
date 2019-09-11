@@ -17,10 +17,9 @@
 
         <component
           v-for="(activity, index) in activitiesGroup"
-          :key="'activity-' + index + '-day-' + days"
           :is="activityComponent(activity.subject_type)"
+          :key="'activity-' + index + '-day-' + days"
           :activity="activity">
-
         </component>
       </template>
     </v-timeline>
@@ -31,6 +30,7 @@
     import _ from 'lodash'
 
     import DefaultActivityItem from "../components/activity/DefaultActivityItem";
+    import LockerClaimActivityItem from "../components/activity/LockerClaimActivityItem";
     import ClientActivityItem from "../components/activity/ClientActivityItem";
 
     function isToday(momentDate, reference) {
@@ -51,7 +51,32 @@
         return !isWithinAWeek(momentDate, reference);
     }
 
+    function loadRelated(activities, type, {store}) {
+        let subjectIds = _(activities).map(activity => activity.subject_id);
+        let subjects = store.getters[type + '/all'].filter(subject => subjectIds.includes(subject.id));
+
+        switch (type) {
+            case 'locker-claims':
+                return Promise.all([
+                    store.dispatch('lockers/loadWhere', {
+                        filter: {
+                            id: _(subjects).map(claim => claim.locker_id).value(),
+                        }
+                    }),
+                    store.dispatch('clients/loadWhere', {
+                        filter: {
+                            id: _(subjects).map(claim => claim.client_id).value(),
+                        }
+                    })
+                ])
+        }
+    }
+
     export default {
+        components: {
+            DefaultActivityItem,
+        },
+
         computed: {
             activities() {
                 return this.$store.getters['selectedHall']
@@ -72,11 +97,11 @@
                 let target = this.$moment().subtract(days, 'd');
                 let today = this.$moment();
 
-                if(isToday(target, today)) {
+                if (isToday(target, today)) {
                     return 'Сегодня';
-                } else if(isYesterday(target, today)) {
+                } else if (isYesterday(target, today)) {
                     return 'Вчера';
-                } else if(isWithinAWeek(target, today)) {
+                } else if (isWithinAWeek(target, today)) {
                     return target.format('dddd');
                 } else {
                     return target.format('ll');
@@ -87,15 +112,31 @@
                 switch (subject) {
                     case 'clients':
                         return ClientActivityItem;
+                    case 'locker-claims':
+                        return LockerClaimActivityItem;
                     default:
                         return DefaultActivityItem;
                 }
             }
         },
 
-        fetch({store}) {
+        fetch(fetch) {
+            let {store, ...rest} = fetch;
+
             return Promise.all([
-                store.dispatch('activities/loadAll'),
+                store.dispatch('activities/loadAll').then(async () => {
+                    let activities = store.getters['activities/all'];
+
+                    let promises = _(activities)
+                        .groupBy('subject_type')
+                        .map(async (activities, type) => await store.dispatch(type + '/loadWhere', {
+                            filter: {
+                                id: _(activities).map(activity => activity.subject_id).value(),
+                            }
+                        }).then(async () => await loadRelated(activities, type, fetch)));
+
+                    return promises.value();
+                }),
             ]);
         },
     }

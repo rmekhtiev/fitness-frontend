@@ -32,10 +32,16 @@
     export default {
         extends: DefaultActivityItem,
 
-        name: "ClientActivityItem",
+        name: "LockerClaimActivityItem",
 
         computed: {
+            client() {
+                return this.$store.getters['clients/byId']({ id: this.subject.client_id })
+            },
 
+            locker() {
+                return this.$store.getters['clients/byId']({ id: this.subject.client_id })
+            }
         }
     }
 </script>

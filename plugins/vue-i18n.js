@@ -11,7 +11,11 @@ export default ({ app, store }) => {
       "ru": {
         "activity": {
           "clients": {
-            "created": "Новый клиент: {action}",
+            "created": "Новый клиент: {client}",
+          },
+
+          "locker-claims": {
+            "created": "Клиент {client} забронировал шкафчик {locker} на {duration}",
           },
 
         },
