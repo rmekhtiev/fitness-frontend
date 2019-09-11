@@ -2,39 +2,26 @@
   <div id="lockers">
     <v-timeline dense clipped>
       <template
-        v-for="(activitiesGroup, index) in groupedActivities">
+        v-for="(activitiesGroup, days) in groupedActivities">
         <v-timeline-item
           class="mb-6"
           hide-dot
         >
           <v-tooltip right>
             <template v-slot:activator="{ on }">
-              <span class="text-uppercase" v-on="on">{{ humanizeDaysDiff(index) }}</span>
+              <span class="text-uppercase" v-on="on">{{ humanizeDaysDiff(days) }}</span>
             </template>
-            <span>{{ $moment().subtract(index, 'd').format('LL') }}</span>
+            <span>{{ $moment().subtract(days, 'd').format('LL') }}</span>
           </v-tooltip>
         </v-timeline-item>
 
-        <v-timeline-item
+        <component
           v-for="(activity, index) in activitiesGroup"
-          class="mb-4"
-          color="primary"
-          small
-        >
-          <v-row justify="space-between" class="mr-0">
-            <v-col cols="7">
-              {{ activity.subject_type + '.' + activity.description }}
-            </v-col>
-            <v-col class="text-right" cols="5">
-              <v-tooltip bottom nudge-left="15">
-                <template v-slot:activator="{ on }">
-                  <span v-on="on">{{ $moment(activity.created_at).format('LT') }}</span>
-                </template>
-                <span>{{ $moment(activity.created_at).format('lll') }}</span>
-              </v-tooltip>
-            </v-col>
-          </v-row>
-        </v-timeline-item>
+          :key="'activity-' + index + '-day-' + days"
+          :is="activityComponent(activity.subject_type)"
+          :activity="activity">
+
+        </component>
       </template>
     </v-timeline>
   </div>
@@ -42,6 +29,9 @@
 
 <script>
     import _ from 'lodash'
+
+    import DefaultActivityItem from "../components/activity/DefaultActivityItem";
+    import ClientActivityItem from "../components/activity/ClientActivityItem";
 
     function isToday(momentDate, reference) {
         let today = reference.clone().startOf('day');
@@ -90,6 +80,15 @@
                     return target.format('dddd');
                 } else {
                     return target.format('ll');
+                }
+            },
+
+            activityComponent(subject) {
+                switch (subject) {
+                    case 'clients':
+                        return ClientActivityItem;
+                    default:
+                        return DefaultActivityItem;
                 }
             }
         },
