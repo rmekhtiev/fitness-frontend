@@ -1,12 +1,14 @@
 <template>
   <v-timeline-item
     class="mb-4"
-    color="grey"
+    :color="color"
     small
   >
     <v-row justify="space-between" class="mr-0">
       <v-col cols="7">
-        <slot>{{ $t('activity.' + activity.subject_type + '.' + activity.description, {subject: activity.subject}) }}</slot>
+        <slot>
+          {{ $t('activity.' + this.activity.subject_type + '.' + this.activity.description, {subject: this.activity.subject}) }}
+        </slot>
       </v-col>
       <v-col class="text-right" cols="5">
         <v-tooltip bottom nudge-left="15">
@@ -21,6 +23,8 @@
 </template>
 
 <script>
+    // import Colorable from 'vuetify/es5/mixins/colorable'
+
     export default {
         name: "DefaultActivityItem",
 
@@ -28,16 +32,23 @@
             activity: {
                 required: true,
                 type: Object,
+            },
+
+            color: {
+                type: String,
+                default: 'primary'
             }
         },
 
         computed: {
             subject() {
-                // return this.activity.subject;
-
                 return this.$store.getters[this.activity.subject_type + '/byId']({
                     id: this.activity.subject_id
                 })
+            },
+
+            slot() {
+                return this.$t('activity.' + this.activity.subject_type + '.' + this.activity.description, {subject: this.activity.subject});
             }
         },
 

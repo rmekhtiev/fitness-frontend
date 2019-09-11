@@ -51,6 +51,16 @@
         return !isWithinAWeek(momentDate, reference);
     }
 
+    function loadSubject(activities, type, fetch) {
+        let {store} = fetch;
+
+        return store.dispatch(type + '/loadWhere', {
+            filter: {
+                id: _(activities).map(activity => activity.subject_id).value(),
+            }
+        }).then(async () => await loadRelated(activities, type, fetch))
+    }
+
     function loadRelated(activities, type, {store}) {
         let subjectIds = _(activities).map(activity => activity.subject_id);
         let subjects = store.getters[type + '/all'].filter(subject => subjectIds.includes(subject.id));
@@ -86,7 +96,6 @@
 
             groupedActivities() {
                 return _(this.activities)
-                    .mapKeys(activity => activity.created_at)
                     .groupBy(activity => this.$moment().diff(this.$moment(activity.created_at), 'day'))
                     .value()
             },
@@ -127,15 +136,10 @@
                 store.dispatch('activities/loadAll').then(async () => {
                     let activities = store.getters['activities/all'];
 
-                    let promises = _(activities)
+                    return await Promise.all(_(activities)
                         .groupBy('subject_type')
-                        .map(async (activities, type) => await store.dispatch(type + '/loadWhere', {
-                            filter: {
-                                id: _(activities).map(activity => activity.subject_id).value(),
-                            }
-                        }).then(async () => await loadRelated(activities, type, fetch)));
-
-                    return promises.value();
+                        .map(async (activities, type) => await loadSubject(activities, type, fetch))
+                        .value());
                 }),
             ]);
         },
