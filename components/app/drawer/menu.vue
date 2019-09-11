@@ -71,6 +71,7 @@
         data: () => ({
             mainActions: [
                 {title: 'Главная', icon: 'mdi-home-outline', to: {name: 'index'}},
+                {title: 'Журнал', icon: 'mdi-calendar-check-outline', to: {name: 'activity'}},
             ],
 
             hallActions: [

@@ -5,7 +5,12 @@
         <div style="display: flex; width: 100%">
           <div style="flex: 1 1 0%;" class="text-truncate">
             <div class="body-2 text-truncate" :title="client.full_name">{{ client.name }}</div>
-            <div class="caption text-truncate" :title="primaryHall.address">{{ primaryHall.title }}</div>
+            <div
+              v-if="primaryHall"
+              class="caption text-truncate"
+              :title="primaryHall.address">
+              {{ primaryHall.title }}
+            </div>
           </div>
         </div>
       </v-flex>
@@ -51,6 +56,12 @@
             client: {
                 type: Object,
                 required: true
+            }
+        },
+
+        computed: {
+            primaryHall() {
+                return this.$store.getters['halls/byId']({id: this.client.primary_hall_id});
             }
         },
 
