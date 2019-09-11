@@ -75,11 +75,11 @@
             ],
 
             hallActions: [
-                {title: 'Клиенты', icon: 'mdi-account-group-outline', to: {name: 'clients'}},
+                {title: 'Клиенты', icon: 'mdi-account-multiple-outline', to: {name: 'clients'}},
                 {title: 'Шкафчики', icon: 'mdi-locker-multiple', to: {name: 'lockers'}},
                 {title: 'Сотрудники', icon: 'mdi-account-badge-horizontal-outline', to: {name: 'employees'}},
                 {title: 'Тренеры', icon: 'mdi-account-star', to: {name: 'trainers'}},
-                {title: 'Группы', icon: 'mdi-account-badge-horizontal-outline', to: {name: 'groups'}},
+                {title: 'Группы', icon: 'mdi-account-group', to: {name: 'groups'}},
                 {title: 'Проблемы', icon: 'mdi-clipboard-alert', to: {name: 'issues'}},
             ],
 
