@@ -24,20 +24,24 @@
         </v-list>
       </v-col>
       <v-col class="d-flex justify-center">
-        <img
-          src="https://raw.githubusercontent.com/zpao/qrcode.react/HEAD/qrcode.png"
-          aspect-ratio="1"
-          height="200"
-          width="200"
-        />
+        <qrcode :value="JSON.stringify({client_id: client.id})"
+                :options="{ width: 200 }"
+                height="200"
+                width="200"></qrcode>
       </v-col>
     </v-row>
   </v-card>
 </template>
 
 <script>
+    import VueQrcode from '@chenfengyuan/vue-qrcode';
+
     export default {
         name: "SubscriptionInfoCard",
+
+        components: {
+            'qrcode': VueQrcode
+        },
 
         props: {
             subscription: {
