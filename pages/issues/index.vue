@@ -17,7 +17,6 @@
         ></v-text-field>
       </v-flex>
 
-
       <v-flex md3 class="hidden-sm-and-down">
         <v-autocomplete
           v-model="filter.employee_id"
@@ -34,6 +33,21 @@
 
           @input="loadFiltered"
         ></v-autocomplete>
+      </v-flex>
+
+      <v-flex md3 class="hidden-sm-and-down">
+        <v-select
+          v-model="filter.status"
+          :items="statuses"
+
+          label="Статус"
+          single-line
+          filled
+
+          clearable
+
+          @input="loadFiltered"
+        ></v-select>
       </v-flex>
     </v-layout>
 
@@ -131,6 +145,14 @@
         mixins: [
             filterable,
         ],
+
+        data: () => ({
+            statuses: [
+                {value: 'pending', text: 'В ожидании'},
+                {value: 'in-work', text: 'Выполняется'},
+                {value: 'ready', text: 'Готово'},
+            ]
+        }),
 
         computed: {
             pureIssues() {
