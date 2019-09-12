@@ -1,5 +1,22 @@
 <template>
   <div id="clients">
+    <v-layout id="filters">
+      <v-flex md3 class="hidden-sm-and-down">
+        <v-text-field
+          v-model="filter.search"
+
+          prepend-inner-icon="search"
+          label="Поиск"
+          single-line
+          filled
+
+          clearable
+
+          @keyup.enter="loadFiltered"
+        ></v-text-field>
+      </v-flex>
+    </v-layout>
+
     <v-data-iterator :items="clients" :items-per-page="15">
       <template v-slot:header>
         <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
@@ -67,6 +84,8 @@
 <script>
     import { filter } from 'lodash';
 
+    import filterable from "../../mixins/filterable";
+
     import ClientListItem from '../../components/clients/ClientListItem';
     import ClientDialog from "../../components/clients/ClientDialog";
 
@@ -76,11 +95,19 @@
             ClientListItem,
         },
 
+        mixins: [
+            filterable,
+        ],
+
         computed: {
+            pureClients() {
+                return _(this.pureFilter).isEmpty() ? this.$store.getters['clients/all'] : this.$store.getters['clients/where']({filter: this.pureFilter})
+            },
+
             clients() {
                 return this.$store.getters['selectedHall']
-                    ? filter(this.$store.getters['clients/all'], item => (item.primary_hall_id === this.$store.getters['selectedHallIdForFilter']))
-                    : this.$store.getters['clients/all'];
+                    ? filter(this.pureClients, item => (item.primary_hall_id === this.$store.getters['selectedHallIdForFilter']))
+                    : this.pureClients;
             },
         },
 
@@ -93,7 +120,11 @@
                             this.$router.push({name: 'clients-id', params: {id: response.data.data.id}})
                         });
                 })
-            }
+            },
+
+            loadFiltered() {
+                this.$store.dispatch('clients/loadWhere', {filter: this.pureFilter});
+            },
         },
 
         fetch({store}) {
