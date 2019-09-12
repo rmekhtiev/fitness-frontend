@@ -103,9 +103,14 @@
       <template v-slot:default="props">
         <v-card>
           <v-list>
-            <template v-for="item in props.items">
-              <issue-list-item :issue="item"></issue-list-item>
-              <v-divider></v-divider>
+            <template v-for="(item, index) in props.items">
+              <v-list-item :to="{name: 'issues-id', params: {id: item.id}}">
+                <issue-list-item :issue="item"></issue-list-item>
+              </v-list-item>
+              <v-divider
+                v-if="index + 1 < props.items.length"
+                :key="index"
+              ></v-divider>
             </template>
           </v-list>
         </v-card>
