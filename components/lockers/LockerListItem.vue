@@ -44,7 +44,7 @@
     import lockerClaim from "../../mixins/locker-claim";
 
     export default {
-        name: "hall-list-item",
+        name: "LockerListItem",
 
         mixins: [
             locker,

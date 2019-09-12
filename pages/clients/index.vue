@@ -1,5 +1,22 @@
 <template>
   <div id="clients">
+    <v-layout id="filters">
+      <v-flex md3 class="hidden-sm-and-down">
+        <v-text-field
+          v-model="filter.search"
+
+          prepend-inner-icon="search"
+          label="Поиск"
+          single-line
+          filled
+
+          clearable
+
+          @keyup.enter="loadFiltered"
+        ></v-text-field>
+      </v-flex>
+    </v-layout>
+
     <v-data-iterator :items="clients" :items-per-page="15">
       <template v-slot:header>
         <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
@@ -65,7 +82,10 @@
 </template>
 
 <script>
-    import { filter } from 'lodash';
+    import {filter} from 'lodash';
+
+    import filterable from "../../mixins/filterable";
+    import selectedHallAware from "../../mixins/selectedHallAware";
 
     import ClientListItem from '../../components/clients/ClientListItem';
     import ClientDialog from "../../components/clients/ClientDialog";
@@ -76,12 +96,30 @@
             ClientListItem,
         },
 
+        mixins: [
+            filterable,
+            selectedHallAware,
+        ],
+
         computed: {
-            clients() {
-                return this.$store.getters['selectedHall']
-                    ? filter(this.$store.getters['clients/all'], item => (item.primary_hall_id === this.$store.getters['selectedHallIdForFilter']))
-                    : this.$store.getters['clients/all'];
+            pureClients() {
+                return this.$store.getters['clients/where']({
+                    filter: {
+                        primary_hall_id: this.$store.getters['selectedHallIdForFilter'],
+                        ...this.pureFilter,
+                    }
+                })
             },
+
+            clients() {
+                return this.pureClients.filter(this.selectedHallFilter);
+            },
+        },
+
+        watch: {
+            selectedHallId() {
+                this.loadFiltered();
+            }
         },
 
         methods: {
@@ -93,13 +131,32 @@
                             this.$router.push({name: 'clients-id', params: {id: response.data.data.id}})
                         });
                 })
+            },
+
+            loadFiltered() {
+                return this.$store.dispatch('clients/loadWhere', {
+                    filter: {
+                        primary_hall_id: this.$store.getters['selectedHallIdForFilter'],
+                        ...this.pureFilter,
+                    }
+                });
+            },
+
+            selectedHallFilter(item) {
+                return this.selectedHallId === null ? true : item.primary_hall_id === this.selectedHallId;
             }
+        },
+
+        async beforeMount() {
+            await this.loadFiltered();
         },
 
         fetch({store}) {
             return Promise.all([
                 store.dispatch('halls/loadAll'),
-                store.dispatch('clients/loadAll'),
+                // store.dispatch('clients/loadWhere', {
+                //
+                // }),
             ]);
         },
     }

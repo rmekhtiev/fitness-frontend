@@ -1,5 +1,22 @@
 <template>
   <div id="lockers">
+    <v-layout id="filters">
+      <v-flex md3 class="hidden-sm-and-down">
+        <v-select
+          v-model="filter.free"
+          :items="statuses"
+
+          label="Статус"
+          single-line
+          filled
+
+          clearable
+
+          @input="loadFiltered"
+        ></v-select>
+      </v-flex>
+    </v-layout>
+
     <v-data-iterator :items="lockers" :items-per-page="50">
       <template v-slot:header>
         <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
@@ -49,7 +66,10 @@
 </template>
 
 <script>
-    import { filter } from 'lodash';
+    import {filter} from 'lodash';
+
+    import filterable from "../../mixins/filterable";
+
     import LockerListItem from "../../components/lockers/LockerListItem";
 
     export default {
@@ -59,18 +79,39 @@
             LockerListItem,
         },
 
+        mixins: [
+            filterable,
+        ],
+
+        data: () => ({
+            statuses: [
+                {value: 'true', text: 'Свободен'},
+                {value: 'false', text: 'Занят'},
+            ]
+        }),
+
         computed: {
+            pureLockers() {
+                return _(this.pureFilter).isEmpty() ? this.$store.getters['lockers/all'] : this.$store.getters['lockers/where']({filter: this.pureFilter})
+            },
+
             lockers() {
                 return this.$store.getters['selectedHall']
-                    ? filter(this.$store.getters['lockers/all'], item => (item.hall_id === this.$store.getters['selectedHallIdForFilter']))
-                    : this.$store.getters['lockers/all'];
+                    ? filter(this.pureLockers, item => (item.hall_id === this.$store.getters['selectedHallIdForFilter']))
+                    : this.pureLockers;
             }
+        },
+
+        methods: {
+            loadFiltered() {
+                this.$store.dispatch('lockers/loadWhere', {filter: this.pureFilter});
+            },
         },
 
         fetch({store}) {
             return Promise.all([
                 store.dispatch('lockers/loadAll').then(async () => {
-                    let clientIds =  store.getters['lockers/all']
+                    let clientIds = store.getters['lockers/all']
                         .filter(locker => (locker.claim))
                         .map(locker => (locker.claim.client_id))
                         .filter((value, index, self) => (self.indexOf(value) === index));
