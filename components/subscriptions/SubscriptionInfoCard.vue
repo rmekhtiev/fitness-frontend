@@ -4,7 +4,7 @@
       <div class="overline">Абонемент</div>
     </v-card-text>
 
-    <v-row>
+    <v-row id="subscription-contents">
       <v-col>
         <v-list two-line>
           <v-list-item>
@@ -30,6 +30,11 @@
                 width="200"></qrcode>
       </v-col>
     </v-row>
+
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn text color="primary" @click="print">Печать</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -53,6 +58,21 @@
                 required: true,
                 type: Object,
             },
+        },
+
+        methods: {
+            print() {
+                this.$axios.get('/clients/' + this.client.id + '/print').then(response => {
+                    let print = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+                    print.document.write(response.data);
+
+                    print.document.close();
+                    print.focus();
+                    print.print();
+                });
+
+                // this.$htmlToPaper('subscription-contents');
+            }
         }
     }
 </script>
