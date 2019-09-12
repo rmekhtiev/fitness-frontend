@@ -24,7 +24,7 @@
               height="18"
             >
               <template v-slot="{ value }">
-                <span class="caption">12 дней</span>
+                <span class="caption">{{untilDay}}</span>
               </template>
             </v-progress-linear>
           </div>
@@ -62,7 +62,22 @@
         computed: {
             primaryHall() {
                 return this.$store.getters['halls/byId']({id: this.client.primary_hall_id});
+            },
+            activeSubscription() {
+              return this.$store.getters['subscriptions/byId']({id: this.client.active_subscription.id});
+            },
+          untilDay() {
+            let date = this.$moment.utc(this.activeSubscription.valid_till);
+            let now = this.$moment().local();
+            if (Math.abs(date.diff(now, 'days')) < 2) {
+              if (date.dayOfYear() == now.dayOfYear()) {
+                return 'Сегодня'
+              } else if (date.dayOfYear() == now.dayOfYear() - 1) {
+                return 'Вчера'
+              }
             }
+            return date.format('DD MMM')
+          },
         },
 
         mixins: [

@@ -100,6 +100,7 @@
             return Promise.all([
                 store.dispatch('halls/loadAll'),
                 store.dispatch('clients/loadAll'),
+                store.dispatch('subscriptions/loadAll'),
             ]);
         },
     }

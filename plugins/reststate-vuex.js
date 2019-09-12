@@ -9,4 +9,5 @@ export default function ({$axios, store}, injext) {
   store.registerModule('lockers', resourceModule({name: 'lockers', httpClient: $axios}));
   store.registerModule('locker-claims', resourceModule({name: 'locker-claims', httpClient: $axios}));
   store.registerModule('issues', resourceModule({name: 'issues', httpClient: $axios}));
+  store.registerModule('subscriptions', resourceModule({name: 'subscriptions', httpClient: $axios}));
 }
