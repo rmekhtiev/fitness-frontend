@@ -1,7 +1,6 @@
 <template>
   <div id="issues">
-    <v-layout>
-
+    <v-layout id="filters">
       <v-flex xs12 md3>
         <v-text-field
           v-model="filter.topic"
