@@ -19,7 +19,7 @@ export default ({app, store}) => {
           },
 
           "issues": {
-            "created": "Новая проблема в зале {hall}",
+            "created": "Новая проблема в зале {hall}: {issue}",
           },
 
         },
