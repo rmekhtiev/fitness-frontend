@@ -115,10 +115,12 @@
                 return this.pureClients.filter(this.selectedHallFilter);
             },
         },
-        //
-        // watch() {
-        //
-        // }
+
+        watch: {
+            selectedHallId() {
+                this.loadFiltered();
+            }
+        },
 
         methods: {
             openCreateDialog() {
