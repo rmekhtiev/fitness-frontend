@@ -75,11 +75,11 @@
                         .map(locker => (locker.claim.client_id))
                         .filter((value, index, self) => (self.indexOf(value) === index));
 
-                    return await store.dispatch('clients/loadWhere', {
+                    return store.dispatch('clients/loadWhere', {
                         filter: {
                             client_id: clientIds,
                         }
-                    })
+                    });
                 }),
             ]);
         },

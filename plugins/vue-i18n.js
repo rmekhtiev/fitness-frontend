@@ -3,7 +3,7 @@ import VueI18n from 'vue-i18n'
 
 Vue.use(VueI18n);
 
-export default ({ app, store }) => {
+export default ({app, store}) => {
   app.i18n = new VueI18n({
     locale: 'ru',
     fallbackLocale: 'en',
@@ -18,6 +18,17 @@ export default ({ app, store }) => {
             "created": "Клиент {client} забронировал шкафчик {locker} на {duration}",
           },
 
+          "issues": {
+            "created": "Новая проблема в зале {hall}: {issue}",
+          },
+
+        },
+        "statuses": {
+          "all": {
+            "pending": "В ожидании",
+            "in-work": "Выполняется",
+            "ready": "Готово",
+          },
         },
       },
     },

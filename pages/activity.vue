@@ -32,6 +32,7 @@
     import DefaultActivityItem from "../components/activity/DefaultActivityItem";
     import LockerClaimActivityItem from "../components/activity/LockerClaimActivityItem";
     import ClientActivityItem from "../components/activity/ClientActivityItem";
+    import IssueActivityItem from "../components/activity/IssueActivityItem";
 
     function isToday(momentDate, reference) {
         let today = reference.clone().startOf('day');
@@ -123,6 +124,8 @@
                         return ClientActivityItem;
                     case 'locker-claims':
                         return LockerClaimActivityItem;
+                    case 'issues':
+                        return IssueActivityItem;
                     default:
                         return DefaultActivityItem;
                 }
@@ -133,6 +136,7 @@
             let {store, ...rest} = fetch;
 
             return Promise.all([
+                store.dispatch('halls/loadAll'),
                 store.dispatch('activities/loadAll').then(async () => {
                     let activities = store.getters['activities/all'];
 

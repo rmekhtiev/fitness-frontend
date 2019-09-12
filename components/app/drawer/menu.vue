@@ -78,6 +78,7 @@
                 {title: 'Клиенты', icon: 'mdi-account-group-outline', to: {name: 'clients'}},
                 {title: 'Шкафчики', icon: 'mdi-locker-multiple', to: {name: 'lockers'}},
                 {title: 'Сотрудники', icon: 'mdi-account-badge-horizontal-outline', to: {name: 'employees'}},
+                {title: 'Проблемы', icon: 'mdi-clipboard-alert', to: {name: 'issues'}},
             ],
 
             adminActions: [
