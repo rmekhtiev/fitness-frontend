@@ -27,8 +27,12 @@
             </div>
           </v-flex>
 
-          <v-flex xs8 md3>
-
+          <v-flex xs8 md6>
+            <div style="display: flex; width: 100%">
+              <div style="flex: 1 1 0%;" class="overline text-truncate">
+                Проблема
+              </div>
+            </div>
           </v-flex>
 
           <v-flex xs8 md3>
