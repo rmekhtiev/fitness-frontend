@@ -82,9 +82,10 @@
 </template>
 
 <script>
-    import { filter } from 'lodash';
+    import {filter} from 'lodash';
 
     import filterable from "../../mixins/filterable";
+    import selectedHallAware from "../../mixins/selectedHallAware";
 
     import ClientListItem from '../../components/clients/ClientListItem';
     import ClientDialog from "../../components/clients/ClientDialog";
@@ -97,19 +98,27 @@
 
         mixins: [
             filterable,
+            selectedHallAware,
         ],
 
         computed: {
             pureClients() {
-                return _(this.pureFilter).isEmpty() ? this.$store.getters['clients/all'] : this.$store.getters['clients/where']({filter: this.pureFilter})
+                return this.$store.getters['clients/where']({
+                    filter: {
+                        primary_hall_id: this.$store.getters['selectedHallIdForFilter'],
+                        ...this.pureFilter,
+                    }
+                })
             },
 
             clients() {
-                return this.$store.getters['selectedHall']
-                    ? filter(this.pureClients, item => (item.primary_hall_id === this.$store.getters['selectedHallIdForFilter']))
-                    : this.pureClients;
+                return this.pureClients.filter(this.selectedHallFilter);
             },
         },
+        //
+        // watch() {
+        //
+        // }
 
         methods: {
             openCreateDialog() {
@@ -123,14 +132,29 @@
             },
 
             loadFiltered() {
-                this.$store.dispatch('clients/loadWhere', {filter: this.pureFilter});
+                return this.$store.dispatch('clients/loadWhere', {
+                    filter: {
+                        primary_hall_id: this.$store.getters['selectedHallIdForFilter'],
+                        ...this.pureFilter,
+                    }
+                });
             },
+
+            selectedHallFilter(item) {
+                return this.selectedHallId === null ? true : item.primary_hall_id === this.selectedHallId;
+            }
+        },
+
+        async beforeMount() {
+            await this.loadFiltered();
         },
 
         fetch({store}) {
             return Promise.all([
                 store.dispatch('halls/loadAll'),
-                store.dispatch('clients/loadAll'),
+                // store.dispatch('clients/loadWhere', {
+                //
+                // }),
             ]);
         },
     }
