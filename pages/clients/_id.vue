@@ -6,6 +6,11 @@
           :client="client"
           class="mb-2 mx-auto">
         </client-info-card>
+        <subscription-info-card
+          :subscription="subscription"
+          :client="client"
+          class="mb-2 mx-auto">
+        </subscription-info-card>
       </v-flex>
 
       <v-flex xs12 sm6 lg4 xl3>
@@ -78,13 +83,18 @@
     import _ from 'lodash'
 
     import client from "../../mixins/client";
+
     import ClientInfoCard from "../../components/clients/ClientInfoCard";
+
+    import SubscriptionInfoCard from "../../components/subscriptions/SubscriptionInfoCard";
+
     import LockerClaimListItem from "../../components/locker-claims/LockerClaimListItem";
     import LockerClaimDialog from "../../components/locker-claims/LockerClaimDialog";
 
     export default {
         components: {
             ClientInfoCard,
+            SubscriptionInfoCard,
             LockerClaimListItem,
             LockerClaimDialog,
         },
@@ -100,6 +110,12 @@
 
             dialogs: {
                 lockerClaim: false,
+            },
+
+            subscription: { // todo: make computed from vuex
+                id: '0defe181-4b8c-4273-85cf-1454e414a7fa',
+                issue_date: '2019-09-08',
+                valid_till: '2019-09-22',
             },
 
             loading: {
