@@ -17,8 +17,17 @@
                 item-text="name"
                 item-value="id">
         </v-autocomplete>
+        <v-text-field
+                v-model="value.topic"
+
+                label="Тема"
+                placeholder="Напр.: Сломался тренажер"
+        ></v-text-field>
         <v-textarea
                 v-model="value.description"
+
+                label="Описание проблемы"
+                placeholder="Подробное описание проблемы"
         ></v-textarea>
     </v-form>
 </template>
@@ -61,11 +70,11 @@
         computed: {
             defaultForm() {
                 return {
-                    hall_id: this.me.associated_employee ? this.me.associated_employee.hall_id : null,
-                    employee_id: null,
+                    hall_id: this.$store.getters['selectedHallId'] ? this.$store.getters['selectedHallId'] : null,
+                    employee_id: this.me.associated_employee ? this.me.associated_employee.id : null,
+                    topic: null,
                     description: null,
                     status: 'pending',
-
                 }
             }
         },
@@ -74,7 +83,7 @@
             let newVal = { ...this.value };
 
             _(this.defaultForm).each((item, index) => {
-                if(!this.value[index] || this.value[index] === null) {
+                if(!this.value[index]) {
                     newVal[index] = item;
                 }
             });
