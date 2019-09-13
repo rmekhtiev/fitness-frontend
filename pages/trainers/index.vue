@@ -20,7 +20,11 @@
                     </v-flex>
 
                     <v-flex md3>
-
+                        <div style="display: flex; width: 100%">
+                            <div style="flex: 1 1 0%;" class="overline text-truncate">
+                                Номер телефона
+                            </div>
+                        </div>
                     </v-flex>
 
                     <v-flex md3>
@@ -65,7 +69,7 @@
 
         components:{
          TrainerListItem,
-            TrainerDialog,
+         TrainerDialog,
         },
 
         computed: {
