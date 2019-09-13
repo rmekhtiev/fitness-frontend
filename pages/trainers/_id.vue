@@ -4,7 +4,6 @@
             <v-flex xs12 sm6 lg4 xl3>
                 <trainer-info-card
                         :trainer="trainer"
-                        :associatedEmployees="associatedEmployee"
                         class="mb-2 mx-auto">
                 </trainer-info-card>
             </v-flex>
@@ -31,6 +30,8 @@
         fetch({store,params}) {
             return Promise.all([
                 store.dispatch('trainers/loadById',{id:params.id}),
+                store.dispatch('halls/loadAll'),
+
             ]);
         },
     }
