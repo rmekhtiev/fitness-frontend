@@ -1,5 +1,5 @@
 <template>
-  <div id="lockers">
+  <div id="lockers" v-infinite-scroll="loadMore">
     <v-timeline dense clipped>
       <template
         v-for="(activitiesGroup, days) in groupedActivities">
@@ -29,6 +29,8 @@
 <script>
     import _ from 'lodash'
 
+    import infiniteScroll from 'vue-infinite-scroll'
+
     import DefaultActivityItem from "../components/activity/DefaultActivityItem";
     import LockerClaimActivityItem from "../components/activity/LockerClaimActivityItem";
     import ClientActivityItem from "../components/activity/ClientActivityItem";
@@ -52,17 +54,17 @@
         return !isWithinAWeek(momentDate, reference);
     }
 
-    function loadSubject(activities, type, fetch) {
-        let {store} = fetch;
+    function loadSubject(activities, type, store) {
+        let chunks = _(activities).chunk(25);
 
-        return store.dispatch(type + '/loadWhere', {
+        return Promise.all(chunks.map(chunk => store.dispatch(type + '/loadWhere', {
             filter: {
-                id: _(activities).map(activity => activity.subject_id).value(),
+                id: _(chunk).map(activity => activity.subject_id).value(),
             }
-        }).then(async () => await loadRelated(activities, type, fetch))
+        }).then(async () => await loadRelated(chunk, type, store))).value());
     }
 
-    function loadRelated(activities, type, {store}) {
+    function loadRelated(activities, type, store) {
         let subjectIds = _(activities).map(activity => activity.subject_id);
         let subjects = store.getters[type + '/all'].filter(subject => subjectIds.includes(subject.id));
 
@@ -84,6 +86,10 @@
     }
 
     export default {
+        directives: {
+            infiniteScroll,
+        },
+
         components: {
             DefaultActivityItem,
         },
@@ -97,7 +103,7 @@
 
             groupedActivities() {
                 return _(this.activities)
-                    .groupBy(activity => this.$moment().diff(this.$moment(activity.created_at), 'day'))
+                    .groupBy(activity => this.$moment().diff(this.$moment(activity.created_at).startOf('day'), 'day'))
                     .value()
             },
         },
@@ -129,20 +135,33 @@
                     default:
                         return DefaultActivityItem;
                 }
+            },
+
+            loadMore() {
+                return this.$store.dispatch('activities/loadNextPage').then(async () => {
+                    let activities = this.$store.getters['activities/page'];
+
+                    return await Promise.all(_(activities)
+                        .groupBy('subject_type')
+                        .map(async (activities, type) => await loadSubject(activities, type, this.$store))
+                        .value());
+                });
             }
         },
 
-        fetch(fetch) {
-            let {store, ...rest} = fetch;
-
+        fetch({store}) {
             return Promise.all([
                 store.dispatch('halls/loadAll'),
-                store.dispatch('activities/loadAll').then(async () => {
+                store.dispatch('activities/loadPage', {
+                    options: {
+                        page: 1
+                    }
+                }).then(async () => {
                     let activities = store.getters['activities/all'];
 
                     return await Promise.all(_(activities)
                         .groupBy('subject_type')
-                        .map(async (activities, type) => await loadSubject(activities, type, fetch))
+                        .map(async (activities, type) => await loadSubject(activities, type, store))
                         .value());
                 }),
             ]);

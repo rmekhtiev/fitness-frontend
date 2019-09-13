@@ -33,7 +33,7 @@ export default {
     },
 
     selectedHallIdForFilter(state) {
-      return state.selectedHallId === null ? '*' : state.selectedHallId;
+      return state.selectedHallId;
     }
   }
 }
