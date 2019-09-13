@@ -64,10 +64,7 @@
               return this.$store.getters['subscriptions/byId']({id: this.client.active_subscription.id});
             },
 
-            // noSubscription () {
-            //   let sub = this.client.active_subscription;
-            //   console.log(sub);
-            // },
+
 
             daysTill() {
               let date = this.$moment.utc(this.activeSubscription.valid_till);
