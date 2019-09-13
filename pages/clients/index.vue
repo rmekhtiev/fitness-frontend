@@ -102,12 +102,16 @@
         ],
 
         computed: {
+            pureFilter: function () {
+                return _({
+                    primary_hall_id: this.selectedHallId,
+                    ...this.filter
+                }).omitBy(_.isNull).omitBy(_.isUndefined).value();
+            },
+
             pureClients() {
                 return this.$store.getters['clients/where']({
-                    filter: {
-                        primary_hall_id: this.$store.getters['selectedHallIdForFilter'],
-                        ...this.pureFilter,
-                    }
+                    filter: this.pureFilter
                 })
             },
 
@@ -135,10 +139,7 @@
 
             loadFiltered() {
                 return this.$store.dispatch('clients/loadWhere', {
-                    filter: {
-                        primary_hall_id: this.$store.getters['selectedHallIdForFilter'],
-                        ...this.pureFilter,
-                    }
+                    filter: this.pureFilter
                 });
             },
 
