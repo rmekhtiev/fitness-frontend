@@ -40,18 +40,32 @@
                 </v-card>
             </template>
         </v-data-iterator>
+        <v-btn
+                color="blue"
+                dark
+                absolute
+                bottom
+                right
+                fab
+                class="mb-12"
+                @click.native="openTrainerDialog">
+            <v-icon>mdi-plus</v-icon>
+        </v-btn>
+        <trainer-dialog ref="trainerDialog" title="Создать тренера"></trainer-dialog>
     </div>
 </template>
 
 <script>
     import {filter} from 'lodash';
     import TrainerListItem from "../../components/trainers/TrainerListItem";
+    import TrainerDialog from "../../components/trainers/TrainerDialog";
 
     export default {
         name: "index",
 
         components:{
          TrainerListItem,
+            TrainerDialog,
         },
 
         computed: {
@@ -60,13 +74,19 @@
                     ? filter(this.$store.getters['trainers/all'], item => (item.hall_id === this.$store.getters['selectedHallIdForFilter']))
                     : this.$store.getters['trainers/all'];
             },
+
+        },
+        methods: {
+            openTrainerDialog() {
+                this.$refs.trainerDialog.open();
+            },
         },
 
         fetch({store}) {
             return Promise.all([
                 store.dispatch('trainers/loadAll'),
-                store.dispatch('halls/loadAll'),
                 store.dispatch('employees/loadAll'),
+                store.dispatch('halls/loadAll'),
             ]);
         },
     }
