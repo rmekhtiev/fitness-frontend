@@ -18,6 +18,16 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
 
       <v-toolbar-title v-text="title"/>
+
+      <div class="flex-grow-1"></div>
+
+      <v-btn icon>
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
+
+      <v-btn icon>
+        <v-icon>mdi-qrcode-scan</v-icon>
+      </v-btn>
     </v-app-bar>
     <v-content>
       <v-container grid-list-md>
