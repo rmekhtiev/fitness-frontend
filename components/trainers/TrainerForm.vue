@@ -1,11 +1,17 @@
 <template>
     <v-form>
-        <v-autocomplete>
+        <v-autocomplete
+                v-model="value.associated_employee_id"
+                :items="associatedEmployees"
+
+                label="Сотрудник"
+                item-text="name"
+                item-value="id">
         </v-autocomplete>
-        <v-autocomplete>
-        </v-autocomplete>
-        <v-text-field></v-text-field>
-        <v-textarea></v-textarea>
+        <v-text-field
+                v-model="value.phone_number"
+                label="Номер телефона"
+        ></v-text-field>
     </v-form>
 </template>
 
@@ -19,7 +25,9 @@
                 type: Object,
                 default: {}
             },
-            
+            associatedEmployees: {
+                type: Array,
+            },
 
             isEdit: {
                 type: Boolean,
@@ -36,7 +44,8 @@
         computed: {
             defaultForm() {
                 return {
-
+                    phone_number: null,
+                    associated_employee_id: null,
                 }
             }
         },

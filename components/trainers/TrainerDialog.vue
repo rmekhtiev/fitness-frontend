@@ -12,7 +12,7 @@
                 </v-toolbar-items>
             </v-toolbar>
             <v-card-text>
-                <trainer-form v-model="form" :is-edit="isEdit"></trainer-form>
+                <trainer-form v-model="form" :is-edit="isEdit" :associatedEmployees="associatedEmployees" ></trainer-form>
             </v-card-text>
         </v-card>
     </v-dialog>
@@ -31,7 +31,7 @@
             halls() {
                 return this.$store.getters['halls/all'];
             },
-            employees() {
+            associatedEmployees() {
                 return this.$store.getters['employees/all'];
             },
         },
@@ -55,6 +55,11 @@
 
             resolve: null,
             reject: null,
+
+            form: {
+                phone_number: null,
+                associated_employee_id: null,
+            },
         }),
 
         methods: {

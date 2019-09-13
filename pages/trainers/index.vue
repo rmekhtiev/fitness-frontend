@@ -78,7 +78,13 @@
         },
         methods: {
             openTrainerDialog() {
-                this.$refs.trainerDialog.open();
+                this.$refs.trainerDialog.open().then(form => {
+                    this.$axios.post('trainers', form)
+                        .then(async response => {
+                            await this.$store.dispatch('trainers/loadById', {id: response.data.data.id});
+                            this.$router.push({name: 'trainers', params: {id: response.data.data.id}})
+                        });
+                });
             },
         },
 
