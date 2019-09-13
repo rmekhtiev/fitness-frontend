@@ -37,7 +37,7 @@
                 <v-card>
                     <v-list>
                         <template v-for="item in props.items">
-                            <trainer-list-item :trainer="item"></trainer-list-item>
+                                <trainer-list-item :trainer="item" ></trainer-list-item>
                             <v-divider></v-divider>
                         </template>
                     </v-list>
