@@ -2,7 +2,9 @@
     <v-form>
         <v-autocomplete
                 v-model="value.associated_employee_id"
-                :items="associatedEmployees"
+                :items="employees"
+
+                :disabled="isEdit"
 
                 label="Сотрудник"
                 prepend-icon="mdi-account-badge-horizontal-outline"
@@ -35,7 +37,8 @@
                 type: Object,
                 default: {}
             },
-            associatedEmployees: {
+
+            employees: {
                 type: Array,
             },
 

@@ -12,7 +12,7 @@
                 </v-toolbar-items>
             </v-toolbar>
             <v-card-text>
-                <trainer-form v-model="form" :is-edit="isEdit" :associatedEmployees="associatedEmployees" ></trainer-form>
+                <trainer-form v-model="form" :is-edit="isEdit" :employees="employees"></trainer-form>
             </v-card-text>
         </v-card>
     </v-dialog>
@@ -20,6 +20,7 @@
 
 <script>
     import TrainerForm from "./TrainerForm";
+
     export default {
         name: "TrainerDialog",
 
@@ -31,7 +32,7 @@
             halls() {
                 return this.$store.getters['halls/all'];
             },
-            associatedEmployees() {
+            employees() {
                 return this.$store.getters['employees/all'];
             },
         },
@@ -43,6 +44,11 @@
 
             title: {
                 type: String,
+            },
+
+            trainer: {
+                type: Object,
+                required: false,
             },
 
             isEdit: {
@@ -61,6 +67,14 @@
                 associated_employee_id: null,
             },
         }),
+
+        created() {
+            console.log(this.trainer);
+
+            if(this.trainer) {
+                Object.assign(this.form, this.trainer);
+            }
+        },
 
         methods: {
             open(options) {
