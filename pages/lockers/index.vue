@@ -1,7 +1,7 @@
 <template>
   <div id="lockers">
     <v-layout id="filters">
-      <v-flex md3 class="hidden-sm-and-down">
+      <v-flex xs12 sm6 md3>
         <v-select
           v-model="filter.free"
           :items="statuses"
