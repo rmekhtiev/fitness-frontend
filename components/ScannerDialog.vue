@@ -15,6 +15,15 @@
       <v-card-text>
         <qrcode-stream v-if="dialog" @init="onInit" @detect="onDetect"></qrcode-stream>
       </v-card-text>
+
+      <template v-if="client_id">
+        <client-info-card v-if="client" :client="client" link class="mx-4">
+        </client-info-card>
+
+        <v-card-text v-else>
+          Клиент не найден
+        </v-card-text>
+      </template>
     </v-card>
   </v-dialog>
 </template>
@@ -22,12 +31,21 @@
 <script>
     import {QrcodeStream, QrcodeDropZone, QrcodeCapture} from 'vue-qrcode-reader'
 
+    import client from "../mixins/client";
+
+    import ClientInfoCard from "./clients/ClientInfoCard";
+
     export default {
         name: "LockerClaimDialog",
 
         components: {
+            ClientInfoCard,
             'qrcode-stream': QrcodeStream
         },
+
+        mixins: [
+            client
+        ],
 
         props: {
             fullscreen: {
@@ -41,9 +59,15 @@
 
             resolve: null,
             reject: null,
+
+            client_id: null,
         }),
 
-        computed: {},
+        computed: {
+            client() {
+                return this.$store.getters['clients/byId']({id: this.client_id})
+            }
+        },
 
         methods: {
             async onInit(promise) {
@@ -64,20 +88,23 @@
                         location      // QR code coordinates
                     } = await promise;
 
+                    console.log(content);
 
                     let parsed = JSON.parse(content);
 
-                    console.log(parsed);
-
                     if (parsed.client_id) {
-                        this.$router.push({name: 'clients-id', params: {id: parsed.client_id}});
-                        this.close();
+                        this.loadClient(parsed.client_id);
+                        this.client_id = parsed.client_id;
                     } else {
-                        this.$toast.warn('Неизвестный формат')
+                        this.$toast.error('Неизвестный формат')
                     }
                 } catch (error) {
-                    this.$toast.warn('Неизвестный формат')
+                    this.$toast.error('Неизвестный формат')
                 }
+            },
+
+            loadClient(client_id) {
+                this.$store.dispatch('clients/loadById', {id: client_id})
             },
 
             open() {

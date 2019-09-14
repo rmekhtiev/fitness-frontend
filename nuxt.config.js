@@ -118,6 +118,10 @@ export default {
     }
   },
 
+  toast: {
+    duration: 3000,
+  },
+
   moment: {
     defaultLocale: 'ru',
     locales: ['ru']

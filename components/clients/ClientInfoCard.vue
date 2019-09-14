@@ -9,9 +9,15 @@
           <v-list-item-title class="headline">{{ client.name }}</v-list-item-title>
           <v-list-item-subtitle>{{ client.full_name }}</v-list-item-subtitle>
 
-          <v-btn color="primary" text small style="position: absolute; right: .5rem; top: .5rem;" @click="updateClient()">
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
+          <div style="position: absolute; right: .5rem; top: .5rem;">
+            <v-btn color="primary" text small v-if="isHallAdmin || isOwner" @click="updateClient()">
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+
+            <v-btn color="primary" text small v-if="link" :to="{name: 'clients-id', params: {id: client.id}}" target="_blank">
+              <v-icon>mdi-open-in-new</v-icon>
+            </v-btn>
+          </div>
         </v-list-item-content>
       </v-list-item>
 
@@ -55,13 +61,15 @@
       </v-list>
     </v-card>
 
-    <client-dialog title="Редактирование клиента" :client="client" is-edit ref="edit"></client-dialog>
+    <client-dialog v-if="isHallAdmin || isOwner"  title="Редактирование клиента" :client="client" is-edit ref="edit"></client-dialog>
   </div>
 </template>
 
 <script>
     import routable from 'vuetify/es5/mixins/routable'
-    import VCard from 'vuetify/es5/components/VCard'
+
+    import auth from "../../mixins/auth";
+
     import ClientDialog from "./ClientDialog";
 
     export default {
@@ -71,12 +79,18 @@
 
         mixins: [
             routable,
+            auth,
         ],
 
         props: {
             client: {
                 type: Object,
                 required: true
+            },
+
+            link: {
+                type: Boolean,
+                default: false,
             }
         },
 
