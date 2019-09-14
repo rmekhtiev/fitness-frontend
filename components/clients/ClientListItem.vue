@@ -20,20 +20,22 @@
           <div style="flex: 1 1 0%;" class="mt-1">
             <div class="pr-4">
               <div v-if="client.active_subscription">
-                <v-progress-linear
-                 :value="durationPercent"
-                 color="primary"
-                 rounded
-                 height="18"
-                >
-                  <template v-slot="{ value }">
-                    <span class="caption">{{ daysTill }} дней</span>
-                  </template>
-                </v-progress-linear>
+                <div class="body-2 blue--text" v-if="activeSubscription.frozen_till < now"><v-icon middle color="blue">mdi-clock</v-icon> Заморожен до {{activeSubscription.frozen_till}}</div>
+                <div v-else>
+                  <v-progress-linear
+                          :value="durationPercent"
+                          color="primary"
+                          rounded
+                          height="18"
+                  >
+                    <template v-slot="{ value }">
+                      <span class="caption">{{ daysTill }} дней</span>
+                    </template>
+                  </v-progress-linear>
+                </div>
               </div>
               <div class="body-2 orange--text darken-4" v-else-if="client.subscriptions_count > 0"><v-icon middle color="orange">mdi-clock</v-icon> Абонемент просрочен</div>
               <div class="body-2 red--text" v-else><v-icon middle color="red">error</v-icon> Абонемент отстутсвует</div>
-
             </div>
           </div>
         </div>
@@ -80,7 +82,7 @@
               } else {
                 return 'Через ' + days_till;
               }
-          },
+            },
         },
 
         mixins: [
