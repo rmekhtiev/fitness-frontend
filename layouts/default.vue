@@ -21,7 +21,7 @@
 
       <div class="flex-grow-1"></div>
 
-      <v-btn icon>
+      <v-btn icon @click="$refs.search.open()">
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
 
@@ -33,19 +33,26 @@
       <v-container grid-list-md>
         <nuxt/>
       </v-container>
+
+      <scanner-dialog ref="scanner"></scanner-dialog>
+
     </v-content>
   </v-app>
 </template>
 
 <script>
+    import auth from "../mixins/auth";
+
     import Profile from "../components/app/drawer/profile";
     import Menu from "../components/app/drawer/menu";
-    import auth from "../mixins/auth";
+
+    import ScannerDialog from "../components/ScannerDialog";
 
     export default {
         components: {
             'drawer-profile': Profile,
             'drawer-menu': Menu,
+            ScannerDialog,
         },
 
         mixins: [

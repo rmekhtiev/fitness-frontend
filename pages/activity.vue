@@ -157,7 +157,7 @@
                         page: 1
                     }
                 }).then(async () => {
-                    let activities = store.getters['activities/all'];
+                    let activities = store.getters['activities/page'];
 
                     return await Promise.all(_(activities)
                         .groupBy('subject_type')
