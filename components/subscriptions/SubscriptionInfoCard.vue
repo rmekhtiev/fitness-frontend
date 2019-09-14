@@ -15,10 +15,13 @@
           </v-list-item>
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-subtitle class="caption">Действителен</v-list-item-subtitle>
-              <v-list-item-title class="text-uppercase">{{ $moment(subscription.issue_date).format('ll') }} &mdash; {{
-                $moment(subscription.valid_till).format('ll') }}
-              </v-list-item-title>
+              <v-list-item-subtitle class="caption">Информация об абонементе</v-list-item-subtitle>
+                <div v-if="client.active_subscription">
+                  <div class="body-2 blue--text" v-if="activeSubscription.frozen"><v-icon middle color="blue">mdi-clock</v-icon> Заморожен до {{activeSubscription.frozen_till}}</div>
+                  <div class="body-2" v-else>{{activeSubscription.issue_date}} - {{ activeSubscription.valid_till }}</div>
+                </div>
+                <div class="body-2 orange--text darken-4" v-else-if="client.subscriptions_count > 0"><v-icon middle color="orange">mdi-clock</v-icon> Абонемент просрочен</div>
+                <div class="body-2 red--text" v-else><v-icon middle color="red">error</v-icon> Абонемент отстутсвует</div>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -58,6 +61,12 @@
                 required: true,
                 type: Object,
             },
+        },
+
+        computed: {
+          activeSubscription() {
+            return this.$store.getters['subscriptions/byId']({id: this.client.active_subscription.id});
+          },
         },
 
         methods: {
