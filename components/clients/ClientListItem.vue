@@ -20,7 +20,7 @@
           <div style="flex: 1 1 0%;" class="mt-1">
             <div class="pr-4">
               <div v-if="client.active_subscription">
-                <div class="body-2 blue--text" v-if="activeSubscription.frozen_till < now"><v-icon middle color="blue">mdi-clock</v-icon> Заморожен до {{activeSubscription.frozen_till}}</div>
+                <div class="body-2 blue--text" v-if="activeSubscription.frozen"><v-icon middle color="blue">mdi-clock</v-icon> Заморожен до {{activeSubscription.frozen_till}}</div>
                 <div v-else>
                   <v-progress-linear
                           :value="durationPercent"
