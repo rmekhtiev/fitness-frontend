@@ -5,20 +5,30 @@
                 :items="associatedEmployees"
 
                 label="Сотрудник"
+                prepend-icon="mdi-account-badge-horizontal-outline"
                 item-text="name"
                 item-value="id">
         </v-autocomplete>
         <v-text-field
                 v-model="value.phone_number"
+                v-mask="'+7 (###) ###-##-##'"
+                prepend-icon="mdi-phone-outline"
                 label="Номер телефона"
         ></v-text-field>
     </v-form>
 </template>
 
 <script>
+    import { mask } from 'vue-the-mask'
+
     import auth from '../../mixins/auth'
+
     export default {
         name: "IssueForm",
+
+        directives: {
+            mask,
+        },
 
         props: {
             value: {
@@ -34,8 +44,6 @@
                 default: false,
             },
         },
-
-
 
         mixins: [
             auth,
