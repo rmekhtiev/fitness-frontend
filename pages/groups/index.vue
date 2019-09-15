@@ -3,7 +3,7 @@
         <v-data-iterator :items="groups" :items-per-page="50">
             <template v-slot:header>
                 <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
-                    <v-flex xs8 md3>
+                    <v-flex xs8 sm6 md4>
                         <div style="display: flex; width: 100%">
                             <div style="flex: 1 1 0%;" class="overline text-truncate">
                                 Название
@@ -11,7 +11,7 @@
                         </div>
                     </v-flex>
 
-                    <v-flex md3>
+                    <v-flex sm3 md4 class="hidden-xs-only">
                         <div style="display: flex; width: 100%">
                             <div style="flex: 1 1 0%;" class="overline text-truncate">
                                 Зал
@@ -19,9 +19,9 @@
                         </div>
                     </v-flex>
 
-                    <v-flex md3>
+                    <v-flex xs4 sm3 md2>
                         <div style="display: flex; width: 100%">
-                            <div style="flex: 1 1 0%;" class="overline text-truncate">
+                            <div style="flex: 1 1 0%;" class="overline text-truncate text-right">
                                 Участники
                             </div>
                         </div>

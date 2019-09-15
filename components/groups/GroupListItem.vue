@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    <v-flex xs8 md3>
+    <v-flex xs8 sm6 md4>
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate">
           <div class="body-2 text-truncate" :title="group.title">{{ group.title }}</div>
@@ -8,7 +8,7 @@
       </div>
     </v-flex>
 
-    <v-flex md3>
+    <v-flex sm3 md4 class="hidden-xs-only">
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate">
           <div class="body-2 text-truncate" :title="hall.title">{{ hall.title }}</div>
@@ -17,9 +17,9 @@
       </div>
     </v-flex>
 
-    <v-flex md3>
+    <v-flex xs4 sm3 md2>
       <div style="display: flex; width: 100%">
-        <div style="flex: 1 1 0%;" class="text-truncate">
+        <div style="flex: 1 1 0%;" class="text-truncate text-right">
           <div class="body-2">{{group.clients_count}}/{{group.max_members}}</div>
         </div>
       </div>
