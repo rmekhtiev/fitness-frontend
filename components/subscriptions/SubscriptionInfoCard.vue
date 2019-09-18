@@ -26,7 +26,7 @@
           </v-list-item>
         </v-list>
       </v-col>
-      <v-col class="d-flex justify-center">
+      <v-col class="d-flex justify-center" v-if="client.active_subscription">
         <qrcode :value="JSON.stringify({client_id: client.id})"
                 :options="{ width: 200 }"
                 height="200"
@@ -34,7 +34,7 @@
       </v-col>
     </v-row>
 
-    <v-card-actions>
+    <v-card-actions v-if="client.active_subscription">
       <v-spacer></v-spacer>
       <v-btn text color="primary" @click="print">Печать</v-btn>
     </v-card-actions>
