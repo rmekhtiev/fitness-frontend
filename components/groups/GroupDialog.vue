@@ -38,7 +38,7 @@
                 type: String,
             },
 
-            client: {
+            group: {
                 type: Object,
                 required: false,
             },
@@ -61,8 +61,8 @@
         }),
 
         created() {
-            if(this.client) {
-                Object.assign(this.form, this.client);
+            if(this.group) {
+                Object.assign(this.form, this.group);
             }
         },
 
