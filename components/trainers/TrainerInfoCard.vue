@@ -53,7 +53,7 @@
     </v-card>
 
     <trainer-dialog ref="trainerDialog" title="Создать тренера" :trainer="trainer" is-edit></trainer-dialog>
-    <confirm ref="deleteDialog"></confirm>
+    <confirm ref="delete"></confirm>
   </div>
 </template>
 
@@ -105,14 +105,18 @@
 
           },
 
-            deleteTrainer() {
-                this.$refs.deleteDialog.open('Удалить тренера', 'Вы уверены, что хотите удалить информацию о тренере? Данное действие невозможно отменить', {color: 'red'}).then(response => {
-                    this.$store.dispatch('trainers/delete', {id: this.trainer.id}).then(() => {
-                        this.$toast.success('Тренер удален');
-                    });
-                    this.$router.back();
-                });
-            },
+          deleteTrainer() {
+            this.$refs.delete.open('Удалить тренера', 'Вы уверены? Это действие невозможно отменить', {color: 'red'}).then((confirm) => {
+              if (confirm) {
+                let trainerId = this.trainer.trainer_id;
+
+                this.$store.dispatch('trainers/delete', {id: this.trainer.id});
+                // this.$store.dispatch('trainers/loadById', {id: trainerId});
+
+                this.$emit('delete');
+              }
+            })
+          },
         }
     }
 </script>
