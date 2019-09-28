@@ -1,5 +1,44 @@
 <template>
     <div id="clients">
+        <v-layout id="filters">
+
+            <v-flex md3 class="hidden-sm-and-down">
+                <v-autocomplete
+                        v-model="filter.trainer_id"
+                        :items="trainers"
+
+                        item-text="name"
+                        item-value="id"
+
+                        label="Тренер"
+                        single-line
+                        filled
+
+                        clearable
+
+                        @input="loadFiltered"
+                ></v-autocomplete>
+            </v-flex>
+
+            <v-flex md3 class="hidden-sm-and-down">
+                <v-autocomplete
+                        v-model="filter.phone_number"
+                        :items="trainers"
+
+                        item-text="phone_number"
+                        item-value="phone_number"
+
+                        label="Номер телефона"
+                        single-line
+                        filled
+
+                        clearable
+
+                        @input="loadFiltered"
+                ></v-autocomplete>
+            </v-flex>
+        </v-layout>
+
         <v-data-iterator :items="trainers" :items-per-page="50">
             <template v-slot:header>
                 <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
@@ -61,6 +100,8 @@
 
 <script>
     import {filter} from 'lodash';
+
+    import filterable from '../../mixins/filterable';
     import TrainerListItem from "../../components/trainers/TrainerListItem";
     import TrainerDialog from "../../components/trainers/TrainerDialog";
 
@@ -72,11 +113,19 @@
          TrainerDialog,
         },
 
+        mixins:[
+            filterable,
+        ],
+
         computed: {
+            pureTrainers() {
+                return _(this.pureFilter).isEmpty() ? this.$store.getters['trainers/all'] : this.$store.getters['trainers/where']({filter: this.pureFilter})
+            },
+
             trainers() {
                 return this.$store.getters['selectedHall']
-                    ? filter(this.$store.getters['trainers/all'], item => (item.hall_id === this.$store.getters['selectedHallIdForFilter']))
-                    : this.$store.getters['trainers/all'];
+                    ? filter(this.pureTrainers, item => (item.hall_id === this.$store.getters['selectedHallIdForFilter']))
+                    : this.pureTrainers;
             },
 
         },
@@ -89,6 +138,9 @@
                             this.$router.push({name: 'trainers', params: {id: response.data.data.id}})
                         });
                 });
+            },
+            loadFiltered() {
+                this.$store.dispatch('trainers/loadWhere', {filter: this.pureFilter});
             },
         },
 
