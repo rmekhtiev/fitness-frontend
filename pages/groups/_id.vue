@@ -146,8 +146,17 @@
 
         methods: {
             addClientToGroup() {
-              this.$refs.addClient.open().then(form => {
-                  console.log(form);
+              this.$refs.addClient.open().then(async form => {
+                  await this.$axios.post('/groups/' + this.group.id + '/clients', form).then(async response => {
+                      console.log(response);
+                  });
+
+                  await this.$store.dispatch('clients/loadRelated', {
+                      parent: {
+                          type: 'groups',
+                          id: this.group.id,
+                      }
+                  })
               });
             },
         },
