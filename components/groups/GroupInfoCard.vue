@@ -63,6 +63,7 @@
     import GroupDialog from "./GroupDialog";
     import Confirm from "../Confirm";
     import auth from "../../mixins/auth";
+    import group from "../../mixins/group";
 
     export default {
         name: "GroupInfoCard",
@@ -74,6 +75,7 @@
 
         mixins: [
             auth,
+            group
         ],
 
         props: {

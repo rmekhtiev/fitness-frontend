@@ -45,13 +45,12 @@
     </v-data-iterator>
 
     <v-btn
-      color="blue"
+      color="primary"
       dark
-      absolute
+      fab
+      fixed
       bottom
       right
-      fab
-      class="mb-12"
       @click.native="openCreateDialog">
       <v-icon>mdi-plus</v-icon>
     </v-btn>

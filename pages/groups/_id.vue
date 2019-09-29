@@ -56,19 +56,67 @@
         </v-card>
       </template>
     </v-data-iterator>
+
+    <v-speed-dial
+      v-model="fab"
+      fixed
+      bottom
+      right>
+      <template v-slot:activator>
+        <v-btn
+          v-model="fab"
+          color="primary"
+          dark
+          fab
+        >
+          <v-icon v-if="fab">mdi-close</v-icon>
+          <v-icon v-else>mdi-plus</v-icon>
+        </v-btn>
+      </template>
+
+      <v-tooltip
+        v-if="group.clients_count < group.max_members"
+        left
+        :value="tooltips">
+        <template v-slot:activator="{ on }">
+          <v-btn fab dark small color="green" @click="addClientToGroup">
+            <v-icon>mdi-account</v-icon>
+          </v-btn>
+        </template>
+        <span>Клиент</span>
+      </v-tooltip>
+
+    </v-speed-dial>
+
+    <group-add-client-dialog ref="addClient" :group="group"></group-add-client-dialog>
   </div>
 </template>
 
 <script>
     import {filter} from 'lodash';
+
+    import group from "../../mixins/group";
+
     import ClientListItem from '../../components/clients/ClientListItem';
     import GroupInfoCard from "../../components/groups/GroupInfoCard";
+    import GroupAddClientDialog from "../../components/groups/GroupAddClientDialog";
 
     export default {
+        mixins: [
+            group,
+        ],
+
         components: {
             ClientListItem,
             GroupInfoCard,
+            GroupAddClientDialog,
         },
+
+        data: () => ({
+            fab: false,
+            tooltips: false,
+            tooltipsDisabled: false,
+        }),
 
         computed: {
             clients() {
@@ -79,11 +127,30 @@
                     }
                 });
             },
+
             group() {
                 return this.$store.getters['groups/byId']({id: this.$route.params.id});
             },
         },
 
+        watch: {
+            fab(val) {
+                this.tooltips = false;
+                this.tooltipsDisabled = false;
+                val && setTimeout(() => {
+                    this.tooltips = true;
+                    this.$nextTick(() => this.tooltipsDisabled = true)
+                }, 250)
+            },
+        },
+
+        methods: {
+            addClientToGroup() {
+              this.$refs.addClient.open().then(form => {
+                  console.log(form);
+              });
+            },
+        },
 
         fetch({store, params}) {
             return Promise.all([
