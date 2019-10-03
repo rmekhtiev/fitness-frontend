@@ -14,19 +14,58 @@
             <div class="overline">Шкафчики</div>
           </v-card-text>
 
-          <template
-            v-if="display.lockers"
-            v-for="(claim, index) in lockerClaims">
-            <locker-claim-list-item
-              :key="'claim' + index"
-              :claim="claim">
-            </locker-claim-list-item>
+          <v-list
+            v-if="!loading.lockers">
+            <template
+              v-for="(claim, index) in lockerClaims">
+              <locker-claim-list-item
+                :key="'claim' + index"
+                :claim="claim">
+              </locker-claim-list-item>
 
-            <v-divider
-              v-if="index + 1 < lockerClaims.length"
-              :key="'claim-divider' + index"
-            ></v-divider>
-          </template>
+              <v-divider
+                v-if="index + 1 < lockerClaims.length"
+                :key="'claim-divider' + index"
+              ></v-divider>
+            </template>
+          </v-list>
+          <v-card-text
+            v-else
+            class="text-center">
+            <v-progress-linear
+              height="16"
+              rounded
+              color="primary"
+              indeterminate
+            ></v-progress-linear>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+
+      <v-flex xs12 sm6 lg4 xl3>
+        <v-card>
+          <v-card-text>
+            <div class="overline">Группы</div>
+          </v-card-text>
+
+          <v-list
+            v-if="!loading.groups">
+            <template
+              v-for="(group, index) in groups">
+              <v-list-item
+                :to="{name: 'groups-id', params: {id: group.id}}"
+                :key="'group-' + index">
+                <v-list-item-content>
+                  <v-list-item-title>{{ group.title }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-divider
+                v-if="index + 1 < lockerClaims.length"
+                :key="'claim-divider' + index"
+              ></v-divider>
+            </template>
+          </v-list>
           <v-card-text
             v-else
             class="text-center">
@@ -104,6 +143,7 @@
 
             loading: {
                 lockers: true,
+                groups: true,
             }
         }),
 
@@ -119,16 +159,22 @@
                 };
             },
 
+            groupFilter() {
+                return {
+                    id: this.groupsIds,
+                };
+            },
+
             lockerClaims() {
                 return this.$store.getters['locker-claims/where']({
                     filter: this.lockerFilter,
                 });
             },
 
-            display() {
-                return {
-                    lockers: !this.loading.lockers,
-                }
+            groups() {
+                return this.$store.getters['groups/where']({
+                    filter: this.groupFilter,
+                });
             }
         },
 
@@ -174,12 +220,23 @@
                     });
                 })
             },
+
+            loadGroups() {
+                this.loading.groups = true;
+
+                return this.$store.dispatch('groups/loadWhere', {
+                    filter: this.groupFilter,
+                }).then(() => {
+                    this.loading.groups = false;
+                })
+            }
         },
 
         async mounted() {
-            await this.loadLockerClaims();
-
-            await this.$store.dispatch('halls/loadAll');
+            await Promise.all([
+                this.loadLockerClaims(),
+                this.loadGroups(),
+            ]);
         },
 
         fetch: ({store, params, $moment, ...rest}) => {
@@ -192,6 +249,7 @@
                 store.dispatch('clients/loadById', {
                     id: params.id
                 }),
+                store.dispatch('halls/loadAll'),
             ]);
         },
     }
