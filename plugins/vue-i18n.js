@@ -22,6 +22,11 @@ export default ({app, store}) => {
             "created": "Новая проблема в зале {hall}: {issue}",
           },
 
+          "client-group": {
+            "created": "Клиент {client} записан в группу {group}",
+            "deleted": "Клиент {client} убран из группы {group}",
+          },
+
         },
         "statuses": {
           "all": {

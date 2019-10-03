@@ -116,7 +116,7 @@
                 this.$refs.deleteDialog.open('Удалить группу', 'Вы уверены, что хотите удалить группу? Данное действие невозможно отменить', {color: 'red'}).then(response => {
                     this.$router.back();
                     this.$store.dispatch('groups/delete', {id: this.group.id}).then(() => {
-                        this.$toast.success('Тренер удален');
+                        this.$toast.success('Группа удалена');
                     });
                 });
             },
