@@ -54,7 +54,9 @@
         <v-card>
           <v-list>
             <template v-for="(item, index) in props.items">
-              <client-list-item :client="item"></client-list-item>
+              <v-list-item :to="{name: 'clients-id', params: {id: item.id}}">
+                <client-list-item :client="item"></client-list-item>
+              </v-list-item>
               <v-divider
                 v-if="index + 1 < props.items.length"
                 :key="index"

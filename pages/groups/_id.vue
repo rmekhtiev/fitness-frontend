@@ -46,7 +46,32 @@
         <v-card>
           <v-list>
             <template v-for="(item, index) in props.items">
-              <client-list-item :client="item"></client-list-item>
+              <v-list-item :to="{name: 'clients-id', params: {id: item.id}}">
+                <v-list-item-content class="py-0">
+                  <client-list-item :client="item"></client-list-item>
+                </v-list-item-content>
+
+                <v-list-item-action class="my-0">
+                  <v-menu bottom left>
+                    <template v-slot:activator="{ on }">
+                      <v-btn icon @click.prevent="on.click">
+                        <v-icon color="grey lighten-1">mdi-dots-vertical</v-icon>
+                      </v-btn>
+                    </template>
+
+                    <v-list dense flat>
+                      <v-list-item @click.prevent="removeClientFromGroup(item)">
+                        <v-list-item-icon>
+                          <v-icon>mdi-close</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content class="pr-6">
+                          <v-list-item-title>Убрать</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </v-list-item-action>
+              </v-list-item>
               <v-divider
                 v-if="index + 1 < props.items.length"
                 :key="index"
@@ -79,7 +104,7 @@
         left
         :value="tooltips">
         <template v-slot:activator="{ on }">
-          <v-btn fab dark small color="green" @click="addClientToGroup">
+          <v-btn fab dark small color="green" @click.native="addClientToGroup">
             <v-icon>mdi-account</v-icon>
           </v-btn>
         </template>
@@ -89,6 +114,8 @@
     </v-speed-dial>
 
     <group-add-client-dialog ref="addClient" :group="group"></group-add-client-dialog>
+
+    <confirm ref="removeClientConfirm"></confirm>
   </div>
 </template>
 
@@ -100,6 +127,7 @@
     import ClientListItem from '../../components/clients/ClientListItem';
     import GroupInfoCard from "../../components/groups/GroupInfoCard";
     import GroupAddClientDialog from "../../components/groups/GroupAddClientDialog";
+    import Confirm from "../../components/Confirm";
 
     export default {
         mixins: [
@@ -110,6 +138,7 @@
             ClientListItem,
             GroupInfoCard,
             GroupAddClientDialog,
+            Confirm
         },
 
         data: () => ({
@@ -146,19 +175,40 @@
 
         methods: {
             addClientToGroup() {
-              this.$refs.addClient.open().then(async form => {
-                  await this.$axios.post('/groups/' + this.group.id + '/clients', form).then(async response => {
-                      console.log(response);
-                  });
+                this.$refs.addClient.open().then(async form => {
+                    await this.$axios.put('/groups/' + this.group.id + '/clients/' + form.client_id, form).then(async response => {
+                        console.log(response);
+                    });
 
-                  await this.$store.dispatch('clients/loadRelated', {
-                      parent: {
-                          type: 'groups',
-                          id: this.group.id,
-                      }
-                  })
-              });
+                    await this.$store.dispatch('clients/loadRelated', {
+                        parent: {
+                            type: 'groups',
+                            id: this.group.id,
+                        }
+                    })
+                });
             },
+
+            removeClientFromGroup(client) {
+                console.log(client);
+
+                this.$refs.removeClientConfirm.open('Убрать клиента ' + client.name + ' из группы', 'Вы уверены?', {color: 'red'}).then(async (confirm) => {
+                    console.log(confirm);
+
+                    if (confirm) {
+                        await this.$axios.delete('/groups/' + this.group.id + '/clients/' + client.id).then(async response => {
+                            console.log(response);
+                        });
+
+                        await this.$store.dispatch('clients/loadRelated', {
+                            parent: {
+                                type: 'groups',
+                                id: this.group.id,
+                            }
+                        })
+                    }
+                })
+            }
         },
 
         fetch({store, params}) {
