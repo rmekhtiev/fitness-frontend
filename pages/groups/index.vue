@@ -1,17 +1,17 @@
 <template>
   <div id="clients">
-    <v-data-iterator :items="trainers" :items-per-page="50">
+    <v-data-iterator :items="groups" :items-per-page="50">
       <template v-slot:header>
         <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
-          <v-flex xs8 md3>
+          <v-flex xs8 sm6 md4>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
-                ФИО
+                Название
               </div>
             </div>
           </v-flex>
 
-          <v-flex md3>
+          <v-flex sm3 md4 class="hidden-xs-only">
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
                 Зал
@@ -19,17 +19,14 @@
             </div>
           </v-flex>
 
-          <v-flex md3>
+          <v-flex xs4 sm3 md2>
             <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate">
-                Номер телефона
+              <div style="flex: 1 1 0%;" class="overline text-truncate text-right">
+                Участники
               </div>
             </div>
           </v-flex>
 
-          <v-flex md3>
-
-          </v-flex>
         </v-layout>
       </template>
 
@@ -37,13 +34,16 @@
         <v-card>
           <v-list>
             <template v-for="item in props.items">
-              <trainer-list-item :trainer="item"></trainer-list-item>
+              <v-list-item :to="{name: 'groups-id', params: {id: item.id}}">
+                <group-list-item :group="item"></group-list-item>
+              </v-list-item>
               <v-divider></v-divider>
             </template>
           </v-list>
         </v-card>
       </template>
     </v-data-iterator>
+
     <v-btn
       color="primary"
       dark
@@ -51,43 +51,41 @@
       fixed
       bottom
       right
-      @click.native="openTrainerDialog">
+      @click.native="openCreateDialog">
       <v-icon>mdi-plus</v-icon>
     </v-btn>
 
-    <trainer-dialog ref="trainerDialog" title="Создать тренера"></trainer-dialog>
+    <group-dialog ref="createDialog" title="Создать группу"></group-dialog>
   </div>
 </template>
 
 <script>
     import {filter} from 'lodash';
-    import TrainerListItem from "../../components/trainers/TrainerListItem";
-    import TrainerDialog from "../../components/trainers/TrainerDialog";
+
+    import GroupListItem from "../../components/groups/GroupListItem";
+    import GroupDialog from "../../components/groups/GroupDialog";
 
     export default {
-        name: "index",
-
         components: {
-            TrainerListItem,
-            TrainerDialog,
+            GroupListItem,
+            GroupDialog
         },
 
         computed: {
-            trainers() {
+            groups() {
                 return this.$store.getters['selectedHall']
-                    ? filter(this.$store.getters['trainers/all'], item => (item.hall_id === this.$store.getters['selectedHallIdForFilter']))
-                    : this.$store.getters['trainers/all'];
+                    ? filter(this.$store.getters['groups/all'], item => (item.hall_id === this.$store.getters['selectedHallIdForFilter']))
+                    : this.$store.getters['groups/all'];
             },
-
         },
 
         methods: {
-            openTrainerDialog() {
-                this.$refs.trainerDialog.open().then(form => {
-                    this.$axios.post('trainers', form)
+            openCreateDialog() {
+                this.$refs.createDialog.open().then(form => {
+                    this.$axios.post('groups', form)
                         .then(async response => {
-                            await this.$store.dispatch('trainers/loadById', {id: response.data.data.id});
-                            this.$router.push({name: 'trainers-id', params: {id: response.data.data.id}})
+                            await this.$store.dispatch('groups/loadById', {id: response.data.data.id});
+                            this.$router.push({name: 'groups-id', params: {id: response.data.data.id}})
                         });
                 });
             },
@@ -95,9 +93,9 @@
 
         fetch({store}) {
             return Promise.all([
-                store.dispatch('trainers/loadAll'),
-                store.dispatch('employees/loadAll'),
+                store.dispatch('groups/loadAll'),
                 store.dispatch('halls/loadAll'),
+                store.dispatch('trainers/loadAll'),
             ]);
         },
     }

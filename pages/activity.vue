@@ -35,6 +35,7 @@
     import LockerClaimActivityItem from "../components/activity/LockerClaimActivityItem";
     import ClientActivityItem from "../components/activity/ClientActivityItem";
     import IssueActivityItem from "../components/activity/IssueActivityItem";
+    import ClientGroupActivityItem from "../components/activity/ClientGroupActivityItem";
 
     function isToday(momentDate, reference) {
         let today = reference.clone().startOf('day');
@@ -57,15 +58,34 @@
     function loadSubject(activities, type, store) {
         let chunks = _(activities).chunk(25);
 
+        if(type === 'client-group') {
+            let promis = chunks.map(chunk => ([
+                store.dispatch('clients/loadWhere', {
+                    filter: {
+                        id: _(chunk).map(activity => activity.properties.client_id).uniq().value(),
+                    }
+                }),
+                store.dispatch('groups/loadWhere', {
+                    filter: {
+                        id: _(chunk).map(activity => activity.properties.group_id).uniq().value(),
+                    }
+                }),
+            ])).flatten().value();
+
+            console.log(promis);
+
+            return Promise.all(promis);
+        }
+
         return Promise.all(chunks.map(chunk => store.dispatch(type + '/loadWhere', {
             filter: {
-                id: _(chunk).map(activity => activity.subject_id).value(),
+                id: _(chunk).map(activity => activity.subject_id).uniq().value(),
             }
         }).then(async () => await loadRelated(chunk, type, store))).value());
     }
 
     function loadRelated(activities, type, store) {
-        let subjectIds = _(activities).map(activity => activity.subject_id);
+        let subjectIds = _(activities).map(activity => activity.subject_id).uniq();
         let subjects = store.getters[type + '/all'].filter(subject => subjectIds.includes(subject.id));
 
         switch (type) {
@@ -73,12 +93,12 @@
                 return Promise.all([
                     store.dispatch('lockers/loadWhere', {
                         filter: {
-                            id: _(subjects).map(claim => claim.locker_id).value(),
+                            id: _(subjects).map(claim => claim.locker_id).uniq().value(),
                         }
                     }),
                     store.dispatch('clients/loadWhere', {
                         filter: {
-                            id: _(subjects).map(claim => claim.client_id).value(),
+                            id: _(subjects).map(claim => claim.client_id).uniq().value(),
                         }
                     })
                 ])
@@ -128,6 +148,8 @@
                 switch (subject) {
                     case 'clients':
                         return ClientActivityItem;
+                    case 'client-group':
+                        return ClientGroupActivityItem;
                     case 'locker-claims':
                         return LockerClaimActivityItem;
                     case 'issues':

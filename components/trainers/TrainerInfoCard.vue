@@ -7,7 +7,6 @@
           <v-list-item-title class="headline">{{ trainer.name }}</v-list-item-title>
           <v-list-item-subtitle>{{ trainer.full_name }}</v-list-item-subtitle>
 
-
           <div style="position: absolute; right: .5rem; top: .5rem;">
             <v-btn color="primary" v-if="isHallAdmin || isOwner" @click="editTrainer()" text small>
               <v-icon>mdi-pencil</v-icon>
@@ -52,7 +51,7 @@
       </v-list>
     </v-card>
 
-    <trainer-dialog ref="trainerDialog" title="Создать тренера" :trainer="trainer" is-edit></trainer-dialog>
+    <trainer-dialog ref="trainerDialog" title="Редактировать тренера" :trainer="trainer" is-edit></trainer-dialog>
     <confirm ref="deleteDialog"></confirm>
   </div>
 </template>
@@ -63,7 +62,7 @@
     import Confirm from "../Confirm";
 
     export default {
-        name: "GroupInfoCard",
+        name: "TrainerInfoCard",
 
         components: {
             TrainerDialog,
