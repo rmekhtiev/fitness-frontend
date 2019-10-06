@@ -37,7 +37,6 @@ export default {
     '@/plugins/vuelidate',
     '@/plugins/vue-the-mask',
     '@/plugins/vue-i18n',
-    '@/plugins/axios',
   ],
   /*
   ** Nuxt.js dev-modules
@@ -93,7 +92,11 @@ export default {
       },
       watchLoggedIn: true,
       rewriteRedirects: true
-    }
+    },
+
+    plugins: [
+      {src: '~/plugins/axios'},
+    ]
   },
 
   /*

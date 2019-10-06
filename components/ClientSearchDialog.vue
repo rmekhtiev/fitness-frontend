@@ -66,7 +66,9 @@
           <v-card>
             <v-list flat>
               <template v-for="(item, index) in props.items">
-                <client-list-item :client="item" @click.native="close"></client-list-item>
+                <v-list-item :to="{name: 'clients-id', params: {id: item.id}}">
+                  <client-list-item :client="item" @click.native="close"></client-list-item>
+                </v-list-item>
                 <v-divider
                   v-if="index + 1 < props.items.length"
                   :key="index"
