@@ -83,8 +83,6 @@
     import TrainerDialog from "../../components/trainers/TrainerDialog";
 
     export default {
-        name: "index",
-
         mixins: [
             serverSidePaginated,
             selectedHallAware,
