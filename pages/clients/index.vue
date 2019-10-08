@@ -12,16 +12,16 @@
 
           clearable
 
-          @keyup.enter="loadFiltered"
+          @keyup.enter="loadItems"
         ></v-text-field>
       </v-flex>
     </v-layout>
 
     <v-data-iterator
-      :items="clients"
-      :options.sync="options"
-      :server-items-length="totalClients"
-      :loading="loading"
+      :items="items"
+      :options.sync="iteratorOptions"
+      :server-items-length="totalItems"
+      :loading="itemsLoading"
 
       :items-per-page="15">
       <template v-slot:header>
@@ -78,9 +78,7 @@
 </template>
 
 <script>
-    import {filter} from 'lodash';
-
-    import filterable from "../../mixins/filterable";
+    import serverSidePaginated from "../../mixins/server-side-paginated";
     import selectedHallAware from "../../mixins/selectedHallAware";
 
     import ClientListItem from '../../components/clients/ClientListItem';
@@ -93,14 +91,12 @@
         },
 
         mixins: [
-            filterable,
+            serverSidePaginated,
             selectedHallAware,
         ],
 
         data: () => ({
-            options: {},
-
-            loading: true,
+            resource: 'clients',
         }),
 
         computed: {
@@ -110,36 +106,11 @@
                     ...this.filter
                 }).omitBy(_.isNull).omitBy(_.isUndefined).value();
             },
-
-            pureClients() {
-                return this.$store.getters['clients/where']({
-                    filter: this.pureFilter,
-                    options: {
-                        page: this.options.page,
-                        per_page: this.options.itemsPerPage,
-                    }
-                })
-            },
-
-            clients() {
-                return this.pureClients.filter(this.selectedHallFilter);
-            },
-
-            totalClients() {
-                return this.$store.getters['clients/lastMeta'].pagination.total;
-            }
         },
 
         watch: {
             selectedHallId() {
-                this.loadFiltered();
-            },
-
-            options: {
-                handler () {
-                    this.loadFiltered();
-                },
-                deep: true,
+                this.loadItems();
             },
         },
 
@@ -153,28 +124,6 @@
                         });
                 })
             },
-
-            loadFiltered() {
-                this.loading = true;
-
-                return this.$store.dispatch('clients/loadWhere', {
-                    filter: this.pureFilter,
-                    options: {
-                        page: this.options.page,
-                        per_page: this.options.itemsPerPage,
-                    }
-                }).then(() => {
-                    this.loading = false;
-                });
-            },
-
-            selectedHallFilter(item) {
-                return this.selectedHallId === null ? true : item.primary_hall_id === this.selectedHallId;
-            }
-        },
-
-        async beforeMount() {
-            await this.loadFiltered();
         },
 
         fetch({store}) {
@@ -186,9 +135,8 @@
                 store.dispatch('clients/loadPage', {
                     options: {
                         page: 1,
-                        per_page: 15,
                     }
-                }),
+                })
             ]);
         },
     }

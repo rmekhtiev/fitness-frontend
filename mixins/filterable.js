@@ -12,8 +12,17 @@ export default {
   },
 
   methods: {
+    loadItems() {
+      console.error('Override this method');
+    },
+
+    /**
+     * @deprecated
+     */
     loadFiltered() {
-      console.warn('Override this method')
+      console.warn('This method is deprecated');
+
+      this.loadItems();
     },
   }
 }
