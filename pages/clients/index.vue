@@ -17,7 +17,13 @@
       </v-flex>
     </v-layout>
 
-    <v-data-iterator :items="clients" :items-per-page="15">
+    <v-data-iterator
+      :items="clients"
+      :options.sync="options"
+      :server-items-length="totalClients"
+      :loading="loading"
+
+      :items-per-page="15">
       <template v-slot:header>
         <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
           <v-flex xs6 md4>
@@ -91,6 +97,12 @@
             selectedHallAware,
         ],
 
+        data: () => ({
+            options: {},
+
+            loading: true,
+        }),
+
         computed: {
             pureFilter: function () {
                 return _({
@@ -101,19 +113,34 @@
 
             pureClients() {
                 return this.$store.getters['clients/where']({
-                    filter: this.pureFilter
+                    filter: this.pureFilter,
+                    options: {
+                        page: this.options.page,
+                        per_page: this.options.itemsPerPage,
+                    }
                 })
             },
 
             clients() {
                 return this.pureClients.filter(this.selectedHallFilter);
             },
+
+            totalClients() {
+                return this.$store.getters['clients/lastMeta'].pagination.total;
+            }
         },
 
         watch: {
             selectedHallId() {
                 this.loadFiltered();
-            }
+            },
+
+            options: {
+                handler () {
+                    this.loadFiltered();
+                },
+                deep: true,
+            },
         },
 
         methods: {
@@ -128,8 +155,16 @@
             },
 
             loadFiltered() {
+                this.loading = true;
+
                 return this.$store.dispatch('clients/loadWhere', {
-                    filter: this.pureFilter
+                    filter: this.pureFilter,
+                    options: {
+                        page: this.options.page,
+                        per_page: this.options.itemsPerPage,
+                    }
+                }).then(() => {
+                    this.loading = false;
                 });
             },
 
@@ -145,8 +180,15 @@
         fetch({store}) {
             return Promise.all([
                 store.dispatch('halls/loadAll'),
+
                 store.dispatch('subscriptions/loadAll'),
-                store.dispatch('clients/loadAll'),
+
+                store.dispatch('clients/loadPage', {
+                    options: {
+                        page: 1,
+                        per_page: 15,
+                    }
+                }),
             ]);
         },
     }
