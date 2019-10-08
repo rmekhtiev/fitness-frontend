@@ -88,11 +88,25 @@
             },
         },
 
+        methods: {
+            // loadRelated() {
+            //     let clientIds = this.items
+            //         .filter(locker => (locker.claim))
+            //         .map(locker => (locker.claim.client_id))
+            //         .filter((value, index, self) => (self.indexOf(value) === index));
+            //
+            //     return this.$store.dispatch('users/loadWhere', {
+            //         filter: {
+            //             id: clientIds,
+            //         }
+            //     });
+            // }
+        },
+
         fetch({store}) {
             return Promise.all([
-                store.dispatch('employees/loadAll'),
                 store.dispatch('halls/loadAll'),
-                store.dispatch('users/loadAll'),
+                store.dispatch('users/loadAll'), // todo: load only related
             ]);
         },
     }
