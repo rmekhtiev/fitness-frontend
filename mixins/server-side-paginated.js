@@ -21,7 +21,9 @@ export default {
     },
 
     totalItems() {
-      return this.$store.getters[this.resource + '/lastMeta'].pagination.total;
+      return this.$store.getters[this.resource + '/lastMeta']
+        ? this.$store.getters[this.resource + '/lastMeta'].pagination.total
+        : 0;
     },
 
     serverPayload() {
