@@ -116,12 +116,27 @@
                         });
                 });
             },
+
+            loadRelated() {
+                let employeeIds = this.items
+                    .map(trainer => (trainer.associated_employee_id))
+                    .filter((value, index, self) => (self.indexOf(value) === index))
+                    .filter(value => value !== null);
+
+                return this.$store.dispatch('employees/loadWhere', {
+                    filter: {
+                        id: employeeIds,
+                    },
+                    options: {
+                        per_page: -1,
+                    }
+                });
+            }
         },
 
         fetch({store}) {
             return Promise.all([
                 store.dispatch('trainers/loadAll'),
-                store.dispatch('employees/loadAll'), // todo: load only related
                 store.dispatch('halls/loadAll'),
             ]);
         },

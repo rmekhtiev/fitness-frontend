@@ -28,7 +28,9 @@ export default {
   /*
   ** Global CSS
   */
-  css: [],
+  css: [
+    '@/assets/css/v-data-iterator.css'
+  ],
   /*
   ** Plugins to load before mounting the App
   */
