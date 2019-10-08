@@ -8,7 +8,10 @@ export default {
   data: () => ({
     resource: '',
 
-    iteratorOptions: {},
+    iteratorOptions: {
+      itemsPerPage: 15,
+      page: 1,
+    },
     itemsLoading: true,
   }),
 
@@ -34,7 +37,7 @@ export default {
 
   watch: {
     iteratorOptions: {
-      handler () {
+      handler() {
         this.loadItems();
       },
       deep: true,
@@ -45,10 +48,16 @@ export default {
     loadItems() {
       this.itemsLoading = true;
 
-      return this.$store.dispatch(this.resource + '/loadWhere', this.serverPayload).then(() => {
-        this.itemsLoading = false;
+      return this.$store.dispatch(this.resource + '/loadWhere', this.serverPayload).then(async () => {
+        return this.loadRelated().then(() => {
+          this.itemsLoading = false;
+        });
       });
-    }
+    },
+
+    loadRelated() {
+      return Promise.resolve();
+    },
   },
 
   async beforeMount() {

@@ -91,8 +91,8 @@
         },
 
         mixins: [
-            serverSidePaginated,
             selectedHallAware,
+            serverSidePaginated,
         ],
 
         data: () => ({
@@ -105,12 +105,6 @@
                     primary_hall_id: this.selectedHallId,
                     ...this.filter
                 }).omitBy(_.isNull).omitBy(_.isUndefined).value();
-            },
-        },
-
-        watch: {
-            selectedHallId() {
-                this.loadItems();
             },
         },
 
