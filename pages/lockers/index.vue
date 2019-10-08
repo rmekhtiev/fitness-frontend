@@ -55,7 +55,17 @@
       <template v-slot:default="props">
         <v-card>
           <v-list>
-            <template v-for="(item, index) in props.items">
+            <template v-if="itemsLoading">
+              <v-list-item>
+                <v-progress-linear
+                  color="primary accent-4"
+                  indeterminate
+                  rounded
+                  height="6"
+                ></v-progress-linear>
+              </v-list-item>
+            </template>
+            <template v-else v-for="(item, index) in props.items">
               <v-list-item :to="{name: 'lockers-id', params: {id: item.id}}">
                 <locker-list-item :locker="item"></locker-list-item>
               </v-list-item>
@@ -72,8 +82,6 @@
 </template>
 
 <script>
-    import {filter} from 'lodash';
-
     import serverSidePaginated from "../../mixins/server-side-paginated";
     import selectedHallAware from "../../mixins/selectedHallAware";
 
@@ -105,12 +113,6 @@
                     hall_id: this.selectedHallId,
                     ...this.filter
                 }).omitBy(_.isNull).omitBy(_.isUndefined).value();
-            },
-        },
-
-        watch: {
-            selectedHallId() {
-                this.loadItems();
             },
         },
 
