@@ -128,13 +128,27 @@
                         });
                 })
             },
+
+            loadRelated() {
+                let clientIds = this.items
+                    .map(client => (client.id))
+                    .filter((value, index, self) => (self.indexOf(value) === index))
+                    .filter(value => value !== null);
+
+                return this.$store.dispatch('subscriptions/loadWhere', {
+                    filter: {
+                        client_id: clientIds,
+                    },
+                    options: {
+                        per_page: -1,
+                    }
+                });
+            }
         },
 
         fetch({store}) {
             return Promise.all([
                 store.dispatch('halls/loadAll'),
-
-                store.dispatch('subscriptions/loadAll'),
 
                 store.dispatch('clients/loadPage', {
                     options: {
