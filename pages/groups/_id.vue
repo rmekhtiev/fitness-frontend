@@ -120,8 +120,6 @@
 </template>
 
 <script>
-    import {filter} from 'lodash';
-
     import group from "../../mixins/group";
 
     import ClientListItem from '../../components/clients/ClientListItem';
@@ -149,10 +147,13 @@
 
         computed: {
             clients() {
-                return this.$store.getters['clients/related']({
+                return this.$store.getters['clients/related']({ // todo: simplify to one function
                     parent: {
                         type: 'groups',
                         id: this.$route.params.id,
+                    },
+                    options: {
+                        per_page: -1,
                     }
                 });
             },
@@ -180,10 +181,13 @@
                         console.log(response);
                     });
 
-                    await this.$store.dispatch('clients/loadRelated', {
+                    await this.$store.dispatch('clients/loadRelated', { // todo: simplify to one function
                         parent: {
                             type: 'groups',
                             id: this.group.id,
+                        },
+                        options: {
+                            per_page: -1,
                         }
                     })
                 });
@@ -200,10 +204,13 @@
                             console.log(response);
                         });
 
-                        await this.$store.dispatch('clients/loadRelated', {
+                        await this.$store.dispatch('clients/loadRelated', { // todo: simplify to one function
                             parent: {
                                 type: 'groups',
                                 id: this.group.id,
+                            },
+                            options: {
+                                per_page: -1,
                             }
                         })
                     }
@@ -213,27 +220,30 @@
 
         fetch({store, params}) {
             return Promise.all([
-                store.dispatch('halls/loadAll'),
-                store.dispatch('trainers/loadAll'),
-
-                store.dispatch('clients/loadRelated', {
-                    parent: {
-                        type: 'groups',
-                        id: params.id,
-                    }
-                }),
+                store.dispatch('halls/loadAll'), // todo: load related
+                store.dispatch('trainers/loadAll'), // todo: load related
 
                 store.dispatch('groups/loadById', {id: params.id}).then(async () => {
                     let group = store.getters['groups/byId']({id: params.id}),
                         promises = [];
 
                     if (group.trainer_id) {
-                        promises.push(store.dispatch('trainers/loadById', {id: group.trainer_id}))
+                        promises.push(store.dispatch('trainers/loadById', {id: group.trainer_id})) // todo: load related
                     }
 
                     if (group.hall_id) {
-                        promises.push(store.dispatch('halls/loadById', {id: group.hall_id}))
+                        promises.push(store.dispatch('halls/loadById', {id: group.hall_id})) // todo: load related
                     }
+
+                    promises.push(store.dispatch('clients/loadRelated', { // todo: simplify to one function
+                        parent: {
+                            type: 'groups',
+                            id: params.id,
+                        },
+                        options: {
+                            per_page: -1,
+                        }
+                    }));
 
                     return await Promise.all(promises);
                 }),
