@@ -1,6 +1,12 @@
 <template>
   <div id="clients">
-    <v-data-iterator :items="trainers" :items-per-page="50">
+    <v-data-iterator
+      :items="items"
+      :options.sync="iteratorOptions"
+      :server-items-length="totalItems"
+      :loading="itemsLoading"
+
+      :items-per-page="15">
       <template v-slot:header>
         <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
           <v-flex xs8 md3>
@@ -36,7 +42,17 @@
       <template v-slot:default="props">
         <v-card>
           <v-list>
-            <template v-for="item in props.items">
+            <template v-if="itemsLoading">
+              <v-list-item>
+                <v-progress-linear
+                  color="primary accent-4"
+                  indeterminate
+                  rounded
+                  height="6"
+                ></v-progress-linear>
+              </v-list-item>
+            </template>
+            <template v-else v-for="item in props.items">
               <trainer-list-item :trainer="item"></trainer-list-item>
               <v-divider></v-divider>
             </template>
@@ -60,25 +76,34 @@
 </template>
 
 <script>
-    import {filter} from 'lodash';
+    import serverSidePaginated from "../../mixins/server-side-paginated";
+    import selectedHallAware from "../../mixins/selectedHallAware";
+
     import TrainerListItem from "../../components/trainers/TrainerListItem";
     import TrainerDialog from "../../components/trainers/TrainerDialog";
 
     export default {
-        name: "index",
+        mixins: [
+            serverSidePaginated,
+            selectedHallAware,
+        ],
 
         components: {
             TrainerListItem,
             TrainerDialog,
         },
 
-        computed: {
-            trainers() {
-                return this.$store.getters['selectedHall']
-                    ? filter(this.$store.getters['trainers/all'], item => (item.hall_id === this.$store.getters['selectedHallIdForFilter']))
-                    : this.$store.getters['trainers/all'];
-            },
+        data: () => ({
+            resource: 'trainers',
+        }),
 
+        computed: {
+            pureFilter: function () {
+                return _({
+                    hall_id: this.selectedHallId,
+                    ...this.filter
+                }).omitBy(_.isNull).omitBy(_.isUndefined).value();
+            },
         },
 
         methods: {
@@ -91,12 +116,27 @@
                         });
                 });
             },
+
+            loadRelated() {
+                let employeeIds = this.items
+                    .map(trainer => (trainer.associated_employee_id))
+                    .filter((value, index, self) => (self.indexOf(value) === index))
+                    .filter(value => value !== null);
+
+                return this.$store.dispatch('employees/loadWhere', {
+                    filter: {
+                        id: employeeIds,
+                    },
+                    options: {
+                        per_page: -1,
+                    }
+                });
+            }
         },
 
         fetch({store}) {
             return Promise.all([
                 store.dispatch('trainers/loadAll'),
-                store.dispatch('employees/loadAll'),
                 store.dispatch('halls/loadAll'),
             ]);
         },

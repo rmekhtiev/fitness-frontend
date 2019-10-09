@@ -12,12 +12,18 @@
 
           clearable
 
-          @keyup.enter="loadFiltered"
+          @keyup.enter="loadItems"
         ></v-text-field>
       </v-flex>
     </v-layout>
 
-    <v-data-iterator :items="clients" :items-per-page="15">
+    <v-data-iterator
+      :items="items"
+      :options.sync="iteratorOptions"
+      :server-items-length="totalItems"
+      :loading="itemsLoading"
+
+      :items-per-page="15">
       <template v-slot:header>
         <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
           <v-flex xs6 md4>
@@ -41,7 +47,17 @@
       <template v-slot:default="props">
         <v-card>
           <v-list>
-            <template v-for="(item, index) in props.items">
+            <template v-if="itemsLoading">
+              <v-list-item>
+                <v-progress-linear
+                  color="primary accent-4"
+                  indeterminate
+                  rounded
+                  height="6"
+                ></v-progress-linear>
+              </v-list-item>
+            </template>
+            <template v-else v-for="(item, index) in props.items">
               <v-list-item :to="{name: 'clients-id', params: {id: item.id}}">
                 <client-list-item :client="item"></client-list-item>
               </v-list-item>
@@ -72,9 +88,7 @@
 </template>
 
 <script>
-    import {filter} from 'lodash';
-
-    import filterable from "../../mixins/filterable";
+    import serverSidePaginated from "../../mixins/server-side-paginated";
     import selectedHallAware from "../../mixins/selectedHallAware";
 
     import ClientListItem from '../../components/clients/ClientListItem';
@@ -87,9 +101,13 @@
         },
 
         mixins: [
-            filterable,
             selectedHallAware,
+            serverSidePaginated,
         ],
+
+        data: () => ({
+            resource: 'clients',
+        }),
 
         computed: {
             pureFilter: function () {
@@ -98,22 +116,6 @@
                     ...this.filter
                 }).omitBy(_.isNull).omitBy(_.isUndefined).value();
             },
-
-            pureClients() {
-                return this.$store.getters['clients/where']({
-                    filter: this.pureFilter
-                })
-            },
-
-            clients() {
-                return this.pureClients.filter(this.selectedHallFilter);
-            },
-        },
-
-        watch: {
-            selectedHallId() {
-                this.loadFiltered();
-            }
         },
 
         methods: {
@@ -127,26 +129,32 @@
                 })
             },
 
-            loadFiltered() {
-                return this.$store.dispatch('clients/loadWhere', {
-                    filter: this.pureFilter
+            loadRelated() {
+                let clientIds = this.items
+                    .map(client => (client.id))
+                    .filter((value, index, self) => (self.indexOf(value) === index))
+                    .filter(value => value !== null);
+
+                return this.$store.dispatch('subscriptions/loadWhere', {
+                    filter: {
+                        client_id: clientIds,
+                    },
+                    options: {
+                        per_page: -1,
+                    }
                 });
-            },
-
-            selectedHallFilter(item) {
-                return this.selectedHallId === null ? true : item.primary_hall_id === this.selectedHallId;
             }
-        },
-
-        async beforeMount() {
-            await this.loadFiltered();
         },
 
         fetch({store}) {
             return Promise.all([
                 store.dispatch('halls/loadAll'),
-                store.dispatch('subscriptions/loadAll'),
-                store.dispatch('clients/loadAll'),
+
+                store.dispatch('clients/loadPage', {
+                    options: {
+                        page: 1,
+                    }
+                })
             ]);
         },
     }

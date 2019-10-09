@@ -17,7 +17,13 @@
       </v-flex>
     </v-layout>
 
-    <v-data-iterator :items="lockers" :items-per-page="50">
+    <v-data-iterator
+      :items="items"
+      :options.sync="iteratorOptions"
+      :server-items-length="totalItems"
+      :loading="itemsLoading"
+
+      :items-per-page="15">
       <template v-slot:header>
         <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
           <v-flex xs2 md1>
@@ -49,7 +55,17 @@
       <template v-slot:default="props">
         <v-card>
           <v-list>
-            <template v-for="(item, index) in props.items">
+            <template v-if="itemsLoading">
+              <v-list-item>
+                <v-progress-linear
+                  color="primary accent-4"
+                  indeterminate
+                  rounded
+                  height="6"
+                ></v-progress-linear>
+              </v-list-item>
+            </template>
+            <template v-else v-for="(item, index) in props.items">
               <v-list-item :to="{name: 'lockers-id', params: {id: item.id}}">
                 <locker-list-item :locker="item"></locker-list-item>
               </v-list-item>
@@ -66,9 +82,8 @@
 </template>
 
 <script>
-    import {filter} from 'lodash';
-
-    import filterable from "../../mixins/filterable";
+    import serverSidePaginated from "../../mixins/server-side-paginated";
+    import selectedHallAware from "../../mixins/selectedHallAware";
 
     import LockerListItem from "../../components/lockers/LockerListItem";
 
@@ -80,10 +95,12 @@
         },
 
         mixins: [
-            filterable,
+            serverSidePaginated,
+            selectedHallAware,
         ],
 
         data: () => ({
+            resource: 'lockers',
             statuses: [
                 {value: 'true', text: 'Свободен'},
                 {value: 'false', text: 'Занят'},
@@ -91,36 +108,35 @@
         }),
 
         computed: {
-            pureLockers() {
-                return _(this.pureFilter).isEmpty() ? this.$store.getters['lockers/all'] : this.$store.getters['lockers/where']({filter: this.pureFilter})
+            pureFilter: function () {
+                return _({
+                    hall_id: this.selectedHallId,
+                    ...this.filter
+                }).omitBy(_.isNull).omitBy(_.isUndefined).value();
             },
-
-            lockers() {
-                return this.$store.getters['selectedHall']
-                    ? filter(this.pureLockers, item => (item.hall_id === this.$store.getters['selectedHallIdForFilter']))
-                    : this.pureLockers;
-            }
         },
 
         methods: {
-            loadFiltered() {
-                this.$store.dispatch('lockers/loadWhere', {filter: this.pureFilter});
-            },
+            loadRelated() {
+                let clientIds = this.items
+                    .filter(locker => (locker.claim))
+                    .map(locker => (locker.claim.client_id))
+                    .filter((value, index, self) => (self.indexOf(value) === index));
+
+                return this.$store.dispatch('clients/loadWhere', {
+                    filter: {
+                        client_id: clientIds,
+                    }
+                });
+            }
         },
 
         fetch({store}) {
             return Promise.all([
-                store.dispatch('lockers/loadAll').then(async () => {
-                    let clientIds = store.getters['lockers/all']
-                        .filter(locker => (locker.claim))
-                        .map(locker => (locker.claim.client_id))
-                        .filter((value, index, self) => (self.indexOf(value) === index));
-
-                    return store.dispatch('clients/loadWhere', {
-                        filter: {
-                            client_id: clientIds,
-                        }
-                    });
+                store.dispatch('lockers/loadPage', {
+                    options: {
+                        page: 1
+                    }
                 }),
             ]);
         },

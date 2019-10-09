@@ -50,7 +50,13 @@
       </v-flex>
     </v-layout>
 
-    <v-data-iterator :items="issues" :items-per-page="50">
+    <v-data-iterator
+      :items="items"
+      :options.sync="iteratorOptions"
+      :server-items-length="totalItems"
+      :loading="itemsLoading"
+
+      :items-per-page="15">
       <template v-slot:header>
         <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
           <v-flex xs8 md3>
@@ -102,7 +108,17 @@
       <template v-slot:default="props">
         <v-card>
           <v-list>
-            <template v-for="(item, index) in props.items">
+            <template v-if="itemsLoading">
+              <v-list-item>
+                <v-progress-linear
+                  color="primary accent-4"
+                  indeterminate
+                  rounded
+                  height="6"
+                ></v-progress-linear>
+              </v-list-item>
+            </template>
+            <template v-else v-for="(item, index) in props.items">
               <v-list-item :to="{name: 'issues-id', params: {id: item.id}}">
                 <issue-list-item :issue="item"></issue-list-item>
               </v-list-item>
@@ -131,26 +147,26 @@
 </template>
 
 <script>
-    import {filter} from 'lodash';
-
-    import filterable from '../../mixins/filterable';
+    import serverSidePaginated from "../../mixins/server-side-paginated";
+    import selectedHallAware from "../../mixins/selectedHallAware";
 
     import IssueListItem from "../../components/issues/IssueListItem";
     import IssueDialog from "../../components/issues/IssueDialog";
+    import employee from "../../mixins/employee";
 
     export default {
-        name: "index",
+        mixins: [
+            serverSidePaginated,
+            selectedHallAware,
+        ],
 
         components: {
             IssueDialog,
             IssueListItem,
         },
 
-        mixins: [
-            filterable,
-        ],
-
         data: () => ({
+            resource: 'issues',
             statuses: [
                 {value: 'pending', text: 'В ожидании'},
                 {value: 'in-work', text: 'Выполняется'},
@@ -159,14 +175,11 @@
         }),
 
         computed: {
-            pureIssues() {
-                return _(this.pureFilter).isEmpty() ? this.$store.getters['issues/all'] : this.$store.getters['issues/where']({filter: this.pureFilter})
-            },
-
-            issues() {
-                return this.$store.getters['selectedHall']
-                    ? filter(this.pureIssues, item => (item.hall_id === this.$store.getters['selectedHallIdForFilter']))
-                    : this.pureIssues;
+            pureFilter: function () {
+                return _({
+                    hall_id: this.selectedHallId,
+                    ...this.filter
+                }).omitBy(_.isNull).omitBy(_.isUndefined).value();
             },
 
             employees() {
@@ -187,16 +200,29 @@
                 })
             },
 
-            loadFiltered() {
-                this.$store.dispatch('issues/loadWhere', {filter: this.pureFilter});
-            },
+            loadRelated() {
+                let employeeIds = this.items
+                    .map(issue => (issue.employee_id))
+                    .filter((value, index, self) => (self.indexOf(value) === index))
+                    .filter(value => value !== null);
+
+                return this.$store.dispatch('employees/loadWhere', {
+                    filter: {
+                        id: employeeIds,
+                    },
+                    options: {
+                        per_page: -1,
+                    }
+                });
+
+                // return Promise.resolve();
+            }
         },
 
         fetch({store}) {
             return Promise.all([
                 store.dispatch('issues/loadAll'),
                 store.dispatch('halls/loadAll'),
-                store.dispatch('employees/loadAll'),
             ]);
         },
     }

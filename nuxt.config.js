@@ -28,7 +28,9 @@ export default {
   /*
   ** Global CSS
   */
-  css: [],
+  css: [
+    '@/assets/css/v-data-iterator.css'
+  ],
   /*
   ** Plugins to load before mounting the App
   */
@@ -37,7 +39,6 @@ export default {
     '@/plugins/vuelidate',
     '@/plugins/vue-the-mask',
     '@/plugins/vue-i18n',
-    '@/plugins/axios',
   ],
   /*
   ** Nuxt.js dev-modules
@@ -93,7 +94,11 @@ export default {
       },
       watchLoggedIn: true,
       rewriteRedirects: true
-    }
+    },
+
+    plugins: [
+      {src: '~/plugins/axios'},
+    ]
   },
 
   /*
