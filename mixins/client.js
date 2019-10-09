@@ -17,6 +17,7 @@ export default {
     durationPercent() {
       return 100 - (this.durationLeft / this.duration) * 100;
     },
+
     groupsIds() {
       return this.client ? this.client.groups.map(group => group.id) : [];
     }

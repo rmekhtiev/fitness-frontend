@@ -1,10 +1,15 @@
 <template>
-  <v-layout>
-    <v-flex xs8 md3 >
-      <div style="display: flex; width: 100%">
-        <div style="flex: 1 1 0%;" class="text-truncate">
-          <div class="body-2 text-truncate" :title="client.full_name">
-            {{ client.name }}
+    <v-layout>
+      <v-flex xs6 md3>
+        <div style="display: flex; width: 100%">
+          <div style="flex: 1 1 0%;" class="text-truncate">
+            <div class="body-2 text-truncate" :title="client.full_name">{{ client.name }}</div>
+            <div
+              v-if="primaryHall"
+              class="caption text-truncate"
+              :title="primaryHall.address">
+              {{ primaryHall.title }}
+            </div>
           </div>
           <div
             v-if="primaryHall"
