@@ -8,7 +8,7 @@
           <v-list-item-subtitle>{{ trainer.full_name }}</v-list-item-subtitle>
 
           <div style="position: absolute; right: .5rem; top: .5rem;">
-            <v-btn color="primary" v-if="isHallAdmin || isOwner" @click="editTrainer()" text small>
+            <v-btn color="primary" v-if="isHallAdmin || isOwner" @click="updateTrainer()" text small>
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
 
@@ -51,8 +51,8 @@
       </v-list>
     </v-card>
 
-    <trainer-dialog ref="trainerDialog" title="Редактировать тренера" :trainer="trainer" is-edit></trainer-dialog>
-    <confirm ref="deleteDialog"></confirm>
+    <trainer-dialog ref="trainerDialog" title="Создать тренера" :trainer="trainer" is-edit></trainer-dialog>
+    <confirm ref="delete"></confirm>
   </div>
 </template>
 
@@ -92,25 +92,30 @@
         },
 
         methods: {
-            editTrainer() {
-                this.$refs.trainerDialog.open().then((form) => {
-                    this.$axios.patch('trainers/' + this.client.id, form)
-                        .then(async response => {
-                            await this.$store.dispatch('trainers/loadById', {id: response.data.data.id});
-                        });
+          updateTrainer() {
+            this.$refs.trainerDialog.open().then((form) => {
+              this.$axios.patch('trainers/' + this.trainer.id, form)
+                      .then(async response => {
+                        await this.$store.dispatch('trainers/loadById', {id: response.data.data.id});
+                      });
 
-                    this.$emit('update');
-                });
-            },
+              this.$emit('update');
+            });
 
-            deleteTrainer() {
-                this.$refs.deleteDialog.open('Удалить тренера', 'Вы уверены, что хотите удалить информацию о тренере? Данное действие невозможно отменить', {color: 'red'}).then(response => {
-                    this.$store.dispatch('trainers/delete', {id: this.trainer.id}).then(() => {
-                        this.$toast.success('Тренер удален');
-                    });
-                    this.$router.back();
-                });
-            },
+          },
+
+          deleteTrainer() {
+            this.$refs.delete.open('Удалить тренера', 'Вы уверены? Это действие невозможно отменить', {color: 'red'}).then((confirm) => {
+              if (confirm) {
+                let trainerId = this.trainer.trainer_id;
+
+                this.$store.dispatch('trainers/delete', {id: this.trainer.id});
+                // this.$store.dispatch('trainers/loadById', {id: trainerId});
+
+                this.$emit('delete');
+              }
+            })
+          },
         }
     }
 </script>
