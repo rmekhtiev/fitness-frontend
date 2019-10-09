@@ -12,4 +12,5 @@ export default function ({$axios, store}, injext) {
   store.registerModule('groups', resourceModule({name: 'groups', httpClient: $axios}));
   store.registerModule('issues', resourceModule({name: 'issues', httpClient: $axios}));
   store.registerModule('subscriptions', resourceModule({name: 'subscriptions', httpClient: $axios}));
+  store.registerModule('bar-items', resourceModule({name: 'bar-items', httpClient: $axios}));
 }

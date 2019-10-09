@@ -81,6 +81,7 @@
                 {title: 'Тренеры', icon: 'mdi-account-star', to: {name: 'trainers'}},
                 {title: 'Группы', icon: 'mdi-account-group', to: {name: 'groups'}},
                 {title: 'Проблемы', icon: 'mdi-clipboard-alert', to: {name: 'issues'}},
+                {title: 'Бар', icon: 'mdi-bottle-soda', to: {name: 'bar-items'}},
             ],
 
             adminActions: [
