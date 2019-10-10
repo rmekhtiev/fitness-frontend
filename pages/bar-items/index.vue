@@ -58,7 +58,7 @@
               </v-list-item>
             </template>
             <template v-else v-for="(item, index) in props.items">
-              <bar-item-list-item :barItem="item"></bar-item-list-item>
+              <bar-item-list-item :barItem="item" @update="loadItems"></bar-item-list-item>
 
               <v-divider
                 v-if="index + 1 < props.items.length"

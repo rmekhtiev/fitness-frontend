@@ -39,8 +39,13 @@
         dense
         flat
       >
-        <v-list-item v-for="(item, index) in menuItems" v-if="item.if" @click="item.click"
-                     :key="'menu-item-' + index + '-for-' + barItem.id">
+        <v-list-item
+          v-for="(item, index) in menuItems"
+          :key="'menu-item-' + index + '-for-' + barItem.id"
+
+          v-if="item.if"
+          :disabled="item.disabled"
+          @click="item.click">
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
@@ -89,8 +94,8 @@
         computed: {
             menuItems() {
                 return [
-                    {title: "Редактировать", icon: "mdi-pencil", if: true, click: this.editItem},
-                    {title: "Продажа", icon: "mdi-basket-outline", if: true, click: this.sellItem},
+                    {title: "Редактировать", icon: "mdi-pencil", if: true, disabled: false, click: this.editItem},
+                    {title: "Продажа", icon: "mdi-basket-outline", if: true, disabled: this.barItem.amount === 0, click: this.sellItem},
                 ]
             },
         },
@@ -111,8 +116,14 @@
             },
 
             sellItem(e) {
-                this.$refs.sellDialog.open().then(value => {
+                this.$refs.sellDialog.open().then(form => {
+                    this.$axios.$post('bar-items/' + this.barItem.id + '/sell', form).then((response) => {
+                        this.$store.dispatch('bar-items/loadById', {
+                            id: this.barItem.id,
+                        });
 
+                        this.$emit('update');
+                    });
                 });
             }
         }
