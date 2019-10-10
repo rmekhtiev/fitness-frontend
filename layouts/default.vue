@@ -18,24 +18,49 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
 
       <v-toolbar-title v-text="title"/>
+
+      <div class="flex-grow-1"></div>
+
+      <v-btn icon @click="$refs.search.open()">
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
+
+      <v-btn icon @click="$refs.scanner.open()">
+        <v-icon>mdi-qrcode-scan</v-icon>
+      </v-btn>
     </v-app-bar>
     <v-content>
-      <v-container>
+      <v-container grid-list-md>
         <nuxt/>
       </v-container>
+
+      <scanner-dialog ref="scanner"></scanner-dialog>
+      <client-search-dialog ref="search"></client-search-dialog>
+
     </v-content>
   </v-app>
 </template>
 
 <script>
+    import auth from "../mixins/auth";
+
     import Profile from "../components/app/drawer/profile";
     import Menu from "../components/app/drawer/menu";
+
+    import ScannerDialog from "../components/ScannerDialog";
+    import ClientSearchDialog from "../components/ClientSearchDialog";
 
     export default {
         components: {
             'drawer-profile': Profile,
             'drawer-menu': Menu,
+            ScannerDialog,
+            ClientSearchDialog,
         },
+
+        mixins: [
+            auth,
+        ],
 
         data() {
             return {
@@ -44,7 +69,7 @@
                     'drawer-profile': Profile,
                     'drawer-menu': Menu,
                 },
-                title: 'Фитнесс'
+                title: 'MULTIPOWER'
             }
         }
     }

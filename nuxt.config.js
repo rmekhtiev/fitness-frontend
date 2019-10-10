@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+import ru from 'vuetify/es5/locale/ru'
 
 export default {
   mode: 'spa',
@@ -6,15 +7,15 @@ export default {
   ** Headers of the page
   */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
+    titleTemplate: '%s - MULTIPOWER',
     title: process.env.npm_package_name || '',
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
+      {charset: 'utf-8'},
+      {name: 'viewport', content: 'width=device-width, initial-scale=1'},
+      {hid: 'description', name: 'description', content: process.env.npm_package_description || ''}
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'},
       {
         rel: 'stylesheet',
         href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700|Material+Icons'
@@ -24,23 +25,29 @@ export default {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#fff' },
+  loading: {color: '#fff'},
   /*
   ** Global CSS
   */
   css: [
+    '@/assets/css/v-data-iterator.css'
   ],
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
     '@/plugins/reststate-vuex',
+    '@/plugins/vuelidate',
+    '@/plugins/vue-the-mask',
+    '@/plugins/vue-i18n',
   ],
   /*
   ** Nuxt.js dev-modules
   */
   buildModules: [
     '@nuxtjs/vuetify',
+    '@nuxtjs/toast',
+    '@nuxtjs/moment'
   ],
   /*
   ** Nuxt.js modules
@@ -58,6 +65,12 @@ export default {
     host: 'fitness.test',
     prefix: '/api/',
     port: '80',
+
+    proxy: true,
+  },
+
+  proxy: {
+    '/api/': 'http://fitness.test/'
   },
 
   router: {
@@ -82,7 +95,11 @@ export default {
       },
       watchLoggedIn: true,
       rewriteRedirects: true
-    }
+    },
+
+    plugins: [
+      {src: '~/plugins/axios'},
+    ]
   },
 
   /*
@@ -104,8 +121,22 @@ export default {
           success: colors.green.accent3
         }
       }
-    }
+    },
+    lang: {
+      locales: {ru},
+      current: 'ru',
+    },
   },
+
+  toast: {
+    duration: 3000,
+  },
+
+  moment: {
+    defaultLocale: 'ru',
+    locales: ['ru']
+  },
+
   /*
   ** Build configuration
   */
@@ -113,7 +144,7 @@ export default {
     /*
     ** You can extend webpack config here
     */
-    extend (config, ctx) {
+    extend(config, ctx) {
     }
   }
 }

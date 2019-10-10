@@ -1,16 +1,16 @@
 <template>
-  <v-list-item>
+  <v-list-item :to="{name: 'employees-id', params: {id: employee.id}}">
     <v-layout>
       <v-flex xs8 md3>
         <div style="display: flex; width: 100%">
           <div style="flex: 1 1 0%;" class="text-truncate">
             <div class="body-2 text-truncate" :title="employee.full_name">{{ employee.name }}</div>
-            <div class="caption text-truncate">{{ employee.associated_user_id }}</div>
+<!--            <div class="body-2 text-truncate" :title="employee.full_name">{{ employee.id }}</div>-->
           </div>
         </div>
       </v-flex>
 
-      <v-flex md3>
+      <v-flex xs8 md3>
         <div style="display: flex; width: 100%">
           <div style="flex: 1 1 0%;" class="text-truncate">
             <div class="body-2 text-truncate" :title="hall.title">{{ hall.title }}</div>

@@ -3,7 +3,7 @@
     <v-data-iterator :items="halls" :items-per-page="50">
       <template v-slot:header>
         <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
-          <v-flex xs8 md3>
+          <v-flex xs8 sm6>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
                 Зал
@@ -11,17 +11,25 @@
             </div>
           </v-flex>
 
-          <v-flex md1>
+          <v-flex xs4 sm2>
             <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate">
+              <div style="flex: 1 1 0%;" class="overline text-truncate text-right">
                 Клиенты
               </div>
             </div>
           </v-flex>
 
-          <v-flex md1>
+          <v-flex hidden-xs-only sm2>
             <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate">
+              <div style="flex: 1 1 0%;" class="overline text-truncate text-right">
+                Шкафчики
+              </div>
+            </div>
+          </v-flex>
+
+          <v-flex hidden-xs-only sm2>
+            <div style="display: flex; width: 100%">
+              <div style="flex: 1 1 0%;" class="overline text-truncate text-right">
                 Сотрудники
               </div>
             </div>
@@ -33,7 +41,9 @@
         <v-card>
           <v-list>
             <template v-for="item in props.items">
-              <hall-list-item :hall="item"></hall-list-item>
+              <v-list-item :to="{name: 'halls-id', params: {id: item.id}}">
+                <hall-list-item :hall="item"></hall-list-item>
+              </v-list-item>
               <v-divider></v-divider>
             </template>
           </v-list>
