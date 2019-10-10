@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+import ru from 'vuetify/es5/locale/ru'
 
 export default {
   mode: 'spa',
@@ -120,7 +121,11 @@ export default {
           success: colors.green.accent3
         }
       }
-    }
+    },
+    lang: {
+      locales: {ru},
+      current: 'ru',
+    },
   },
 
   toast: {
