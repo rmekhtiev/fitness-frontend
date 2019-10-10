@@ -12,9 +12,9 @@
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
 
-            <v-btn color="red" v-if="isHallAdmin || isOwner" @click="deleteEmployee()" text small>
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
+<!--            <v-btn color="red" v-if="isHallAdmin || isOwner" @click="deleteEmployee()" text small>-->
+<!--              <v-icon>mdi-delete</v-icon>-->
+<!--            </v-btn>-->
 
             <v-btn color="primary" text small v-if="link" :to="{name: 'employees-id', params: {id: employee.id}}"
                    target="_blank">
