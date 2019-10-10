@@ -61,7 +61,7 @@
       ref="editDialog"
       :bar-item="barItem"
       :title="'Редактирование: ' + barItem.title"
-      >
+    >
     </bar-edit-dialog>
   </div>
 </template>
@@ -115,14 +115,15 @@
             },
 
             editItem(e) {
-              this.$refs.editDialog.open().then((form) => {
-                this.$axios.patch('bar-items/' + this.barItem.id, form)
-                        .then(async response => {
-                          await this.$store.dispatch('bar-items/loadById', {id: response.data.data.id});
+                this.$refs.editDialog.open().then((form) => {
+                    this.$axios.patch('bar-items/' + this.barItem.id, form).then(response => {
+                        this.$store.dispatch('bar-items/loadById', {
+                            id: this.barItem.id,
                         });
 
-                this.$emit('update');
-              });
+                        this.$emit('update');
+                    });
+                });
             },
 
             sellItem(e) {

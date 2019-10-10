@@ -62,7 +62,7 @@
         }),
 
         created() {
-            console.log(this.barItem);
+            // console.log(this.barItem);
 
             if(this.barItem) {
                 Object.assign(this.form, this.barItem);
