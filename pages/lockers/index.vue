@@ -79,14 +79,14 @@
       </template>
     </v-data-iterator>
     <v-btn
-            color="blue"
-            dark
-            absolute
-            bottom
-            right
-            fab
-            class="mb-12"
-            @click.native="openLockerDialog">
+      color="blue"
+      dark
+      absolute
+      bottom
+      right
+      fab
+      class="mb-12"
+      @click.native="openLockerDialog">
       <v-icon>mdi-plus</v-icon>
     </v-btn>
     <locker-dialog ref="lockerDialog" title="Создание шкафчика"></locker-dialog>
@@ -145,13 +145,13 @@
             },
 
             openLockerDialog() {
-              this.$refs.lockerDialog.open().then(form => {
-                this.$axios.post('lockers', form)
+                this.$refs.lockerDialog.open().then(form => {
+                    this.$axios.post('lockers', form)
                         .then(async response => {
-                          await this.$store.dispatch('lockers/loadById', {id: response.data.data.id});
-                          this.$router.push({name: 'lockers', params: {id: response.data.data.id}})
+                            // await this.$store.dispatch('lockers/loadById', {id: response.data.data.id});
+                            this.$router.push({name: 'lockers-id', params: {id: response.data.data.id}})
                         });
-              })
+                })
             },
         },
 
