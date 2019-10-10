@@ -57,11 +57,18 @@
       :title="'Продажа: ' + barItem.title"
     >
     </bar-sell-dialog>
+    <bar-edit-dialog
+      ref="editDialog"
+      :bar-item="barItem"
+      :title="'Редактирование: ' + barItem.title"
+      >
+    </bar-edit-dialog>
   </div>
 </template>
 
 <script>
     import BarSellDialog from "./BarSellDialog";
+    import BarEditDialog from "./BarEditDialog";
 
     export default {
         name: "BarItemListItem",
@@ -75,6 +82,7 @@
 
         components: {
             BarSellDialog,
+            BarEditDialog,
         },
 
         data: () => ({
@@ -107,7 +115,14 @@
             },
 
             editItem(e) {
+              this.$refs.editDialog.open().then((form) => {
+                this.$axios.patch('bar-items/' + this.barItem.id, form)
+                        .then(async response => {
+                          await this.$store.dispatch('bar-items/loadById', {id: response.data.data.id});
+                        });
 
+                this.$emit('update');
+              });
             },
 
             sellItem(e) {
