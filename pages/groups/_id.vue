@@ -7,6 +7,16 @@
           class="mb-2 mx-auto">
         </group-info-card>
       </v-flex>
+
+      <v-flex xs12 sm6 lg8 xl9>
+        <v-card>
+          <v-card-text>
+            <div class="overline">Тренировки</div>
+          </v-card-text>
+
+          <group-event-calendar :group="group"></group-event-calendar>
+        </v-card>
+      </v-flex>
     </v-layout>
 
     <v-data-iterator :items="clients" :items-per-page="15">
@@ -126,6 +136,7 @@
     import GroupInfoCard from "../../components/groups/GroupInfoCard";
     import GroupAddClientDialog from "../../components/groups/GroupAddClientDialog";
     import Confirm from "../../components/Confirm";
+    import GroupEventCalendar from "../../components/groups/GroupEventCalendar";
 
     export default {
         mixins: [
@@ -133,6 +144,7 @@
         ],
 
         components: {
+            GroupEventCalendar,
             ClientListItem,
             GroupInfoCard,
             GroupAddClientDialog,
@@ -215,7 +227,11 @@
                         })
                     }
                 })
-            }
+            },
+        },
+
+        mounted() {
+
         },
 
         fetch({store, params}) {
