@@ -69,7 +69,7 @@
                     'drawer-profile': Profile,
                     'drawer-menu': Menu,
                 },
-                title: 'Фитнесс'
+                title: 'MULTIPOWER'
             }
         }
     }
