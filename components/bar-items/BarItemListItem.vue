@@ -57,18 +57,18 @@
       :title="'Продажа: ' + barItem.title"
     >
     </bar-sell-dialog>
-    <bar-edit-dialog
+    <bar-dialog
       ref="editDialog"
       :bar-item="barItem"
       :title="'Редактирование: ' + barItem.title"
     >
-    </bar-edit-dialog>
+    </bar-dialog>
   </div>
 </template>
 
 <script>
     import BarSellDialog from "./BarSellDialog";
-    import BarEditDialog from "./BarEditDialog";
+    import BarDialog from "./BarDialog";
 
     export default {
         name: "BarItemListItem",
@@ -82,7 +82,7 @@
 
         components: {
             BarSellDialog,
-            BarEditDialog,
+            BarDialog,
         },
 
         data: () => ({

@@ -13,20 +13,26 @@
             </v-toolbar>
 
             <v-card-text>
-                <bar-edit-form v-model="form" :is-edit="isEdit"></bar-edit-form>
+                <bar-edit-form v-model="form" :is-edit="isEdit" :halls="halls"></bar-edit-form>
             </v-card-text>
         </v-card>
     </v-dialog>
 </template>
 
 <script>
-    import BarEditForm from "./BarEditForm";
+    import BarEditForm from "./BarForm";
 
     export default {
         name: "BarEditDialog",
 
         components:{
             BarEditForm,
+        },
+
+        computed:{
+            halls() {
+                return this.$store.getters['halls/all'];
+            },
         },
 
         props: {
@@ -58,6 +64,8 @@
             form: {
                 title: null,
                 amount: null,
+                cost: null,
+                hall_id: null,
             },
         }),
 

@@ -12,20 +12,45 @@
                 label="Количество"
         >
         </v-text-field>
+        <v-text-field
+                v-model="value.cost"
+                min="1"
+                type="number"
+
+                label="Цена"
+        >
+        </v-text-field>
+        <v-autocomplete
+                v-model="value.hall_id"
+                :disabled="isHallAdmin || isEdit"
+                :items="halls"
+
+                label="Зал"
+                item-text="title"
+                item-value="id">
+        </v-autocomplete>
     </v-form>
 </template>
 
 <script>
 
 
+    import auth from "../../mixins/auth";
+
     export default {
-        name: "BarItemForm",
+        name: "BarForm",
 
-
+        mixins:[
+            auth
+        ],
         props: {
             value: {
                 type: Object,
                 default: {}
+            },
+
+            halls: {
+                type: Array,
             },
 
             isEdit: {
@@ -40,6 +65,8 @@
                 return {
                     title: null,
                     amount: null,
+                    hall_id: null,
+                    cost: null,
                 }
             }
         },
