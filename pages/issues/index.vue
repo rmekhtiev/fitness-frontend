@@ -184,7 +184,7 @@
 
             employees() {
                 return this.$store.getters['selectedHall']
-                    ? filter(this.$store.getters['employees/all'], item => (item.hall_id === this.$store.getters['selectedHallIdForFilter']))
+                    ? this.$store.getters['employees/all'].filter(item => (item.hall_id === this.$store.getters['selectedHallIdForFilter']))
                     : this.$store.getters['employees/all'];
             },
         },
@@ -222,6 +222,7 @@
         fetch({store}) {
             return Promise.all([
                 store.dispatch('issues/loadAll'),
+                store.dispatch('employees/loadAll'),
                 store.dispatch('halls/loadAll'),
             ]);
         },
