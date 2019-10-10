@@ -21,19 +21,48 @@
     <v-list dense nav subheader>
       <v-subheader>Зал</v-subheader>
 
-      <v-list-item
-        v-for="item in hallActions"
-        :key="item.title"
-        link nuxt :to="item.to" exact
-      >
-        <v-list-item-icon>
-          <v-icon>{{ item.icon }}</v-icon>
-        </v-list-item-icon>
+      <template
+        v-for="item in hallActions">
+        <v-list-group
+          v-if="item.items"
+          :key="item.title"
+          :prepend-icon="item.icon"
+        >
+          <template v-slot:activator>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </template>
 
-        <v-list-item-content>
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+          <v-list-item
+            v-for="subItem in item.items"
+            :key="subItem.title"
+            link nuxt :to="subItem.to" exact
+          >
+            <v-list-item-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ subItem.title }}</v-list-item-title>
+            </v-list-item-content>
+
+            <v-list-item-icon>
+              <v-icon>{{ subItem.icon }}</v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+        </v-list-group>
+        <v-list-item
+          v-else
+          :key="item.title"
+          link nuxt :to="item.to" exact
+        >
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
     </v-list>
 
     <template v-if="isOwner">
@@ -75,7 +104,14 @@
             ],
 
             hallActions: [
-                {title: 'Клиенты', icon: 'mdi-account-multiple-outline', to: {name: 'clients'}},
+                {
+                    title: 'Клиенты', icon: 'mdi-account-multiple-outline', items: [
+                        {title: 'Активные', icon: 'mdi-check-all', to: '#'},
+                        {title: 'Просроченный абонемент', icon: 'mdi-clock', to: '#'},
+                        {title: 'Без абонемента', icon: 'mdi-cancel', to: '#'},
+                        {title: 'Все клиенты', icon: 'mdi-account-search-outline', to: {name: 'clients'}},
+                    ]
+                },
                 {title: 'Шкафчики', icon: 'mdi-locker-multiple', to: {name: 'lockers'}},
                 {title: 'Сотрудники', icon: 'mdi-account-badge-horizontal-outline', to: {name: 'employees'}},
                 {title: 'Тренеры', icon: 'mdi-account-star', to: {name: 'trainers'}},
