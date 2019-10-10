@@ -47,9 +47,23 @@
       <template v-slot:default="props">
         <v-card>
           <v-list>
-            <template v-for="item in props.items">
+            <template v-if="itemsLoading">
+              <v-list-item>
+                <v-progress-linear
+                  color="primary accent-4"
+                  indeterminate
+                  rounded
+                  height="6"
+                ></v-progress-linear>
+              </v-list-item>
+            </template>
+            <template v-else v-for="(item, index) in props.items">
               <bar-item-list-item :barItem="item"></bar-item-list-item>
-              <v-divider></v-divider>
+
+              <v-divider
+                v-if="index + 1 < props.items.length"
+                :key="index"
+              ></v-divider>
             </template>
           </v-list>
         </v-card>
@@ -78,7 +92,14 @@
             resource: 'bar-items',
         }),
 
-        computed: {},
+        computed: {
+            pureFilter: function () {
+                return _({
+                    hall_id: this.selectedHallId,
+                    ...this.filter
+                }).omitBy(_.isNull).omitBy(_.isUndefined).value();
+            },
+        },
 
         fetch({store}) {
             return Promise.all([
