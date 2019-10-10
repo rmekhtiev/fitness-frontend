@@ -56,6 +56,18 @@
         </v-card>
       </template>
     </v-data-iterator>
+    <v-btn
+            color="primary"
+            dark
+            fab
+            fixed
+            bottom
+            right
+            @click.native="openEmployeeDialog">
+      <v-icon>mdi-plus</v-icon>
+    </v-btn>
+
+    <employee-dialog ref="employeeDialog" title="Создать работника"></employee-dialog>
   </div>
 </template>
 
@@ -64,10 +76,12 @@
     import selectedHallAware from "../../mixins/selectedHallAware";
 
     import EmployeeListItem from "../../components/employees/EmployeeListItem";
+    import EmployeeDialog from "../../components/employees/EmployeeDialog";
 
     export default {
         components: {
             EmployeeListItem,
+            EmployeeDialog,
         },
 
         mixins: [
@@ -103,7 +117,16 @@
                         per_page: -1,
                     }
                 });
-            }
+            },
+            openEmployeeDialog() {
+              this.$refs.employeeDialog.open().then(form => {
+                this.$axios.post('employees', form)
+                        .then(async response => {
+                          await this.$store.dispatch('employees/loadById', {id: response.data.data.id});
+                          this.$router.push({name: 'employees-id', params: {id: response.data.data.id}})
+                        });
+              });
+            },
         },
 
         fetch({store}) {
