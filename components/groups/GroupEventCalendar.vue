@@ -47,6 +47,8 @@
 
           locale="ru"
           :interval-format="(interval) => interval.time"
+          first-interval="8"
+          interval-count="16"
 
           :event-margin-bottom="3"
           :now="today"
