@@ -1,7 +1,7 @@
 <template>
   <v-layout align-center justify-center column fill-height>
     <div class="text-center mb-5">
-      <h1>Фитнесс</h1>
+      <h1>MULTIPOWER</h1>
       <h3>Система управления сетью Фитнесс-залов</h3>
     </div>
     <div style="width: 100%;">
