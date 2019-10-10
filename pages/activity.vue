@@ -56,32 +56,31 @@
     }
 
     function loadSubject(activities, type, store) {
-        let chunks = _(activities).chunk(25);
+        let chunks = _(activities).chunk(10);
 
-        if(type === 'client-group') {
-            let promis = chunks.map(chunk => ([
-                store.dispatch('clients/loadWhere', {
-                    filter: {
-                        id: _(chunk).map(activity => activity.properties.client_id).uniq().value(),
-                    }
-                }),
-                store.dispatch('groups/loadWhere', {
-                    filter: {
-                        id: _(chunk).map(activity => activity.properties.group_id).uniq().value(),
-                    }
-                }),
-            ])).flatten().value();
-
-            console.log(promis);
-
-            return Promise.all(promis);
+        switch (type) {
+            case 'client-group':
+                return Promise.all(chunks.map(chunk => Promise.all([
+                    store.dispatch('clients/loadWhere', {
+                        filter: {
+                            id: _(chunk).map(activity => activity.properties.client_id).uniq().value(),
+                        }
+                    }),
+                    store.dispatch('groups/loadWhere', {
+                        filter: {
+                            id: _(chunk).map(activity => activity.properties.group_id).uniq().value(),
+                        }
+                    }),
+                ])).value());
+            default:
+                return Promise.all(chunks.map(chunk => {
+                    return store.dispatch(type + '/loadWhere', {
+                        filter: {
+                            id: _(chunk).map(activity => activity.subject_id).uniq().value(),
+                        }
+                    }).then(async () => await loadRelated(chunk, type, store))
+                }).value());
         }
-
-        return Promise.all(chunks.map(chunk => store.dispatch(type + '/loadWhere', {
-            filter: {
-                id: _(chunk).map(activity => activity.subject_id).uniq().value(),
-            }
-        }).then(async () => await loadRelated(chunk, type, store))).value());
     }
 
     function loadRelated(activities, type, store) {
