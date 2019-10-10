@@ -111,8 +111,14 @@
             },
 
             sellItem(e) {
-                this.$refs.sellDialog.open().then(value => {
+                this.$refs.sellDialog.open().then(form => {
+                    this.$axios.$post('bar-items/' + this.barItem.id + '/sell', form).then((response) => {
+                        this.$store.dispatch('bar-items/loadById', {
+                            id: this.barItem.id,
+                        });
 
+                        this.$emit('update');
+                    });
                 });
             }
         }
