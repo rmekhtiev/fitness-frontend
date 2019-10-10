@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="barItem">
     <v-list-item @click="openMenu">
       <v-layout>
         <v-flex xs8 md7>
@@ -63,12 +63,14 @@
       :title="'Редактирование: ' + barItem.title"
     >
     </bar-dialog>
+    <confirm ref="delete"></confirm>
   </div>
 </template>
 
 <script>
     import BarSellDialog from "./BarSellDialog";
     import BarDialog from "./BarDialog";
+    import Confirm from "../Confirm";
 
     export default {
         name: "BarItemListItem",
@@ -83,6 +85,7 @@
         components: {
             BarSellDialog,
             BarDialog,
+            Confirm,
         },
 
         data: () => ({
@@ -99,6 +102,7 @@
                 return [
                     {title: "Редактировать", icon: "mdi-pencil", if: true, click: this.editItem},
                     {title: "Продажа", icon: "mdi-basket-outline", if: true, click: this.sellItem},
+                    {title: "Удалить", icon: "mdi-delete", if: true, click: this.deleteItem},
                 ]
             },
         },
@@ -130,7 +134,17 @@
                 this.$refs.sellDialog.open().then(value => {
 
                 });
-            }
+            },
+
+            deleteItem() {
+              this.$refs.delete.open('Удалить товар', 'Вы уверены? Это действие невозможно отменить', {color: 'red'}).then((confirm) => {
+                if (confirm) {
+                  this.$store.dispatch('bar-items/delete', {id: this.barItem.id});
+                  this.$emit('delete');
+                }
+                this.$router.push({path:"/bar-items"})
+              })
+            },
         }
     }
 </script>
