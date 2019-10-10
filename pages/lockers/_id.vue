@@ -1,11 +1,16 @@
 <template>
-  <v-layout row wrap>
+  <v-layout row wrap v-if="locker">
     <v-flex xs12 sm6 lg4 xl3>
       <v-card>
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title class="headline">Шкафчик &numero;{{ locker.number }}</v-list-item-title>
             <v-list-item-subtitle :title="hall.address">{{ hall.title }}</v-list-item-subtitle>
+            <div style="position: absolute; right: .5rem; top: .5rem;">
+              <v-btn color="red" v-if="isHallAdmin || isOwner" @click="deleteLocker()" text small>
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </div>
           </v-list-item-content>
         </v-list-item>
       </v-card>
@@ -95,6 +100,7 @@
         </template>
       </v-card>
     </v-flex>
+    <confirm ref="delete"></confirm>
   </v-layout>
 </template>
 
@@ -102,16 +108,21 @@
     import LockerClaimListItem from "../../components/locker-claims/LockerClaimListItem";
     import locker from "../../mixins/locker";
     import lockerClaim from "../../mixins/locker-claim";
+    import Confirm from "../../components/Confirm";
+    import auth from "../../mixins/auth";
 
     export default {
 
         components: {
             LockerClaimListItem,
+          Confirm,
         },
 
         mixins: [
             locker,
             lockerClaim,
+            Confirm,
+            auth
         ],
 
         data: () => ({
@@ -167,7 +178,16 @@
                         this.loading.claims = false;
                     });
                 })
-            }
+            },
+            deleteLocker() {
+              this.$refs.delete.open('Удалить шкафчик', 'Вы уверены? Это действие невозможно отменить', {color: 'red'}).then((confirm) => {
+                if (confirm) {
+                  this.$store.dispatch('lockers/delete', {id: this.locker.id});
+                  this.$emit('delete');
+                  this.$router.push({path: '/lockers'})
+                }
+              })
+            },
         },
 
         fetch: ({store, params}) => {
