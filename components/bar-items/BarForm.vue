@@ -65,8 +65,8 @@
                 return {
                     title: null,
                     amount: null,
-                    hall_id: null,
                     cost: null,
+                    hall_id: this.$store.getters['selectedHallId'] ? this.$store.getters['selectedHallId'] : null,
                 }
             }
         },
