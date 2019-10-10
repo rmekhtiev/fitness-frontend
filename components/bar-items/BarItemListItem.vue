@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="barItem">
     <v-list-item @click="openMenu">
       <v-layout>
         <v-flex xs8 md7>
@@ -62,11 +62,20 @@
       :title="'Продажа: ' + barItem.title"
     >
     </bar-sell-dialog>
+    <bar-dialog
+      ref="editDialog"
+      :bar-item="barItem"
+      :title="'Редактирование: ' + barItem.title"
+    >
+    </bar-dialog>
+    <confirm ref="delete"></confirm>
   </div>
 </template>
 
 <script>
     import BarSellDialog from "./BarSellDialog";
+    import BarDialog from "./BarDialog";
+    import Confirm from "../Confirm";
 
     export default {
         name: "BarItemListItem",
@@ -80,6 +89,8 @@
 
         components: {
             BarSellDialog,
+            BarDialog,
+            Confirm,
         },
 
         data: () => ({
@@ -96,6 +107,7 @@
                 return [
                     {title: "Редактировать", icon: "mdi-pencil", if: true, disabled: false, click: this.editItem},
                     {title: "Продажа", icon: "mdi-basket-outline", if: true, disabled: this.barItem.amount === 0, click: this.sellItem},
+                    {title: "Удалить", icon: "mdi-delete", if: true, disabled: false, click: this.deleteItem},
                 ]
             },
         },
@@ -112,7 +124,15 @@
             },
 
             editItem(e) {
+                this.$refs.editDialog.open().then((form) => {
+                    this.$axios.patch('bar-items/' + this.barItem.id, form).then(response => {
+                        this.$store.dispatch('bar-items/loadById', {
+                            id: this.barItem.id,
+                        });
 
+                        this.$emit('update');
+                    });
+                });
             },
 
             sellItem(e) {
@@ -125,7 +145,17 @@
                         this.$emit('update');
                     });
                 });
-            }
+            },
+
+            deleteItem() {
+              this.$refs.delete.open('Удалить товар', 'Вы уверены? Это действие невозможно отменить', {color: 'red'}).then((confirm) => {
+                if (confirm) {
+                  this.$store.dispatch('bar-items/delete', {id: this.barItem.id});
+                  this.$emit('delete');
+                }
+                this.$router.push({path:"/bar-items"})
+              })
+            },
         }
     }
 </script>

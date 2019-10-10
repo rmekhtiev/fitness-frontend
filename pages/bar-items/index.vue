@@ -69,6 +69,18 @@
         </v-card>
       </template>
     </v-data-iterator>
+    <v-btn
+            color="primary"
+            dark
+            fab
+            fixed
+            bottom
+            right
+            @click.native="openBarDialog">
+      <v-icon>mdi-plus</v-icon>
+    </v-btn>
+
+    <bar-dialog ref="barDialog" title="Создать товар"></bar-dialog>
   </div>
 </template>
 
@@ -77,10 +89,12 @@
 
     import serverSidePaginated from "../../mixins/server-side-paginated";
     import selectedHallAware from "../../mixins/selectedHallAware";
+    import BarDialog from "../../components/bar-items/BarDialog";
 
     export default {
         components: {
             BarItemListItem,
+            BarDialog,
         },
 
         mixins: [
@@ -100,6 +114,19 @@
                 }).omitBy(_.isNull).omitBy(_.isUndefined).value();
             },
         },
+
+      methods: {
+        openBarDialog() {
+          this.$refs.barDialog.open().then(form => {
+            this.$axios.post('bar-items', form)
+                    .then(async response => {
+                      await this.$store.dispatch('bar-items/loadById', {id: response.data.data.id});
+                      this.$router.push({name: 'bar-items', params: {id: response.data.data.id}})
+                    });
+          })
+        },
+
+      },
 
         fetch({store}) {
             return Promise.all([
