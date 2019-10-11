@@ -11,6 +11,7 @@
     <v-autocomplete
       v-model="value.employee_id"
       :items="employees"
+      :disabled="isEdit"
       label="Сотрудник"
       item-text="name"
       item-value="id"
@@ -31,10 +32,16 @@
 <script>
 import _ from "lodash"
 
+import { mask } from 'vue-the-mask'
+
 import auth from "../../mixins/auth"
 
 export default {
   name: "IssueForm",
+    
+  directives: {
+    mask
+  },
 
   mixins: [auth],
 
