@@ -55,7 +55,7 @@
 
     <employee-dialog
       ref="employeeDialog"
-      title="Создать тренера"
+      title="Править сотрудника"
       :employee="employee"
       is-edit
     />
