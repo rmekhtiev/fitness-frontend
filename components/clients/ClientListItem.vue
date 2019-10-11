@@ -28,6 +28,7 @@
                 </v-icon>
                 Заморожен до {{ activeSubscription.frozen_till }}
               </div>
+              <div class="body-2 green--text" v-else-if="activeSubscription.inactive"><v-icon middle color="green">mdi-clock</v-icon> Будет активирован {{activeSubscription.issue_date}}</div>
               <div v-else>
                 <v-progress-linear
                   :value="durationPercent"
