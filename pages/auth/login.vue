@@ -36,7 +36,13 @@
       </v-layout>
     </div>
     <div>
-
+      <v-img
+        :src="require('../../assets/img/header-logo-1c-pos.svg')"
+        class="mt-3"
+        contain
+        height="200"
+        width="200"
+      ></v-img>
     </div>
   </v-layout>
 </template>
