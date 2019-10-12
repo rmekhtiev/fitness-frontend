@@ -1,24 +1,28 @@
 <template v-slot>
   <default-activity-item v-bind="$props">
     <i18n :path="'activity.' + activity.subject_type + '.' + activity.description">
-      <nuxt-link slot="client" :to="{name: 'clients-id', params: {id: client.id}}">{{ client.name }}</nuxt-link>
-      <nuxt-link slot="locker" :to="{name: 'lockers-id', params: {id: locker.id}}">&numero;{{ locker.number }}</nuxt-link>
+      <nuxt-link slot="client" :to="{name: 'clients-id', params: {id: client.id}}">
+        {{ client.name }}
+      </nuxt-link>
+      <nuxt-link slot="locker" :to="{name: 'lockers-id', params: {id: locker.id}}">
+        &numero;{{ locker.number }}
+      </nuxt-link>
       <span slot="duration">{{ subject.duration }} дней</span>
     </i18n>
   </default-activity-item>
 </template>
 
 <script>
-    import DefaultActivityItem from "./DefaultActivityItem";
+    import DefaultActivityItem from "./DefaultActivityItem"
 
     export default {
-        extends: DefaultActivityItem,
 
         name: "LockerClaimActivityItem",
 
         components: {
             DefaultActivityItem
         },
+        extends: DefaultActivityItem,
 
         computed: {
             client() {

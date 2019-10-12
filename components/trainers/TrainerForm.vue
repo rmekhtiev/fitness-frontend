@@ -1,80 +1,75 @@
 <template>
-    <v-form>
-        <v-autocomplete
-                v-model="value.associated_employee_id"
-                :items="employees"
-
-                :disabled="isEdit"
-
-                label="Сотрудник"
-                prepend-icon="mdi-account-badge-horizontal-outline"
-                item-text="name"
-                item-value="id">
-        </v-autocomplete>
-        <v-text-field
-                v-model="value.phone_number"
-                v-mask="'+7 (###) ###-##-##'"
-                prepend-icon="mdi-phone-outline"
-                label="Номер телефона"
-        ></v-text-field>
-    </v-form>
+  <v-form>
+    <v-autocomplete
+      v-model="value.associated_employee_id"
+      :items="employees"
+      :disabled="isEdit"
+      label="Сотрудник"
+      prepend-icon="mdi-account-badge-horizontal-outline"
+      item-text="name"
+      item-value="id"
+    />
+    <v-text-field
+      v-model="value.phone_number"
+      v-mask="'+7 (###) ###-##-##'"
+      prepend-icon="mdi-phone-outline"
+      label="Номер телефона"
+    />
+  </v-form>
 </template>
 
 <script>
-    import { mask } from 'vue-the-mask'
+import { mask } from "vue-the-mask"
 
-    import auth from '../../mixins/auth'
+import auth from "../../mixins/auth"
 
-    export default {
-        name: "IssueForm",
+export default {
+  name: "IssueForm",
 
-        directives: {
-            mask,
-        },
+  directives: {
+    mask
+  },
 
-        props: {
-            value: {
-                type: Object,
-                default: {}
-            },
+  mixins: [auth],
 
-            employees: {
-                type: Array,
-            },
+  props: {
+    value: {
+      type: Object,
+      default: () => ({})
+    },
 
-            isEdit: {
-                type: Boolean,
-                default: false,
-            },
-        },
+    employees: {
+      type: Array,
+      default: () => []
+    },
 
-        mixins: [
-            auth,
-        ],
-
-        computed: {
-            defaultForm() {
-                return {
-                    phone_number: null,
-                    associated_employee_id: null,
-                }
-            }
-        },
-
-        created() {
-            let newVal = { ...this.value };
-
-            _(this.defaultForm).each((item, index) => {
-                if(!this.value[index]) {
-                    newVal[index] = item;
-                }
-            });
-
-            this.$emit('input', newVal)
-        },
+    isEdit: {
+      type: Boolean,
+      default: false
     }
+  },
+
+  computed: {
+    defaultForm() {
+      return {
+        phone_number: null,
+        associated_employee_id: null
+      }
+    }
+  },
+
+  created() {
+    let newVal = { ...this.value }
+
+    _(this.defaultForm).each((item, index) => {
+      if (!this.value[index]) {
+        newVal[index] = item
+      }
+    })
+
+    this.$emit("input", newVal)
+  }
+}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

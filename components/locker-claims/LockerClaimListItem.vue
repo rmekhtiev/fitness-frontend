@@ -3,25 +3,32 @@
     <v-list-item two-line>
       <v-list-item-content>
         <v-list-item-title v-if="!isClient">
-          <nuxt-link :to="{ name: 'lockers-id', params: {id: locker.id } }">&numero;{{ locker.number }}</nuxt-link>
+          <nuxt-link :to="{ name: 'lockers-id', params: {id: locker.id } }">
+            &numero;{{ locker.number }}
+          </nuxt-link>
           <span :title="hall.address">({{ hall.title }})</span>
         </v-list-item-title>
         <v-list-item-title v-else>
-          <nuxt-link :to="{ name: 'clients-id', params: {id: client.id } }">{{ client.name}}</nuxt-link>
+          <nuxt-link :to="{ name: 'clients-id', params: {id: client.id } }">
+            {{ client.name }}
+          </nuxt-link>
         </v-list-item-title>
 
         <v-list-item-subtitle
-          v-if="past">
+          v-if="past"
+        >
           {{ $moment(claim.claim_start).format('ll') }} &mdash; {{ $moment(claim.claim_end).format('ll') }}
         </v-list-item-subtitle>
         <v-list-item-subtitle
           v-else-if="future"
-          :title="$moment(claim.claim_start).format('ll') + ' - ' + $moment(claim.claim_end).format('ll')">
+          :title="$moment(claim.claim_start).format('ll') + ' - ' + $moment(claim.claim_end).format('ll')"
+        >
           <strong>{{ $moment(this.claim.claim_start).diff($moment(), 'days') }} дней</strong> до начала брони
         </v-list-item-subtitle>
         <v-list-item-subtitle
           v-else
-          :title="$moment(claim.claim_start).format('ll') + ' - ' + $moment(claim.claim_end).format('ll')">
+          :title="$moment(claim.claim_start).format('ll') + ' - ' + $moment(claim.claim_end).format('ll')"
+        >
           <strong>{{ durationLeft }} дней</strong> до окончания брони
         </v-list-item-subtitle>
       </v-list-item-content>
@@ -38,7 +45,7 @@
           </template>
 
           <v-list dense flat>
-            <v-list-item @click="updateClaim()" v-if="!past">
+            <v-list-item v-if="!past" @click="updateClaim()">
               <v-list-item-icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-list-item-icon>
@@ -59,16 +66,16 @@
       </v-list-item-action>
     </v-list-item>
 
-    <locker-claim-dialog ref="edit" :claim="claim" title="Редактирование брони шкафчика" is-edit></locker-claim-dialog>
-    <confirm ref="delete"></confirm>
+    <locker-claim-dialog ref="edit" :claim="claim" title="Редактирование брони шкафчика" is-edit />
+    <confirm ref="delete" />
   </div>
 </template>
 
 <script>
     import lockerClaim from '../../mixins/locker-claim'
 
-    import Confirm from "../Confirm";
-    import LockerClaimDialog from "./LockerClaimDialog";
+    import Confirm from "../Confirm"
+    import LockerClaimDialog from "./LockerClaimDialog"
 
     export default {
         name: "LockerClaimListItem",
@@ -111,12 +118,12 @@
             deleteClaim() {
                 this.$refs.delete.open('Удалить бронь', 'Вы уверены?', {color: 'red'}).then((confirm) => {
                     if (confirm) {
-                        let lockerId = this.claim.locker_id;
+                        let lockerId = this.claim.locker_id
 
-                        this.$store.dispatch('locker-claims/delete', {id: this.claim.id});
-                        this.$store.dispatch('lockers/loadById', {id: lockerId});
+                        this.$store.dispatch('locker-claims/delete', {id: this.claim.id})
+                        this.$store.dispatch('lockers/loadById', {id: lockerId})
 
-                        this.$emit('delete');
+                        this.$emit('delete')
                     }
                 })
             },
@@ -125,11 +132,11 @@
                 this.$refs.edit.open().then((form) => {
                     this.$axios.patch('locker-claims/' + this.claim.id, form)
                         .then(async response => {
-                            await this.$store.dispatch('locker-claims/loadById', {id: response.data.data.id});
-                        });
+                            await this.$store.dispatch('locker-claims/loadById', {id: response.data.data.id})
+                        })
 
-                    this.$emit('update');
-                });
+                    this.$emit('update')
+                })
             }
         }
     }

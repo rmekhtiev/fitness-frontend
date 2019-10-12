@@ -5,15 +5,12 @@
         <v-select
           v-model="filter.free"
           :items="statuses"
-
           label="Статус"
           single-line
           filled
-
           clearable
-
           @input="loadFiltered"
-        ></v-select>
+        />
       </v-flex>
     </v-layout>
 
@@ -22,8 +19,8 @@
       :options.sync="iteratorOptions"
       :server-items-length="totalItems"
       :loading="itemsLoading"
-
-      :items-per-page="15">
+      :items-per-page="15"
+    >
       <template v-slot:header>
         <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
           <v-flex xs2 md1>
@@ -62,17 +59,16 @@
                   indeterminate
                   rounded
                   height="6"
-                ></v-progress-linear>
+                />
               </v-list-item>
             </template>
-            <template v-else v-for="(item, index) in props.items">
-              <v-list-item :to="{name: 'lockers-id', params: {id: item.id}}">
-                <locker-list-item :locker="item"></locker-list-item>
+            <template v-for="(item, index) in props.items" v-else>
+              <v-list-item
+                :to="{ name: 'lockers-id', params: { id: item.id } }"
+              >
+                <locker-list-item :locker="item" />
               </v-list-item>
-              <v-divider
-                v-if="index + 1 < props.items.length"
-                :key="index"
-              ></v-divider>
+              <v-divider v-if="index + 1 < props.items.length" :key="index" />
             </template>
           </v-list>
         </v-card>
@@ -86,93 +82,96 @@
       right
       fab
       class="mb-12"
-      @click.native="openLockerDialog">
+      @click.native="openLockerDialog"
+    >
       <v-icon>mdi-plus</v-icon>
     </v-btn>
-    <locker-dialog ref="lockerDialog" title="Создание шкафчика"></locker-dialog>
+    <locker-dialog ref="lockerDialog" title="Создание шкафчика" />
   </div>
 </template>
 
 <script>
-    import serverSidePaginated from "../../mixins/server-side-paginated";
-    import selectedHallAware from "../../mixins/selectedHallAware";
+import _ from "lodash"
 
-    import LockerListItem from "../../components/lockers/LockerListItem";
-    import LockerDialog from "../../components/lockers/LockerDialog";
+import serverSidePaginated from "../../mixins/server-side-paginated"
+import selectedHallAware from "../../mixins/selectedHallAware"
 
-    export default {
-        name: "index",
+import LockerListItem from "../../components/lockers/LockerListItem"
+import LockerDialog from "../../components/lockers/LockerDialog"
 
-        head () {
-            return {
-                title: 'Шкафчики',
-            }
-        },
+export default {
+  name: "Index",
 
-        components: {
-            LockerListItem,
-            LockerDialog,
-        },
-
-        mixins: [
-            serverSidePaginated,
-            selectedHallAware,
-        ],
-
-        data: () => ({
-            resource: 'lockers',
-            statuses: [
-                {value: 'true', text: 'Свободен'},
-                {value: 'false', text: 'Занят'},
-            ]
-        }),
-
-        computed: {
-            pureFilter: function () {
-                return _({
-                    hall_id: this.selectedHallId,
-                    ...this.filter
-                }).omitBy(_.isNull).omitBy(_.isUndefined).value();
-            },
-        },
-
-        methods: {
-            loadRelated() {
-                let clientIds = this.items
-                    .filter(locker => (locker.claim))
-                    .map(locker => (locker.claim.client_id))
-                    .filter((value, index, self) => (self.indexOf(value) === index));
-
-                return this.$store.dispatch('clients/loadWhere', {
-                    filter: {
-                        client_id: clientIds,
-                    }
-                });
-            },
-
-            openLockerDialog() {
-                this.$refs.lockerDialog.open().then(form => {
-                    this.$axios.post('lockers', form)
-                        .then(async response => {
-                            // await this.$store.dispatch('lockers/loadById', {id: response.data.data.id});
-                            this.$router.push({name: 'lockers-id', params: {id: response.data.data.id}})
-                        });
-                })
-            },
-        },
-
-        fetch({store}) {
-            return Promise.all([
-                store.dispatch('lockers/loadPage', {
-                    options: {
-                        page: 1
-                    }
-                }),
-            ]);
-        },
+  head() {
+    return {
+      title: "Шкафчики"
     }
+  },
+
+  components: {
+    LockerListItem,
+    LockerDialog
+  },
+
+  mixins: [serverSidePaginated, selectedHallAware],
+
+  data: () => ({
+    resource: "lockers",
+    statuses: [
+      { value: "true", text: "Свободен" },
+      { value: "false", text: "Занят" }
+    ]
+  }),
+
+  computed: {
+    pureFilter: function() {
+      return _({
+        hall_id: this.selectedHallId,
+        ...this.filter
+      })
+        .omitBy(_.isNull)
+        .omitBy(_.isUndefined)
+        .value()
+    }
+  },
+
+  fetch({ store }) {
+    return Promise.all([
+      store.dispatch("lockers/loadPage", {
+        options: {
+          page: 1
+        }
+      })
+    ])
+  },
+
+  methods: {
+    loadRelated() {
+      let clientIds = this.items
+        .filter(locker => locker.claim)
+        .map(locker => locker.claim.client_id)
+        .filter((value, index, self) => self.indexOf(value) === index)
+
+      return this.$store.dispatch("clients/loadWhere", {
+        filter: {
+          client_id: clientIds
+        }
+      })
+    },
+
+    openLockerDialog() {
+      this.$refs.lockerDialog.open().then(form => {
+        this.$axios.post("lockers", form).then(async response => {
+          // await this.$store.dispatch('lockers/loadById', {id: response.data.data.id});
+          this.$router.push({
+            name: "lockers-id",
+            params: { id: response.data.data.id }
+          })
+        })
+      })
+    }
+  }
+}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

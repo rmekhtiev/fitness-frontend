@@ -1,17 +1,13 @@
-<template>
-
-</template>
+<template />
 
 <script>
-    export default {
-        head () {
-            return {
-                title: 'Проблема', // todo:
-            }
-        },
+export default {
+  head() {
+    return {
+      title: "Проблема" // todo:
     }
+  }
+}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

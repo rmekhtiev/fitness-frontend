@@ -1,13 +1,17 @@
 <template>
-  <v-layout row wrap v-if="locker">
+  <v-layout v-if="locker" row wrap>
     <v-flex xs12 sm6 lg4 xl3>
       <v-card>
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title class="headline">Шкафчик &numero;{{ locker.number }}</v-list-item-title>
-            <v-list-item-subtitle :title="hall.address">{{ hall.title }}</v-list-item-subtitle>
+            <v-list-item-title class="headline">
+              Шкафчик &numero;{{ locker.number }}
+            </v-list-item-title>
+            <v-list-item-subtitle :title="hall.address">
+              {{ hall.title }}
+            </v-list-item-subtitle>
             <div style="position: absolute; right: .5rem; top: .5rem;">
-              <v-btn color="red" v-if="isHallAdmin || isOwner" @click="deleteLocker()" text small>
+              <v-btn v-if="isHallAdmin || isOwner" color="red" text small @click="deleteLocker()">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </div>
@@ -19,7 +23,9 @@
     <v-flex xs12 sm6 lg4 xl3>
       <v-card class="mb-2">
         <v-card-text>
-          <div class="overline mb-4">Текущая бронь</div>
+          <div class="overline mb-4">
+            Текущая бронь
+          </div>
 
           <template v-if="loading.claims">
             <v-progress-linear
@@ -27,13 +33,16 @@
               rounded
               color="primary"
               indeterminate
-            ></v-progress-linear>
+            />
           </template>
           <template v-else>
             <div
               v-if="!claim"
-              class="green--text">
-              <v-icon small color="green">check</v-icon>
+              class="green--text"
+            >
+              <v-icon small color="green">
+                check
+              </v-icon>
               Свободен
             </div>
             <v-progress-linear
@@ -49,67 +58,72 @@
               </template>
             </v-progress-linear>
           </template>
-
         </v-card-text>
 
         <template v-if="!loading.claims">
-          <locker-claim-list-item v-if="claim" :claim="claim" is-client></locker-claim-list-item>
+          <locker-claim-list-item v-if="claim" :claim="claim" is-client />
         </template>
       </v-card>
 
       <v-card>
         <v-card-text>
-          <div class="overline">История броней</div>
+          <div class="overline">
+            История броней
+          </div>
         </v-card-text>
 
         <v-card-text
           v-if="loading.claims"
-          class="text-center">
+          class="text-center"
+        >
           <v-progress-linear
             height="16"
             rounded
             color="primary"
             indeterminate
-          ></v-progress-linear>
+          />
         </v-card-text>
         <template
-          v-else>
-
+          v-else
+        >
           <v-card-text
             v-if="claims.length === 0"
-            class="text-center">
-            <v-icon style="font-size: 4rem">mdi-inbox</v-icon>
+            class="text-center"
+          >
+            <v-icon style="font-size: 4rem">
+              mdi-inbox
+            </v-icon>
             <br>
             Пусто
           </v-card-text>
           <template
+            v-for="(claim, index) in claims"
             v-else
-            v-for="(claim, index) in claims">
+          >
             <locker-claim-list-item
-              is-client
               :key="'claim' + index"
-              :claim="claim">
-            </locker-claim-list-item>
+              is-client
+              :claim="claim"
+            />
 
             <v-divider
               v-if="index + 1 < claims.length"
               :key="'claim-divider' - index"
-            ></v-divider>
+            />
           </template>
-
         </template>
       </v-card>
     </v-flex>
-    <confirm ref="delete"></confirm>
+    <confirm ref="delete" />
   </v-layout>
 </template>
 
 <script>
-    import LockerClaimListItem from "../../components/locker-claims/LockerClaimListItem";
-    import locker from "../../mixins/locker";
-    import lockerClaim from "../../mixins/locker-claim";
-    import Confirm from "../../components/Confirm";
-    import auth from "../../mixins/auth";
+    import LockerClaimListItem from "../../components/locker-claims/LockerClaimListItem"
+    import locker from "../../mixins/locker"
+    import lockerClaim from "../../mixins/locker-claim"
+    import Confirm from "../../components/Confirm"
+    import auth from "../../mixins/auth"
 
     export default {
         head() {
@@ -138,11 +152,11 @@
 
         computed: {
             locker() {
-                return this.$store.getters['lockers/byId']({id: this.$route.params.id});
+                return this.$store.getters['lockers/byId']({id: this.$route.params.id})
             },
 
             hall() {
-                return this.$store.getters['halls/byId']({id: this.locker.hall_id});
+                return this.$store.getters['halls/byId']({id: this.locker.hall_id})
             },
 
             claims() {
@@ -158,53 +172,53 @@
             },
         },
 
+        fetch: ({store, params}) => {
+            return Promise.all([
+                store.dispatch('lockers/loadById', {
+                    id: params.id
+                }).then(async () => {
+                    let locker = store.getters['lockers/byId']({id: params.id})
+
+                    return await store.dispatch('halls/loadById', {id: locker.hall_id})
+                })
+            ])
+        },
+
         created() {
-            this.loadLockerClaims();
+            this.loadLockerClaims()
         },
 
         methods: {
             loadLockerClaims() {
-                this.loading.claims = true;
+                this.loading.claims = true
 
                 let lockerClaimsFilter = {
                     locker_id: this.$route.params.id,
-                };
+                }
 
                 return this.$store.dispatch('locker-claims/loadWhere', {
                     filter: lockerClaimsFilter
                 }).then(async () => {
                     let clientIds = _(this.$store.getters['locker-claims/where']({
                         filter: lockerClaimsFilter
-                    })).map(claim => claim.client_id).uniq();
+                    })).map(claim => claim.client_id).uniq()
 
-                    console.info('Gonna load next clients: ' + clientIds);
+                    console.info('Gonna load next clients: ' + clientIds)
 
                     return Promise.all(clientIds.map(lockerId => this.$store.dispatch('clients/loadById', {id: lockerId}))).then(() => {
-                        this.loading.claims = false;
-                    });
+                        this.loading.claims = false
+                    })
                 })
             },
             deleteLocker() {
                 this.$refs.delete.open('Удалить шкафчик', 'Вы уверены? Это действие невозможно отменить', {color: 'red'}).then((confirm) => {
                     if (confirm) {
-                        this.$store.dispatch('lockers/delete', {id: this.locker.id});
-                        this.$emit('delete');
+                        this.$store.dispatch('lockers/delete', {id: this.locker.id})
+                        this.$emit('delete')
                         this.$router.push({path: '/lockers'})
                     }
                 })
             },
-        },
-
-        fetch: ({store, params}) => {
-            return Promise.all([
-                store.dispatch('lockers/loadById', {
-                    id: params.id
-                }).then(async () => {
-                    let locker = store.getters['lockers/byId']({id: params.id});
-
-                    return await store.dispatch('halls/loadById', {id: locker.hall_id});
-                })
-            ]);
         },
     }
 </script>
