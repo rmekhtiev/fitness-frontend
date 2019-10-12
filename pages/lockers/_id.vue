@@ -112,10 +112,15 @@
     import auth from "../../mixins/auth";
 
     export default {
+        head() {
+            return {
+                title: 'Шкафчик №' + this.locker.number,
+            }
+        },
 
         components: {
             LockerClaimListItem,
-          Confirm,
+            Confirm,
         },
 
         mixins: [
@@ -180,13 +185,13 @@
                 })
             },
             deleteLocker() {
-              this.$refs.delete.open('Удалить шкафчик', 'Вы уверены? Это действие невозможно отменить', {color: 'red'}).then((confirm) => {
-                if (confirm) {
-                  this.$store.dispatch('lockers/delete', {id: this.locker.id});
-                  this.$emit('delete');
-                  this.$router.push({path: '/lockers'})
-                }
-              })
+                this.$refs.delete.open('Удалить шкафчик', 'Вы уверены? Это действие невозможно отменить', {color: 'red'}).then((confirm) => {
+                    if (confirm) {
+                        this.$store.dispatch('lockers/delete', {id: this.locker.id});
+                        this.$emit('delete');
+                        this.$router.push({path: '/lockers'})
+                    }
+                })
             },
         },
 

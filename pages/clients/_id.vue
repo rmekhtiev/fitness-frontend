@@ -129,6 +129,12 @@
     import LockerClaimDialog from "../../components/locker-claims/LockerClaimDialog";
 
     export default {
+        head() {
+            return {
+                title: this.client.name,
+            }
+        },
+
         components: {
             ClientInfoCard,
             SubscriptionInfoCard,

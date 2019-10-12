@@ -103,6 +103,12 @@
     export default {
         name: "index",
 
+        head () {
+            return {
+                title: 'Шкафчики',
+            }
+        },
+
         components: {
             LockerListItem,
             LockerDialog,

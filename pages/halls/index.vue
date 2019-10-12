@@ -60,6 +60,12 @@
     export default {
         name: "index",
 
+        head () {
+            return {
+                title: 'Залы',
+            }
+        },
+
         components: {
             HallListItem,
         },

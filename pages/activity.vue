@@ -105,6 +105,12 @@
     }
 
     export default {
+        head () {
+            return {
+                title: 'Журнал',
+            }
+        },
+
         directives: {
             infiniteScroll,
         },

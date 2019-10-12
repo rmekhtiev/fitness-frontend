@@ -70,13 +70,13 @@
       </template>
     </v-data-iterator>
     <v-btn
-            color="primary"
-            dark
-            fab
-            fixed
-            bottom
-            right
-            @click.native="openBarDialog">
+      color="primary"
+      dark
+      fab
+      fixed
+      bottom
+      right
+      @click.native="openBarDialog">
       <v-icon>mdi-plus</v-icon>
     </v-btn>
 
@@ -92,6 +92,12 @@
     import BarDialog from "../../components/bar-items/BarDialog";
 
     export default {
+        head () {
+            return {
+                title: 'Бар',
+            }
+        },
+
         components: {
             BarItemListItem,
             BarDialog,
@@ -115,18 +121,18 @@
             },
         },
 
-      methods: {
-        openBarDialog() {
-          this.$refs.barDialog.open().then(form => {
-            this.$axios.post('bar-items', form)
-                    .then(async response => {
-                      await this.$store.dispatch('bar-items/loadById', {id: response.data.data.id});
-                      this.$router.push({name: 'bar-items', params: {id: response.data.data.id}})
-                    });
-          })
-        },
+        methods: {
+            openBarDialog() {
+                this.$refs.barDialog.open().then(form => {
+                    this.$axios.post('bar-items', form)
+                        .then(async response => {
+                            await this.$store.dispatch('bar-items/loadById', {id: response.data.data.id});
+                            this.$router.push({name: 'bar-items', params: {id: response.data.data.id}})
+                        });
+                })
+            },
 
-      },
+        },
 
         fetch({store}) {
             return Promise.all([

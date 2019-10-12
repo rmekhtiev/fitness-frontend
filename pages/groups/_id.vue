@@ -139,6 +139,12 @@
     import GroupEventCalendar from "../../components/groups/GroupEventCalendar";
 
     export default {
+        head () {
+            return {
+                title: this.group.title,
+            }
+        },
+
         mixins: [
             group,
         ],

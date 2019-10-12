@@ -51,6 +51,12 @@
     export default {
         auth: false,
 
+        head () {
+            return {
+                title: 'Вход',
+            }
+        },
+
         layout: 'fullscreen',
 
         data: () => ({
@@ -72,11 +78,6 @@
                 }).catch(error => {
                     console.error(error);
                 });
-            },
-            head () {
-                return {
-                    title: 'Вход',
-                }
             },
         },
 

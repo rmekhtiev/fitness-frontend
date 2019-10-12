@@ -16,6 +16,12 @@
     import TrainerInfoCard from "../../components/trainers/TrainerInfoCard";
 
     export default {
+        head () {
+            return {
+                title: this.trainer.name,
+            }
+        },
+
         components: {
             TrainerInfoCard,
         },

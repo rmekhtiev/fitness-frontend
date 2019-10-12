@@ -122,6 +122,12 @@
     import TrainerDialog from "../../components/trainers/TrainerDialog";
 
     export default {
+        head () {
+            return {
+                title: 'Тренеры',
+            }
+        },
+
         mixins: [
             serverSidePaginated,
             selectedHallAware,

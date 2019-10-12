@@ -95,6 +95,12 @@
     import ClientDialog from "../../components/clients/ClientDialog";
 
     export default {
+        head () {
+            return {
+                title: 'Клиенты',
+            }
+        },
+
         components: {
             ClientDialog,
             ClientListItem,

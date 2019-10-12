@@ -155,6 +155,12 @@
     import employee from "../../mixins/employee";
 
     export default {
+        head () {
+            return {
+                title: 'Проблемы',
+            }
+        },
+
         mixins: [
             serverSidePaginated,
             selectedHallAware,

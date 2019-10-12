@@ -91,6 +91,12 @@
     import GroupDialog from "../../components/groups/GroupDialog";
 
     export default {
+        head () {
+            return {
+                title: 'Группы',
+            }
+        },
+
         mixins: [
             serverSidePaginated,
             selectedHallAware,

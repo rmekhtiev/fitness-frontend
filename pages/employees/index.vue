@@ -79,6 +79,12 @@
     import EmployeeDialog from "../../components/employees/EmployeeDialog";
 
     export default {
+        head () {
+            return {
+                title: 'Сотрудники',
+            }
+        },
+
         components: {
             EmployeeListItem,
             EmployeeDialog,
