@@ -56,6 +56,11 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/auth',
+
+    ['nuxt-rfg-icon', {
+      staticPath: '/_favicons/',
+      masterPicture: 'assets/img/header-logo-1c-pos.svg'
+    }],
   ],
   /*
   ** Axios module configuration
