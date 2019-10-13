@@ -4,7 +4,10 @@
       <v-list-item
         v-for="item in mainActions"
         :key="item.title"
-        link nuxt :to="item.to" exact
+        link
+        nuxt
+        :to="item.to"
+        exact
       >
         <v-list-item-icon>
           <v-icon>{{ item.icon }}</v-icon>
@@ -16,13 +19,12 @@
       </v-list-item>
     </v-list>
 
-    <v-divider></v-divider>
+    <v-divider />
 
     <v-list dense nav subheader>
       <v-subheader>Зал</v-subheader>
 
-      <template
-        v-for="item in hallActions">
+      <template v-for="item in hallActions">
         <v-list-group
           v-if="item.items"
           :key="item.title"
@@ -35,10 +37,12 @@
           <v-list-item
             v-for="subItem in item.items"
             :key="subItem.title"
-            link nuxt :to="subItem.to" exact
+            link
+            nuxt
+            :to="subItem.to"
+            exact
           >
-            <v-list-item-icon>
-            </v-list-item-icon>
+            <v-list-item-icon />
 
             <v-list-item-content>
               <v-list-item-title>{{ subItem.title }}</v-list-item-title>
@@ -49,11 +53,7 @@
             </v-list-item-icon>
           </v-list-item>
         </v-list-group>
-        <v-list-item
-          v-else
-          :key="item.title"
-          link nuxt :to="item.to" exact
-        >
+        <v-list-item v-else :key="item.title" link nuxt :to="item.to" exact>
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
@@ -66,7 +66,7 @@
     </v-list>
 
     <template v-if="isOwner">
-      <v-divider></v-divider>
+      <v-divider />
 
       <v-list dense nav subheader>
         <v-subheader>Управление</v-subheader>
@@ -74,7 +74,10 @@
         <v-list-item
           v-for="item in adminActions"
           :key="item.title"
-          link nuxt :to="item.to" exact
+          link
+          nuxt
+          :to="item.to"
+          exact
         >
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
@@ -90,43 +93,59 @@
 </template>
 
 <script>
-    import auth from '../../../mixins/auth'
+import auth from "../../../mixins/auth"
 
-    export default {
-        mixins: [
-            auth,
-        ],
+export default {
+  mixins: [auth],
 
-        data: () => ({
-            mainActions: [
-                {title: 'Главная', icon: 'mdi-home-outline', to: {name: 'index'}},
-                {title: 'Журнал', icon: 'mdi-calendar-check-outline', to: {name: 'activity'}},
-            ],
+  data: () => ({
+    mainActions: [
+      { title: "Главная", icon: "mdi-home-outline", to: { name: "index" } },
+      {
+        title: "Журнал",
+        icon: "mdi-calendar-check-outline",
+        to: { name: "activity" }
+      }
+    ],
 
-            hallActions: [
-                {
-                    title: 'Клиенты', icon: 'mdi-account-multiple-outline', items: [
-                        {title: 'Активные', icon: 'mdi-check-all', to: '#'},
-                        {title: 'Просроченный абонемент', icon: 'mdi-clock', to: '#'},
-                        {title: 'Без абонемента', icon: 'mdi-cancel', to: '#'},
-                        {title: 'Все клиенты', icon: 'mdi-account-search-outline', to: {name: 'clients'}},
-                    ]
-                },
-                {title: 'Шкафчики', icon: 'mdi-locker-multiple', to: {name: 'lockers'}},
-                {title: 'Сотрудники', icon: 'mdi-account-badge-horizontal-outline', to: {name: 'employees'}},
-                {title: 'Тренеры', icon: 'mdi-account-star', to: {name: 'trainers'}},
-                {title: 'Группы', icon: 'mdi-account-group', to: {name: 'groups'}},
-                {title: 'Проблемы', icon: 'mdi-clipboard-alert', to: {name: 'issues'}},
-                {title: 'Бар', icon: 'mdi-bottle-soda', to: {name: 'bar-items'}},
-            ],
+    hallActions: [
+      {
+        title: "Клиенты",
+        icon: "mdi-account-multiple-outline",
+        items: [
+          { title: "Активные", icon: "mdi-check-all", to: "#" },
+          { title: "Просроченный абонемент", icon: "mdi-clock", to: "#" },
+          { title: "Без абонемента", icon: "mdi-cancel", to: "#" },
+          {
+            title: "Все клиенты",
+            icon: "mdi-account-search-outline",
+            to: { name: "clients" }
+          }
+        ]
+      },
+      {
+        title: "Шкафчики",
+        icon: "mdi-locker-multiple",
+        to: { name: "lockers" }
+      },
+      {
+        title: "Сотрудники",
+        icon: "mdi-account-badge-horizontal-outline",
+        to: { name: "employees" }
+      },
+      { title: "Тренеры", icon: "mdi-account-star", to: { name: "trainers" } },
+      { title: "Группы", icon: "mdi-account-group", to: { name: "groups" } },
+      {
+        title: "Проблемы",
+        icon: "mdi-clipboard-alert",
+        to: { name: "issues" }
+      },
+      { title: "Бар", icon: "mdi-bottle-soda", to: { name: "bar-items" } }
+    ],
 
-            adminActions: [
-                {title: 'Залы', icon: 'mdi-domain', to: {name: 'halls'}},
-            ],
-        }),
-    }
+    adminActions: [{ title: "Залы", icon: "mdi-domain", to: { name: "halls" } }]
+  })
+}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

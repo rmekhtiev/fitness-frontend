@@ -6,131 +6,141 @@
           <v-icon>mdi-close</v-icon>
         </v-btn>
         <v-toolbar-title>{{ title }}</v-toolbar-title>
-        <div class="flex-grow-1"></div>
+        <div class="flex-grow-1" />
         <v-toolbar-items>
-          <v-btn dark text @click="save">Сохранить</v-btn>
+          <v-btn dark text @click="save">
+            Сохранить
+          </v-btn>
         </v-toolbar-items>
       </v-toolbar>
 
       <v-card-text>
-        <locker-claim-form v-model="form" :halls="$store.getters['halls/all']" :lockers="lockers" :is-edit="isEdit"></locker-claim-form>
+        <locker-claim-form
+          v-model="form"
+          :halls="$store.getters['halls/all']"
+          :lockers="lockers"
+          :is-edit="isEdit"
+        />
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-    import LockerClaimForm from "./LockerClaimForm";
+import LockerClaimForm from "./LockerClaimForm"
 
-    export default {
-        name: "LockerClaimDialog",
+export default {
+  name: "LockerClaimDialog",
 
-        props: {
-            fullscreen: {
-                type: Boolean,
-                default: true,
-            },
+  components: {
+    LockerClaimForm
+  },
 
-            title: {
-                type: String,
-            },
+  props: {
+    fullscreen: {
+      type: Boolean,
+      default: true
+    },
 
-            client: {
-                type: Object,
-                required: false,
-            },
+    title: {
+      type: String,
+      default: ""
+    },
 
-            claim: {
-                type: Object,
-                required: false
-            },
+    client: {
+      type: Object,
+      required: false,
+      default: () => ({})
+    },
 
-            isEdit: {
-                type: Boolean,
-                default: false,
-            }
-        },
+    claim: {
+      type: Object,
+      required: false,
+      default: () => ({})
+    },
 
-        components: {
-            LockerClaimForm,
-        },
-
-        data: () => ({
-            dialog: false,
-
-            resolve: null,
-            reject: null,
-
-            form: {
-                client_id: null,
-                hall_id: null,
-                locker_id: null,
-                claim_start: null,
-                claim_end: null,
-            },
-        }),
-
-        computed: {
-            lockersFilter() {
-                return {
-                    free: !this.isEdit,
-                    hall_id: this.form.hall_id,
-                }
-            },
-
-            lockers() {
-                return this.$store.getters['lockers/where']({
-                    filter: this.lockersFilter
-                })
-            },
-        },
-
-        watch: {
-            'form.hall_id': function (newVal, oldVal) {
-                this.$store.dispatch('lockers/loadWhere', {
-                    filter: this.lockersFilter
-                });
-            }
-        },
-
-        beforeMount() {
-            return Promise.all([ // todo
-                this.$store.dispatch('halls/loadAll'),
-            ])
-        },
-
-        created() {
-            if(this.client) {
-                this.form.client_id = this.client.id;
-            }
-
-            if(this.claim) {
-                Object.assign(this.form, this.claim);
-            }
-        },
-
-        methods: {
-            open(options) {
-                this.dialog = true;
-
-                return new Promise((resolve, reject) => {
-                    this.resolve = resolve;
-                    this.reject = reject
-                })
-            },
-
-            save() {
-                this.resolve(this.form);
-                this.dialog = false;
-            },
-
-            cancel() {
-                this.dialog = false;
-            }
-        }
+    isEdit: {
+      type: Boolean,
+      default: false
     }
+  },
+
+  data: () => ({
+    dialog: false,
+
+    resolve: null,
+    reject: null,
+
+    form: {
+      client_id: null,
+      hall_id: null,
+      locker_id: null,
+      claim_start: null,
+      claim_end: null
+    }
+  }),
+
+  computed: {
+    lockersFilter() {
+      return {
+        free: !this.isEdit,
+        hall_id: this.form.hall_id
+      }
+    },
+
+    lockers() {
+      return this.$store.getters["lockers/where"]({
+        filter: this.lockersFilter
+      })
+    }
+  },
+
+  watch: {
+    // eslint-disable-next-line no-unused-vars
+    "form.hall_id": function(newVal, oldVal) {
+      this.$store.dispatch("lockers/loadWhere", {
+        filter: this.lockersFilter
+      })
+    }
+  },
+
+  beforeMount() {
+    return Promise.all([
+      // todo
+      this.$store.dispatch("halls/loadAll")
+    ])
+  },
+
+  created() {
+    if (this.client) {
+      this.form.client_id = this.client.id
+    }
+
+    if (this.claim) {
+      Object.assign(this.form, this.claim)
+    }
+  },
+
+  methods: {
+    open() {
+      this.dialog = true
+
+      return new Promise((resolve, reject) => {
+        this.resolve = resolve
+        this.reject = reject
+      })
+    },
+
+    save() {
+      this.resolve(this.form)
+      this.dialog = false
+    },
+
+    cancel() {
+      this.dialog = false
+    }
+  }
+}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

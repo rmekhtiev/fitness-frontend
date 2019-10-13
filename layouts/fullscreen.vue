@@ -2,19 +2,14 @@
   <v-app>
     <v-content>
       <v-container fill-height>
-        <nuxt/>
+        <nuxt />
       </v-container>
     </v-content>
   </v-app>
 </template>
 
 <script>
-
-  export default {
-
-  }
+export default {}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

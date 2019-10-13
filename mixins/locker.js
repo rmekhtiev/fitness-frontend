@@ -1,5 +1,3 @@
 export default {
-  computed: {
-
-  }
+  computed: {}
 }

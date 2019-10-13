@@ -3,7 +3,9 @@
     <v-flex xs2 md1>
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate">
-          <div class="body-1">{{ locker.number }}</div>
+          <div class="body-1">
+            {{ locker.number }}
+          </div>
         </div>
       </div>
     </v-flex>
@@ -11,8 +13,13 @@
     <v-flex xs6 md3>
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate">
-          <div class="body-2 green--text" v-if="locker.free"><v-icon small color="green">check</v-icon> Свободен</div>
-          <div class="pr-4" v-else>
+          <div v-if="locker.free" class="body-2 green--text">
+            <v-icon small color="green">
+              check
+            </v-icon>
+            Свободен
+          </div>
+          <div v-else class="pr-4">
             <v-progress-linear
               :value="durationPercent"
               color="primary"
@@ -28,11 +35,17 @@
       </div>
     </v-flex>
 
-    <v-flex xs4 md3 v-if="!hideClient">
+    <v-flex v-if="!hideClient" xs4 md3>
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate">
-          <div class="body-2 grey--text" v-if="locker.free">&mdash;</div>
-          <div class="body-2" v-else :title="client.full_name"><nuxt-link :to="{name: 'clients-id', params: {id: client.id}}">{{ client.name }}</nuxt-link></div>
+          <div v-if="locker.free" class="body-2 grey--text">
+            &mdash;
+          </div>
+          <div v-else class="body-2" :title="client.full_name">
+            <nuxt-link :to="{ name: 'clients-id', params: { id: client.id } }">
+              {{ client.name }}
+            </nuxt-link>
+          </div>
         </div>
       </div>
     </v-flex>
@@ -40,41 +53,36 @@
 </template>
 
 <script>
-    import locker from "../../mixins/locker";
-    import lockerClaim from "../../mixins/locker-claim";
+import locker from "../../mixins/locker"
+import lockerClaim from "../../mixins/locker-claim"
 
-    export default {
-        name: "LockerListItem",
+export default {
+  name: "LockerListItem",
 
-        mixins: [
-            locker,
-            lockerClaim,
-        ],
+  mixins: [locker, lockerClaim],
 
-        props: {
-            locker: {
-                type: Object,
-                required: true
-            },
+  props: {
+    locker: {
+      type: Object,
+      required: true
+    },
 
-            hideClient: {
-                type: Boolean,
-                default: false,
-            }
-        },
-
-        computed: {
-            claim() {
-                return this.locker.claim;
-            },
-
-            client() {
-                return this.$store.getters['clients/byId']({ id: this.claim.client_id });
-            },
-        },
+    hideClient: {
+      type: Boolean,
+      default: false
     }
+  },
+
+  computed: {
+    claim() {
+      return this.locker.claim
+    },
+
+    client() {
+      return this.$store.getters["clients/byId"]({ id: this.claim.client_id })
+    }
+  }
+}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
