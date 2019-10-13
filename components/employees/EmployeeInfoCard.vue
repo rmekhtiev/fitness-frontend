@@ -120,8 +120,6 @@ export default {
         )
         .then(confirm => {
           if (confirm) {
-            let employeeId = this.employee.id
-
             this.$store.dispatch("employees/delete", { id: this.employee.id })
 
             this.$emit("delete")

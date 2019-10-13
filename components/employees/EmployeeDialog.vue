@@ -41,12 +41,14 @@ export default {
     },
 
     title: {
-      type: String
+      type: String,
+      default: ""
     },
 
     employee: {
       type: Object,
-      required: false
+      required: false,
+      default: () => []
     },
 
     isEdit: {
@@ -86,7 +88,7 @@ export default {
   },
 
   methods: {
-    open(options) {
+    open() {
       this.dialog = true
 
       return new Promise((resolve, reject) => {

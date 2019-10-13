@@ -61,6 +61,7 @@ function isWithinAWeek(momentDate, reference) {
   )
 }
 
+// eslint-disable-next-line no-unused-vars
 function isTwoWeeksOrMore(momentDate, reference) {
   return !isWithinAWeek(momentDate, reference)
 }

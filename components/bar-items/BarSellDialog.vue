@@ -32,9 +32,7 @@
         </v-form>
 
         <div>К оплате:</div>
-        <p class="display-1 text--primary">
-{{ this.price }} &#8381;
-</p>
+        <p class="display-1 text--primary">{{ price }} &#8381;</p>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -51,7 +49,8 @@ export default {
     },
 
     title: {
-      type: String
+      type: String,
+      default: ""
     },
 
     barItem: {
@@ -95,7 +94,7 @@ export default {
   created() {},
 
   methods: {
-    open(options) {
+    open() {
       this.dialog = true
 
       return new Promise((resolve, reject) => {

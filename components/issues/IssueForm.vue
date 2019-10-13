@@ -29,7 +29,10 @@
 </template>
 
 <script>
+import _ from "lodash"
+
 import auth from "../../mixins/auth"
+
 export default {
   name: "IssueForm",
 
@@ -42,17 +45,24 @@ export default {
     },
 
     halls: {
-      type: Array
+      type: Array,
+      default: () => []
     },
+
     employees: {
-      type: Array
+      type: Array,
+      default: () => []
     },
+
     description: {
-      type: String
+      type: String,
+      default: ""
     },
     status: {
-      type: String
+      type: String,
+      default: ""
     },
+
     isEdit: {
       type: Boolean,
       default: false

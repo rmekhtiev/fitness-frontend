@@ -41,6 +41,8 @@
 </template>
 
 <script>
+import _ from "lodash"
+
 import { mask } from "vue-the-mask"
 
 import auth from "../../mixins/auth"
@@ -61,11 +63,13 @@ export default {
     },
 
     halls: {
-      type: Array
+      type: Array,
+      default: () => []
     },
 
     trainers: {
-      type: Array
+      type: Array,
+      default: () => []
     },
 
     isEdit: {

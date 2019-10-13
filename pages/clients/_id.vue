@@ -201,7 +201,8 @@ export default {
     }
   },
 
-  fetch: ({ store, params, $moment, ...rest }) => {
+  fetch: ({ store, params, $moment }) => {
+    // eslint-disable-next-line no-unused-vars
     let lockerClaimsFilter = {
       client_id: params.id,
       after: $moment().format("YYYY-MM-DD")

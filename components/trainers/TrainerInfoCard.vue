@@ -145,8 +145,6 @@ export default {
         )
         .then(confirm => {
           if (confirm) {
-            let trainerId = this.trainer.trainer_id
-
             this.$store.dispatch("trainers/delete", { id: this.trainer.id })
             // this.$store.dispatch('trainers/loadById', {id: trainerId});
 

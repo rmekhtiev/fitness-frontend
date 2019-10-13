@@ -9,7 +9,6 @@
 </template>
 
 <script>
-import { filter } from "lodash"
 import TrainerInfoCard from "../../components/trainers/TrainerInfoCard"
 
 export default {

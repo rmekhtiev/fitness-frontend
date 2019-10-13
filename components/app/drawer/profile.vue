@@ -19,36 +19,37 @@
     </template>
 
     <v-list dense>
-      <v-list-item
-        v-for="(item, index) in halls"
-        v-if="isOwner"
-        :key="'hall-in-drawer-' + index"
-        style="padding-left: 11px;"
-        @click="
-          $store.dispatch(
-            'selectHall',
-            item.id !== $store.getters['selectedHallId'] ? item : null
-          )
-        "
-      >
-        <v-list-item-avatar size="34" style="margin-right: 26px">
-          <v-badge
-            :value="item.id === $store.getters['selectedHallId']"
-            bottom
-            overlap
-            color="success"
-          >
-            <template v-slot:badge>
-              <v-icon class="white--text">
-                mdi-check
-              </v-icon>
-            </template>
+      <template v-if="isOwner">
+        <v-list-item
+          v-for="(item, index) in halls"
+          :key="'hall-in-drawer-' + index"
+          style="padding-left: 11px;"
+          @click="
+            $store.dispatch(
+              'selectHall',
+              item.id !== $store.getters['selectedHallId'] ? item : null
+            )
+          "
+        >
+          <v-list-item-avatar size="34" style="margin-right: 26px">
+            <v-badge
+              :value="item.id === $store.getters['selectedHallId']"
+              bottom
+              overlap
+              color="success"
+            >
+              <template v-slot:badge>
+                <v-icon class="white--text">
+                  mdi-check
+                </v-icon>
+              </template>
 
-            <v-avatar size="34" color="primary" />
-          </v-badge>
-        </v-list-item-avatar>
-        <v-list-item-title>{{ item.title }}</v-list-item-title>
-      </v-list-item>
+              <v-avatar size="34" color="primary" />
+            </v-badge>
+          </v-list-item-avatar>
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item>
+      </template>
 
       <v-list-item @click.prevent="logout">
         <v-list-item-icon>
@@ -84,7 +85,7 @@ export default {
 
   methods: {
     logout() {
-      return this.$auth.logout().then(value => {
+      return this.$auth.logout().then(() => {
         this.$router.push({
           name: "auth-login"
         })

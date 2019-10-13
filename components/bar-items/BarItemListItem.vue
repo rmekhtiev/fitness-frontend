@@ -40,20 +40,21 @@
       offset-y
     >
       <v-list dense flat>
-        <v-list-item
-          v-for="(item, index) in menuItems"
-          v-if="item.if"
-          :key="'menu-item-' + index + '-for-' + barItem.id"
-          :disabled="item.disabled"
-          @click="item.click"
-        >
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content class="pr-6">
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <template v-for="(item, index) in menuItems">
+          <v-list-item
+            v-if="item.if"
+            :key="'menu-item-' + index + '-for-' + barItem.id"
+            :disabled="item.disabled"
+            @click="item.click"
+          >
+            <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content class="pr-6">
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
       </v-list>
     </v-menu>
 
@@ -140,25 +141,23 @@ export default {
       })
     },
 
-    editItem(e) {
+    editItem() {
       this.$refs.editDialog.open().then(form => {
-        this.$axios
-          .patch("bar-items/" + this.barItem.id, form)
-          .then(response => {
-            this.$store.dispatch("bar-items/loadById", {
-              id: this.barItem.id
-            })
-
-            this.$emit("update")
+        this.$axios.patch("bar-items/" + this.barItem.id, form).then(() => {
+          this.$store.dispatch("bar-items/loadById", {
+            id: this.barItem.id
           })
+
+          this.$emit("update")
+        })
       })
     },
 
-    sellItem(e) {
+    sellItem() {
       this.$refs.sellDialog.open().then(form => {
         this.$axios
           .$post("bar-items/" + this.barItem.id + "/sell", form)
-          .then(response => {
+          .then(() => {
             this.$store.dispatch("bar-items/loadById", {
               id: this.barItem.id
             })

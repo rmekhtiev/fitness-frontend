@@ -43,17 +43,20 @@ export default {
     },
 
     title: {
-      type: String
+      type: String,
+      default: ""
     },
 
     client: {
       type: Object,
-      required: false
+      required: false,
+      default: () => ({})
     },
 
     claim: {
       type: Object,
-      required: false
+      required: false,
+      default: () => ({})
     },
 
     isEdit: {
@@ -93,6 +96,7 @@ export default {
   },
 
   watch: {
+    // eslint-disable-next-line no-unused-vars
     "form.hall_id": function(newVal, oldVal) {
       this.$store.dispatch("lockers/loadWhere", {
         filter: this.lockersFilter
@@ -118,7 +122,7 @@ export default {
   },
 
   methods: {
-    open(options) {
+    open() {
       this.dialog = true
 
       return new Promise((resolve, reject) => {

@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import _ from "lodash"
+
 import auth from "../../mixins/auth"
 
 export default {
@@ -33,7 +35,8 @@ export default {
     },
 
     halls: {
-      type: Array
+      type: Array,
+      default: () => []
     },
 
     isEdit: {

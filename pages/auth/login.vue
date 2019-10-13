@@ -82,7 +82,7 @@ export default {
         .loginWith("local", {
           data: this.form
         })
-        .then(value => {
+        .then(() => {
           this.$router.push({
             name: "index"
           })

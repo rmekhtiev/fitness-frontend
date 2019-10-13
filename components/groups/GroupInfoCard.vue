@@ -158,7 +158,7 @@ export default {
           "Вы уверены, что хотите удалить группу? Данное действие невозможно отменить",
           { color: "red" }
         )
-        .then(response => {
+        .then(() => {
           this.$router.back()
           this.$store
             .dispatch("groups/delete", { id: this.group.id })

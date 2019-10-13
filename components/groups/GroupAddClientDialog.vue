@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { filter, pluck } from "lodash"
+import _ from "lodash"
 
 import selectedHallAware from "../../mixins/selectedHallAware"
 import filterable from "../../mixins/filterable"
@@ -114,7 +114,7 @@ export default {
   },
 
   methods: {
-    open(options) {
+    open() {
       this.dialog = true
 
       return new Promise((resolve, reject) => {

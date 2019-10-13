@@ -15,9 +15,7 @@
                 ФИО
               </v-list-item-subtitle>
               <v-list-item-title class="text-uppercase">
-                {{
-                  client.name
-                }}
+                {{ client.name }}
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -25,27 +23,33 @@
             <v-list-item-content>
               <v-list-item-subtitle class="caption">
                 Информация об абонементе
-              </v-list-item-subtitle
-              <div v-if="client.active_subscription"
+              </v-list-item-subtitle>
+              <div v-if="client.active_subscription">
+                <div v-if="activeSubscription.frozen" class="body-2 blue--text">
+                  <v-icon middle color="blue">
+                    mdi-clock
+                  </v-icon>
+                  Заморожен до {{ activeSubscription.frozen_till }}
+                </div>
+                <div v-else class="body-2">
+                  {{ activeSubscription.issue_date }} &mdash;
+                  {{ activeSubscription.valid_till }}
+                </div>
+              </div>
+              <div
+                v-else-if="client.subscriptions_count > 0"
+                class="body-2 orange--text darken-4"
               >
-              <div v-if="activeSubscription.frozen" class="body-2 blue--text">
-                <v-icon middle color="blue">
-                  mdi-clock
-                </v-icon> Заморожен до {{ activeSubscription.frozen_till }}
-              </div>
-              <div v-else class="body-2">
-                {{ activeSubscription.issue_date }} - {{ activeSubscription.valid_till }}
-              </div>
-              </div>
-              <div v-else-if="client.subscriptions_count > 0" class="body-2 orange--text darken-4">
                 <v-icon middle color="orange">
                   mdi-clock
-                </v-icon> Абонемент просрочен
+                </v-icon>
+                Абонемент просрочен
               </div>
               <div v-else class="body-2 red--text">
                 <v-icon middle color="red">
                   error
-                </v-icon> Абонемент отстутсвует
+                </v-icon>
+                Абонемент отстутсвует
               </div>
             </v-list-item-content>
           </v-list-item>

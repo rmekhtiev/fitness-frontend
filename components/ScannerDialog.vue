@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { QrcodeStream, QrcodeDropZone, QrcodeCapture } from "vue-qrcode-reader"
+import { QrcodeStream } from "vue-qrcode-reader"
 
 import client from "../mixins/client"
 
@@ -82,8 +82,10 @@ export default {
     async onDetect(promise) {
       try {
         const {
+          // eslint-disable-next-line no-unused-vars
           imageData, // raw image data of image/frame
           content, // decoded String
+          // eslint-disable-next-line no-unused-vars
           location // QR code coordinates
         } = await promise
 

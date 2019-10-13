@@ -5,11 +5,8 @@
         <slot>
           {{
             $t(
-              "activity." +
-                this.activity.subject_type +
-                "." +
-                this.activity.description,
-              { subject: this.activity.subject }
+              "activity." + activity.subject_type + "." + activity.description,
+              { subject: activity.subject }
             )
           }}
         </slot>
