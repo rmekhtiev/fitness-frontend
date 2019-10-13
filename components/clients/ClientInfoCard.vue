@@ -57,18 +57,22 @@
 
         <v-list-item v-if="client.whats_up_number">
           <v-list-item-icon>
-            <v-icon color="primary">mdi-whatsapp</v-icon>
+            <v-icon color="primary">
+              mdi-whatsapp
+            </v-icon>
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title>{{ client.whats_up_number}}</v-list-item-title>
+            <v-list-item-title>{{ client.whats_up_number }}</v-list-item-title>
             <v-list-item-subtitle>Номер WhatsUp</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
 
         <v-list-item v-if="client.phone_number">
           <v-list-item-icon>
-            <v-icon color="primary">mdi-instagram</v-icon>
+            <v-icon color="primary">
+              mdi-instagram
+            </v-icon>
           </v-list-item-icon>
 
           <v-list-item-content>
