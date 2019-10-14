@@ -96,11 +96,11 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import auth from "../../mixins/auth"
+import auth from "../../mixins/auth";
 
-import LockerListItem from "../lockers/LockerListItem"
+import LockerListItem from "../lockers/LockerListItem";
 
 export default {
   name: "LockerClaimForm",
@@ -150,22 +150,22 @@ export default {
         claim_end: this.$moment()
           .add(2, "week")
           .format("YYYY-MM-DD")
-      }
+      };
     }
   },
 
   created() {
-    let newVal = { ...this.value }
+    let newVal = { ...this.value };
 
     _(this.defaultForm).each((item, index) => {
       if (!this.value[index] || this.value[index] === null) {
-        newVal[index] = item
+        newVal[index] = item;
       }
-    })
+    });
 
-    this.$emit("input", newVal)
+    this.$emit("input", newVal);
   }
-}
+};
 </script>
 
 <style scoped></style>

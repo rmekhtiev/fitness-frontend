@@ -9,13 +9,13 @@
 </template>
 
 <script>
-import EmployeeInfoCard from "../../components/employees/EmployeeInfoCard"
+import EmployeeInfoCard from "../../components/employees/EmployeeInfoCard";
 
 export default {
   head() {
     return {
       title: this.employee.name
-    }
+    };
   },
 
   components: {
@@ -26,7 +26,7 @@ export default {
     employee() {
       return this.$store.getters["employees/byId"]({
         id: this.$route.params.id
-      })
+      });
     }
   },
 
@@ -34,9 +34,9 @@ export default {
     return Promise.all([
       store.dispatch("employees/loadById", { id: params.id }),
       store.dispatch("halls/loadAll")
-    ])
+    ]);
   }
-}
+};
 </script>
 
 <style scoped></style>

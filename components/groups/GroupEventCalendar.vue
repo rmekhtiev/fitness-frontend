@@ -90,88 +90,88 @@ export default {
 
   computed: {
     today() {
-      return this.$moment().format("YYYY-MM-DD")
+      return this.$moment().format("YYYY-MM-DD");
     },
 
     title() {
-      const { start, end } = this
+      const { start, end } = this;
       if (!start || !end) {
-        return ""
+        return "";
       }
 
-      const startDay = start.day
-      const endDay = end.day
+      const startDay = start.day;
+      const endDay = end.day;
 
-      const startMonth = this.monthFormatter(start)
-      const endMonth = this.monthFormatter(end)
-      const prefixMonth = startMonth === endMonth ? "" : startMonth
+      const startMonth = this.monthFormatter(start);
+      const endMonth = this.monthFormatter(end);
+      const prefixMonth = startMonth === endMonth ? "" : startMonth;
 
-      const startYear = start.year
-      const endYear = end.year
-      const prefixYear = startYear === endYear ? "" : startYear
+      const startYear = start.year;
+      const endYear = end.year;
+      const prefixYear = startYear === endYear ? "" : startYear;
 
       switch (this.type) {
         case "month":
-          return `${startMonth} ${startYear}` // октябрь 2019
+          return `${startMonth} ${startYear}`; // октябрь 2019
         case "week": // 28 сентября - 5 октября 2019, 28 декабря 2018 - 12 января 2019
         case "4day": // 12 - 16  октября 2019
-          return `${startDay} ${prefixMonth} ${prefixYear} - ${endDay} ${endMonth} ${endYear}`
+          return `${startDay} ${prefixMonth} ${prefixYear} - ${endDay} ${endMonth} ${endYear}`;
         case "day":
-          return `${startDay} ${startMonth} ${startYear}`
+          return `${startDay} ${startMonth} ${startYear}`;
       }
-      return ""
+      return "";
     },
 
     monthFormatter() {
       return this.$refs.calendar.getFormatter({
         timeZone: "UTC",
         month: "long"
-      })
+      });
     }
   },
 
   mounted() {
-    this.focus = this.today
+    this.focus = this.today;
 
     this.loadEvents({
       start: this.$moment().format("YYYY-MM-DD hh:mm"),
       end: this.$moment()
         .add(1, "month")
         .format("YYYY-MM-DD hh:mm")
-    })
+    });
   },
 
   methods: {
     viewDay({ date }) {
-      this.focus = date
-      this.type = "day"
+      this.focus = date;
+      this.type = "day";
     },
 
     setToday() {
-      this.focus = this.today
+      this.focus = this.today;
     },
 
     prev() {
-      this.$refs.calendar.prev()
+      this.$refs.calendar.prev();
     },
 
     next() {
-      this.$refs.calendar.next()
+      this.$refs.calendar.next();
     },
 
     updateRange(range) {
-      let { start, end } = range
+      let { start, end } = range;
 
-      console.log(range)
+      console.log(range);
 
       // You could load events from an outside source (like database) now that we have the start and end dates on the calendar
-      this.start = start
-      this.end = end
+      this.start = start;
+      this.end = end;
 
       this.loadEvents({
         start: start.date,
         end: end.date
-      })
+      });
     },
 
     loadEvents({ start, end }) {
@@ -190,11 +190,11 @@ export default {
             end_date: event.end_date
             // start_date: this.$moment(event.start_date).format('YYYY-MM-DD hh:mm'),
             // end_date: this.$moment(event.end_date).format('YYYY-MM-DD hh:mm'),
-          }))
-        })
+          }));
+        });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

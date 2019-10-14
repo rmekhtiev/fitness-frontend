@@ -87,19 +87,19 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import serverSidePaginated from "../../mixins/server-side-paginated"
-import selectedHallAware from "../../mixins/selectedHallAware"
+import serverSidePaginated from "../../mixins/server-side-paginated";
+import selectedHallAware from "../../mixins/selectedHallAware";
 
-import GroupListItem from "../../components/groups/GroupListItem"
-import GroupDialog from "../../components/groups/GroupDialog"
+import GroupListItem from "../../components/groups/GroupListItem";
+import GroupDialog from "../../components/groups/GroupDialog";
 
 export default {
   head() {
     return {
       title: "Группы"
-    }
+    };
   },
 
   components: {
@@ -121,7 +121,7 @@ export default {
       })
         .omitBy(_.isNull)
         .omitBy(_.isUndefined)
-        .value()
+        .value();
     }
   },
 
@@ -130,7 +130,7 @@ export default {
       store.dispatch("groups/loadAll"),
       store.dispatch("halls/loadAll"),
       store.dispatch("trainers/loadAll")
-    ])
+    ]);
   },
 
   methods: {
@@ -139,16 +139,16 @@ export default {
         this.$axios.post("groups", form).then(async response => {
           await this.$store.dispatch("groups/loadById", {
             id: response.data.data.id
-          })
+          });
           this.$router.push({
             name: "groups-id",
             params: { id: response.data.data.id }
-          })
-        })
-      })
+          });
+        });
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

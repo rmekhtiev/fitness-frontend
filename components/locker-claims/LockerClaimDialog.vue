@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import LockerClaimForm from "./LockerClaimForm"
+import LockerClaimForm from "./LockerClaimForm";
 
 export default {
   name: "LockerClaimDialog",
@@ -85,13 +85,13 @@ export default {
       return {
         free: !this.isEdit,
         hall_id: this.form.hall_id
-      }
+      };
     },
 
     lockers() {
       return this.$store.getters["lockers/where"]({
         filter: this.lockersFilter
-      })
+      });
     }
   },
 
@@ -100,7 +100,7 @@ export default {
     "form.hall_id": function(newVal, oldVal) {
       this.$store.dispatch("lockers/loadWhere", {
         filter: this.lockersFilter
-      })
+      });
     }
   },
 
@@ -108,39 +108,39 @@ export default {
     return Promise.all([
       // todo
       this.$store.dispatch("halls/loadAll")
-    ])
+    ]);
   },
 
   created() {
     if (this.client) {
-      this.form.client_id = this.client.id
+      this.form.client_id = this.client.id;
     }
 
     if (this.claim) {
-      Object.assign(this.form, this.claim)
+      Object.assign(this.form, this.claim);
     }
   },
 
   methods: {
     open() {
-      this.dialog = true
+      this.dialog = true;
 
       return new Promise((resolve, reject) => {
-        this.resolve = resolve
-        this.reject = reject
-      })
+        this.resolve = resolve;
+        this.reject = reject;
+      });
     },
 
     save() {
-      this.resolve(this.form)
-      this.dialog = false
+      this.resolve(this.form);
+      this.dialog = false;
     },
 
     cancel() {
-      this.dialog = false
+      this.dialog = false;
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

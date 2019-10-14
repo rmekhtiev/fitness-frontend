@@ -83,19 +83,19 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import BarItemListItem from "../../components/bar-items/BarItemListItem"
+import BarItemListItem from "../../components/bar-items/BarItemListItem";
 
-import serverSidePaginated from "../../mixins/server-side-paginated"
-import selectedHallAware from "../../mixins/selectedHallAware"
-import BarDialog from "../../components/bar-items/BarDialog"
+import serverSidePaginated from "../../mixins/server-side-paginated";
+import selectedHallAware from "../../mixins/selectedHallAware";
+import BarDialog from "../../components/bar-items/BarDialog";
 
 export default {
   head() {
     return {
       title: "Бар"
-    }
+    };
   },
 
   components: {
@@ -117,12 +117,12 @@ export default {
       })
         .omitBy(_.isNull)
         .omitBy(_.isUndefined)
-        .value()
+        .value();
     }
   },
 
   fetch({ store }) {
-    return Promise.all([store.dispatch("bar-items/loadAll")])
+    return Promise.all([store.dispatch("bar-items/loadAll")]);
   },
 
   methods: {
@@ -131,16 +131,16 @@ export default {
         this.$axios.post("bar-items", form).then(async response => {
           await this.$store.dispatch("bar-items/loadById", {
             id: response.data.data.id
-          })
+          });
           this.$router.push({
             name: "bar-items",
             params: { id: response.data.data.id }
-          })
-        })
-      })
+          });
+        });
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

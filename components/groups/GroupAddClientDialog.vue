@@ -32,10 +32,10 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import selectedHallAware from "../../mixins/selectedHallAware"
-import filterable from "../../mixins/filterable"
+import selectedHallAware from "../../mixins/selectedHallAware";
+import filterable from "../../mixins/filterable";
 
 export default {
   name: "GroupAddClientDialog",
@@ -75,7 +75,7 @@ export default {
           type: "groups",
           id: this.group.id
         }
-      })
+      });
     },
 
     pureClientsFilter: function() {
@@ -85,13 +85,13 @@ export default {
       })
         .omitBy(_.isNull)
         .omitBy(_.isUndefined)
-        .value()
+        .value();
     },
 
     pureClients() {
       return this.$store.getters["clients/where"]({
         filter: this.pureFilter
-      })
+      });
     },
 
     availableClients() {
@@ -99,52 +99,52 @@ export default {
         .filter(this.selectedHallFilter)
         .filter(
           item => !this.groupClients.map(client => client.id).includes(item.id)
-        )
+        );
     }
   },
 
   watch: {
     selectedHallId() {
-      this.loadFilteredClients()
+      this.loadFilteredClients();
     }
   },
 
   mounted() {
-    this.loadFilteredClients()
+    this.loadFilteredClients();
   },
 
   methods: {
     open() {
-      this.dialog = true
+      this.dialog = true;
 
       return new Promise((resolve, reject) => {
-        this.resolve = resolve
-        this.reject = reject
-      })
+        this.resolve = resolve;
+        this.reject = reject;
+      });
     },
 
     save() {
-      this.resolve(this.form)
-      this.dialog = false
+      this.resolve(this.form);
+      this.dialog = false;
     },
 
     cancel() {
-      this.dialog = false
+      this.dialog = false;
     },
 
     loadFilteredClients() {
       return this.$store.dispatch("clients/loadWhere", {
         filter: this.pureFilter
-      })
+      });
     },
 
     selectedHallFilter(item) {
       return this.selectedHallId === null
         ? true
-        : item.primary_hall_id === this.selectedHallId
+        : item.primary_hall_id === this.selectedHallId;
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

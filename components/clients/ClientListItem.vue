@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import client from "../../mixins/client"
+import client from "../../mixins/client";
 
 export default {
   name: "ClientListItem",
@@ -82,34 +82,34 @@ export default {
     primaryHall() {
       return this.$store.getters["halls/byId"]({
         id: this.client.primary_hall_id
-      })
+      });
     },
     activeSubscription() {
       return this.$store.getters["subscriptions/byId"]({
         id: this.client.active_subscription.id
-      })
+      });
     },
 
     daysTill() {
-      let date = this.$moment.utc(this.activeSubscription.valid_till)
+      let date = this.$moment.utc(this.activeSubscription.valid_till);
       let days_till = this.$moment(this.activeSubscription.valid_till).diff(
         this.$moment(),
         "days"
-      )
-      let now = this.$moment().startOf("day")
-      let sub = this.client.active_subscription
+      );
+      let now = this.$moment().startOf("day");
+      let sub = this.client.active_subscription;
       //sub = null;
-      console.log(sub)
+      console.log(sub);
       if (Math.abs(date.diff(now, "days")) === 0) {
-        return "Сегодня"
+        return "Сегодня";
       } else if (Math.abs(date.diff(now, "days")) === 1) {
-        return "Завтра"
+        return "Завтра";
       } else {
-        return "Через " + days_till
+        return "Через " + days_till;
       }
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

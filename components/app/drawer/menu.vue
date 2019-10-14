@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import auth from "../../../mixins/auth"
+import auth from "../../../mixins/auth";
 
 export default {
   mixins: [auth],
@@ -145,7 +145,7 @@ export default {
 
     adminActions: [{ title: "Залы", icon: "mdi-domain", to: { name: "halls" } }]
   })
-}
+};
 </script>
 
 <style scoped></style>

@@ -13,9 +13,9 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import auth from "../../mixins/auth"
+import auth from "../../mixins/auth";
 
 export default {
   name: "LockerForm",
@@ -45,22 +45,22 @@ export default {
           ? this.$store.getters["selectedHallId"]
           : null,
         number: null
-      }
+      };
     }
   },
 
   created() {
-    let newVal = { ...this.value }
+    let newVal = { ...this.value };
 
     _(this.defaultForm).each((item, index) => {
       if (!this.value[index]) {
-        newVal[index] = item
+        newVal[index] = item;
       }
-    })
+    });
 
-    this.$emit("input", newVal)
+    this.$emit("input", newVal);
   }
-}
+};
 </script>
 
 <style scoped></style>

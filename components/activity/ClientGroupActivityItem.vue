@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import DefaultActivityItem from "./DefaultActivityItem"
+import DefaultActivityItem from "./DefaultActivityItem";
 
 export default {
   name: "ClientGroupActivityItem",
@@ -41,16 +41,16 @@ export default {
     client() {
       return this.$store.getters["clients/byId"]({
         id: this.activity.properties.client_id
-      })
+      });
     },
 
     group() {
       return this.$store.getters["groups/byId"]({
         id: this.activity.properties.group_id
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

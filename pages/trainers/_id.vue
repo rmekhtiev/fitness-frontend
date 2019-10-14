@@ -9,13 +9,13 @@
 </template>
 
 <script>
-import TrainerInfoCard from "../../components/trainers/TrainerInfoCard"
+import TrainerInfoCard from "../../components/trainers/TrainerInfoCard";
 
 export default {
   head() {
     return {
       title: this.trainer.name
-    }
+    };
   },
 
   components: {
@@ -24,7 +24,9 @@ export default {
 
   computed: {
     trainer() {
-      return this.$store.getters["trainers/byId"]({ id: this.$route.params.id })
+      return this.$store.getters["trainers/byId"]({
+        id: this.$route.params.id
+      });
     }
   },
 
@@ -38,9 +40,9 @@ export default {
           })
       ),
       store.dispatch("halls/loadAll")
-    ])
+    ]);
   }
-}
+};
 </script>
 
 <style scoped></style>

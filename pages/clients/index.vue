@@ -84,19 +84,19 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import serverSidePaginated from "../../mixins/server-side-paginated"
-import selectedHallAware from "../../mixins/selectedHallAware"
+import serverSidePaginated from "../../mixins/server-side-paginated";
+import selectedHallAware from "../../mixins/selectedHallAware";
 
-import ClientListItem from "../../components/clients/ClientListItem"
-import ClientDialog from "../../components/clients/ClientDialog"
+import ClientListItem from "../../components/clients/ClientListItem";
+import ClientDialog from "../../components/clients/ClientDialog";
 
 export default {
   head() {
     return {
       title: "Клиенты"
-    }
+    };
   },
 
   components: {
@@ -118,7 +118,7 @@ export default {
       })
         .omitBy(_.isNull)
         .omitBy(_.isUndefined)
-        .value()
+        .value();
     }
   },
 
@@ -131,7 +131,7 @@ export default {
           page: 1
         }
       })
-    ])
+    ]);
   },
 
   methods: {
@@ -140,20 +140,20 @@ export default {
         this.$axios.post("clients", form).then(async response => {
           await this.$store.dispatch("clients/loadById", {
             id: response.data.data.id
-          })
+          });
           this.$router.push({
             name: "clients-id",
             params: { id: response.data.data.id }
-          })
-        })
-      })
+          });
+        });
+      });
     },
 
     loadRelated() {
       let clientIds = this.items
         .map(client => client.id)
         .filter((value, index, self) => self.indexOf(value) === index)
-        .filter(value => value !== null)
+        .filter(value => value !== null);
 
       return this.$store.dispatch("subscriptions/loadWhere", {
         filter: {
@@ -162,10 +162,10 @@ export default {
         options: {
           per_page: -1
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

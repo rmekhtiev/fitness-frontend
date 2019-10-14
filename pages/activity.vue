@@ -29,27 +29,27 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import infiniteScroll from "vue-infinite-scroll"
+import infiniteScroll from "vue-infinite-scroll";
 
-import DefaultActivityItem from "../components/activity/DefaultActivityItem"
-import LockerClaimActivityItem from "../components/activity/LockerClaimActivityItem"
-import ClientActivityItem from "../components/activity/ClientActivityItem"
-import IssueActivityItem from "../components/activity/IssueActivityItem"
-import ClientGroupActivityItem from "../components/activity/ClientGroupActivityItem"
+import DefaultActivityItem from "../components/activity/DefaultActivityItem";
+import LockerClaimActivityItem from "../components/activity/LockerClaimActivityItem";
+import ClientActivityItem from "../components/activity/ClientActivityItem";
+import IssueActivityItem from "../components/activity/IssueActivityItem";
+import ClientGroupActivityItem from "../components/activity/ClientGroupActivityItem";
 
 function isToday(momentDate, reference) {
-  let today = reference.clone().startOf("day")
-  return momentDate.isSame(today, "d")
+  let today = reference.clone().startOf("day");
+  return momentDate.isSame(today, "d");
 }
 
 function isYesterday(momentDate, reference) {
   let yesterday = reference
     .clone()
     .subtract(1, "days")
-    .startOf("day")
-  return momentDate.isSame(yesterday, "d")
+    .startOf("day");
+  return momentDate.isSame(yesterday, "d");
 }
 
 function isWithinAWeek(momentDate, reference) {
@@ -58,16 +58,16 @@ function isWithinAWeek(momentDate, reference) {
       .clone()
       .startOf("week")
       .startOf("day")
-  )
+  );
 }
 
 // eslint-disable-next-line no-unused-vars
 function isTwoWeeksOrMore(momentDate, reference) {
-  return !isWithinAWeek(momentDate, reference)
+  return !isWithinAWeek(momentDate, reference);
 }
 
 function loadSubject(activities, type, store) {
-  let chunks = _(activities).chunk(10)
+  let chunks = _(activities).chunk(10);
 
   switch (type) {
     case "client-group":
@@ -94,7 +94,7 @@ function loadSubject(activities, type, store) {
             ])
           )
           .value()
-      )
+      );
     default:
       return Promise.all(
         chunks
@@ -108,20 +108,20 @@ function loadSubject(activities, type, store) {
                     .value()
                 }
               })
-              .then(async () => await loadRelated(chunk, type, store))
+              .then(async () => await loadRelated(chunk, type, store));
           })
           .value()
-      )
+      );
   }
 }
 
 function loadRelated(activities, type, store) {
   let subjectIds = _(activities)
     .map(activity => activity.subject_id)
-    .uniq()
+    .uniq();
   let subjects = store.getters[type + "/all"].filter(subject =>
     subjectIds.includes(subject.id)
-  )
+  );
 
   switch (type) {
     case "locker-claims":
@@ -142,7 +142,7 @@ function loadRelated(activities, type, store) {
               .value()
           }
         })
-      ])
+      ]);
   }
 }
 
@@ -150,7 +150,7 @@ export default {
   head() {
     return {
       title: "Журнал"
-    }
+    };
   },
 
   directives: {
@@ -169,7 +169,7 @@ export default {
             item =>
               item.hall_id === this.$store.getters["selectedHallIdForFilter"]
           )
-        : this.$store.getters["activities/all"]
+        : this.$store.getters["activities/all"];
     },
 
     groupedActivities() {
@@ -180,7 +180,7 @@ export default {
             "day"
           )
         )
-        .value()
+        .value();
     }
   },
 
@@ -194,7 +194,7 @@ export default {
           }
         })
         .then(async () => {
-          let activities = store.getters["activities/page"]
+          let activities = store.getters["activities/page"];
 
           return await Promise.all(
             _(activities)
@@ -204,45 +204,45 @@ export default {
                   await loadSubject(activities, type, store)
               )
               .value()
-          )
+          );
         })
-    ])
+    ]);
   },
 
   methods: {
     humanizeDaysDiff(days) {
-      let target = this.$moment().subtract(days, "d")
-      let today = this.$moment()
+      let target = this.$moment().subtract(days, "d");
+      let today = this.$moment();
 
       if (isToday(target, today)) {
-        return "Сегодня"
+        return "Сегодня";
       } else if (isYesterday(target, today)) {
-        return "Вчера"
+        return "Вчера";
       } else if (isWithinAWeek(target, today)) {
-        return target.format("dddd")
+        return target.format("dddd");
       } else {
-        return target.format("ll")
+        return target.format("ll");
       }
     },
 
     activityComponent(subject) {
       switch (subject) {
         case "clients":
-          return ClientActivityItem
+          return ClientActivityItem;
         case "client-group":
-          return ClientGroupActivityItem
+          return ClientGroupActivityItem;
         case "locker-claims":
-          return LockerClaimActivityItem
+          return LockerClaimActivityItem;
         case "issues":
-          return IssueActivityItem
+          return IssueActivityItem;
         default:
-          return DefaultActivityItem
+          return DefaultActivityItem;
       }
     },
 
     loadMore() {
       return this.$store.dispatch("activities/loadNextPage").then(async () => {
-        let activities = this.$store.getters["activities/page"]
+        let activities = this.$store.getters["activities/page"];
 
         return await Promise.all(
           _(activities)
@@ -252,11 +252,11 @@ export default {
                 await loadSubject(activities, type, this.$store)
             )
             .value()
-        )
-      })
+        );
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

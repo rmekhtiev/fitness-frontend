@@ -19,11 +19,11 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import { mask } from "vue-the-mask"
+import { mask } from "vue-the-mask";
 
-import auth from "../../mixins/auth"
+import auth from "../../mixins/auth";
 
 export default {
   name: "IssueForm",
@@ -56,22 +56,22 @@ export default {
       return {
         phone_number: null,
         associated_employee_id: null
-      }
+      };
     }
   },
 
   created() {
-    let newVal = { ...this.value }
+    let newVal = { ...this.value };
 
     _(this.defaultForm).each((item, index) => {
       if (!this.value[index]) {
-        newVal[index] = item
+        newVal[index] = item;
       }
-    })
+    });
 
-    this.$emit("input", newVal)
+    this.$emit("input", newVal);
   }
-}
+};
 </script>
 
 <style scoped></style>

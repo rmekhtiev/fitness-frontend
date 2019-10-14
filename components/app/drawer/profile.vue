@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import auth from "../../../mixins/auth"
+import auth from "../../../mixins/auth";
 
 export default {
   mixins: [auth],
@@ -71,15 +71,15 @@ export default {
     employee() {
       return this.$store.getters["employees/byId"]({
         id: this.me.associated_employee.id
-      })
+      });
     },
 
     hall() {
-      return this.$store.getters["selectedHall"]
+      return this.$store.getters["selectedHall"];
     },
 
     halls() {
-      return this.$store.getters["halls/all"]
+      return this.$store.getters["halls/all"];
     }
   },
 
@@ -88,11 +88,11 @@ export default {
       return this.$auth.logout().then(() => {
         this.$router.push({
           name: "auth-login"
-        })
-      })
+        });
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped>

@@ -69,6 +69,7 @@
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>{{ trainer.name }}</v-list-item-title>
+            <v-list-item-subtitle>Основной тренер</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
 
@@ -99,10 +100,10 @@
 </template>
 
 <script>
-import GroupDialog from "./GroupDialog"
-import Confirm from "../Confirm"
-import auth from "../../mixins/auth"
-import group from "../../mixins/group"
+import GroupDialog from "./GroupDialog";
+import Confirm from "../Confirm";
+import auth from "../../mixins/auth";
+import group from "../../mixins/group";
 
 export default {
   name: "GroupInfoCard",
@@ -128,11 +129,13 @@ export default {
 
   computed: {
     hall() {
-      return this.$store.getters["halls/byId"]({ id: this.group.hall_id })
+      return this.$store.getters["halls/byId"]({ id: this.group.hall_id });
     },
 
     trainer() {
-      return this.$store.getters["trainers/byId"]({ id: this.group.trainer_id })
+      return this.$store.getters["trainers/byId"]({
+        id: this.group.trainer_id
+      });
     }
   },
 
@@ -144,11 +147,11 @@ export default {
           .then(async response => {
             await this.$store.dispatch("groups/loadById", {
               id: response.data.data.id
-            })
-          })
+            });
+          });
 
-        this.$emit("update")
-      })
+        this.$emit("update");
+      });
     },
 
     deleteGroup() {
@@ -159,16 +162,16 @@ export default {
           { color: "red" }
         )
         .then(() => {
-          this.$router.back()
+          this.$router.back();
           this.$store
             .dispatch("groups/delete", { id: this.group.id })
             .then(() => {
-              this.$toast.success("Группа удалена")
-            })
-        })
+              this.$toast.success("Группа удалена");
+            });
+        });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

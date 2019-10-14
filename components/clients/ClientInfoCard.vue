@@ -101,11 +101,11 @@
 </template>
 
 <script>
-import routable from "vuetify/es5/mixins/routable"
+import routable from "vuetify/es5/mixins/routable";
 
-import auth from "../../mixins/auth"
+import auth from "../../mixins/auth";
 
-import ClientDialog from "./ClientDialog"
+import ClientDialog from "./ClientDialog";
 
 export default {
   name: "ClientInfoCard",
@@ -128,19 +128,19 @@ export default {
 
   computed: {
     componentTag() {
-      return "v-card"
+      return "v-card";
     },
 
     primaryHall() {
       return this.$store.getters["halls/byId"]({
         id: this.client.primary_hall_id
-      })
+      });
     },
 
     classes() {
       return {
         ...routable.options.computed.classes.call(this)
-      }
+      };
     }
   },
 
@@ -152,14 +152,14 @@ export default {
           .then(async response => {
             await this.$store.dispatch("clients/loadById", {
               id: response.data.data.id
-            })
-          })
+            });
+          });
 
-        this.$emit("update")
-      })
+        this.$emit("update");
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped>

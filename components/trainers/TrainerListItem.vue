@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import hall from "../../mixins/trainer"
+import hall from "../../mixins/trainer";
 export default {
   name: "TrainerListItem",
   mixins: [hall],
@@ -55,7 +55,7 @@ export default {
       required: true
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

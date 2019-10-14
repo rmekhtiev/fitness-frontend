@@ -126,19 +126,19 @@
 </template>
 
 <script>
-import group from "../../mixins/group"
+import group from "../../mixins/group";
 
-import ClientListItem from "../../components/clients/ClientListItem"
-import GroupInfoCard from "../../components/groups/GroupInfoCard"
-import GroupAddClientDialog from "../../components/groups/GroupAddClientDialog"
-import Confirm from "../../components/Confirm"
-import GroupEventCalendar from "../../components/groups/GroupEventCalendar"
+import ClientListItem from "../../components/clients/ClientListItem";
+import GroupInfoCard from "../../components/groups/GroupInfoCard";
+import GroupAddClientDialog from "../../components/groups/GroupAddClientDialog";
+import Confirm from "../../components/Confirm";
+import GroupEventCalendar from "../../components/groups/GroupEventCalendar";
 
 export default {
   head() {
     return {
       title: this.group.title
-    }
+    };
   },
 
   components: {
@@ -168,23 +168,23 @@ export default {
         options: {
           per_page: -1
         }
-      })
+      });
     },
 
     group() {
-      return this.$store.getters["groups/byId"]({ id: this.$route.params.id })
+      return this.$store.getters["groups/byId"]({ id: this.$route.params.id });
     }
   },
 
   watch: {
     fab(val) {
-      this.tooltips = false
-      this.tooltipsDisabled = false
+      this.tooltips = false;
+      this.tooltipsDisabled = false;
       val &&
         setTimeout(() => {
-          this.tooltips = true
-          this.$nextTick(() => (this.tooltipsDisabled = true))
-        }, 250)
+          this.tooltips = true;
+          this.$nextTick(() => (this.tooltipsDisabled = true));
+        }, 250);
     }
   },
 
@@ -195,16 +195,18 @@ export default {
 
       store.dispatch("groups/loadById", { id: params.id }).then(async () => {
         let group = store.getters["groups/byId"]({ id: params.id }),
-          promises = []
+          promises = [];
 
         if (group.trainer_id) {
           promises.push(
             store.dispatch("trainers/loadById", { id: group.trainer_id })
-          ) // todo: load related
+          ); // todo: load related
         }
 
         if (group.hall_id) {
-          promises.push(store.dispatch("halls/loadById", { id: group.hall_id })) // todo: load related
+          promises.push(
+            store.dispatch("halls/loadById", { id: group.hall_id })
+          ); // todo: load related
         }
 
         promises.push(
@@ -218,11 +220,11 @@ export default {
               per_page: -1
             }
           })
-        )
+        );
 
-        return await Promise.all(promises)
+        return await Promise.all(promises);
       })
-    ])
+    ]);
   },
 
   mounted() {},
@@ -233,8 +235,8 @@ export default {
         await this.$axios
           .put("/groups/" + this.group.id + "/clients/" + form.client_id, form)
           .then(async response => {
-            console.log(response)
-          })
+            console.log(response);
+          });
 
         await this.$store.dispatch("clients/loadRelated", {
           // todo: simplify to one function
@@ -245,26 +247,26 @@ export default {
           options: {
             per_page: -1
           }
-        })
-      })
+        });
+      });
     },
 
     removeClientFromGroup(client) {
-      console.log(client)
+      console.log(client);
 
       this.$refs.removeClientConfirm
         .open("Убрать клиента " + client.name + " из группы", "Вы уверены?", {
           color: "red"
         })
         .then(async confirm => {
-          console.log(confirm)
+          console.log(confirm);
 
           if (confirm) {
             await this.$axios
               .delete("/groups/" + this.group.id + "/clients/" + client.id)
               .then(async response => {
-                console.log(response)
-              })
+                console.log(response);
+              });
 
             await this.$store.dispatch("clients/loadRelated", {
               // todo: simplify to one function
@@ -275,12 +277,12 @@ export default {
               options: {
                 per_page: -1
               }
-            })
+            });
           }
-        })
+        });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

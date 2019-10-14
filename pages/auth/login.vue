@@ -61,7 +61,7 @@ export default {
   head() {
     return {
       title: "Вход"
-    }
+    };
   },
 
   layout: "fullscreen",
@@ -85,14 +85,14 @@ export default {
         .then(() => {
           this.$router.push({
             name: "index"
-          })
+          });
         })
         .catch(error => {
-          console.error(error)
-        })
+          console.error(error);
+        });
     }
   }
-}
+};
 </script>
 
 <style scoped>

@@ -136,19 +136,19 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import serverSidePaginated from "../../mixins/server-side-paginated"
-import selectedHallAware from "../../mixins/selectedHallAware"
+import serverSidePaginated from "../../mixins/server-side-paginated";
+import selectedHallAware from "../../mixins/selectedHallAware";
 
-import IssueListItem from "../../components/issues/IssueListItem"
-import IssueDialog from "../../components/issues/IssueDialog"
+import IssueListItem from "../../components/issues/IssueListItem";
+import IssueDialog from "../../components/issues/IssueDialog";
 
 export default {
   head() {
     return {
       title: "Проблемы"
-    }
+    };
   },
 
   components: {
@@ -175,7 +175,7 @@ export default {
       })
         .omitBy(_.isNull)
         .omitBy(_.isUndefined)
-        .value()
+        .value();
     },
 
     employees() {
@@ -184,7 +184,7 @@ export default {
             item =>
               item.hall_id === this.$store.getters["selectedHallIdForFilter"]
           )
-        : this.$store.getters["employees/all"]
+        : this.$store.getters["employees/all"];
     }
   },
 
@@ -193,7 +193,7 @@ export default {
       store.dispatch("issues/loadAll"),
       store.dispatch("employees/loadAll"),
       store.dispatch("halls/loadAll")
-    ])
+    ]);
   },
 
   methods: {
@@ -202,20 +202,20 @@ export default {
         this.$axios.post("issues", form).then(async response => {
           await this.$store.dispatch("issues/loadById", {
             id: response.data.data.id
-          })
+          });
           this.$router.push({
             name: "issues",
             params: { id: response.data.data.id }
-          })
-        })
-      })
+          });
+        });
+      });
     },
 
     loadRelated() {
       let employeeIds = this.items
         .map(issue => issue.employee_id)
         .filter((value, index, self) => self.indexOf(value) === index)
-        .filter(value => value !== null)
+        .filter(value => value !== null);
 
       return this.$store.dispatch("employees/loadWhere", {
         filter: {
@@ -224,12 +224,12 @@ export default {
         options: {
           per_page: -1
         }
-      })
+      });
 
       // return Promise.resolve();
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

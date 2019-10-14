@@ -88,7 +88,7 @@
             <v-icon style="font-size: 4rem">
               mdi-inbox
             </v-icon>
-            <br>
+            <br />
             Пусто
           </v-card-text>
           <template v-for="(childClaim, index) in claims" v-else>
@@ -111,20 +111,20 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import auth from "../../mixins/auth"
-import locker from "../../mixins/locker"
-import lockerClaim from "../../mixins/locker-claim"
+import auth from "../../mixins/auth";
+import locker from "../../mixins/locker";
+import lockerClaim from "../../mixins/locker-claim";
 
-import LockerClaimListItem from "../../components/locker-claims/LockerClaimListItem"
-import Confirm from "../../components/Confirm"
+import LockerClaimListItem from "../../components/locker-claims/LockerClaimListItem";
+import Confirm from "../../components/Confirm";
 
 export default {
   head() {
     return {
       title: "Шкафчик №" + this.locker.number
-    }
+    };
   },
 
   components: {
@@ -142,17 +142,17 @@ export default {
 
   computed: {
     locker() {
-      return this.$store.getters["lockers/byId"]({ id: this.$route.params.id })
+      return this.$store.getters["lockers/byId"]({ id: this.$route.params.id });
     },
 
     hall() {
-      return this.$store.getters["halls/byId"]({ id: this.locker.hall_id })
+      return this.$store.getters["halls/byId"]({ id: this.locker.hall_id });
     },
 
     claims() {
       return this.$store.getters["locker-claims/where"]({
         filter: { locker_id: this.locker.id }
-      })
+      });
     },
 
     claim() {
@@ -160,11 +160,11 @@ export default {
         ? this.$store.getters["locker-claims/byId"]({
             id: this.locker.claim.id
           })
-        : null
+        : null;
     },
 
     client() {
-      return this.$store.getters["clients/byId"]({ id: this.claim.client_id })
+      return this.$store.getters["clients/byId"]({ id: this.claim.client_id });
     }
   },
 
@@ -175,24 +175,24 @@ export default {
           id: params.id
         })
         .then(async () => {
-          let locker = store.getters["lockers/byId"]({ id: params.id })
+          let locker = store.getters["lockers/byId"]({ id: params.id });
 
-          return await store.dispatch("halls/loadById", { id: locker.hall_id })
+          return await store.dispatch("halls/loadById", { id: locker.hall_id });
         })
-    ])
+    ]);
   },
 
   created() {
-    this.loadLockerClaims()
+    this.loadLockerClaims();
   },
 
   methods: {
     loadLockerClaims() {
-      this.loading.claims = true
+      this.loading.claims = true;
 
       let lockerClaimsFilter = {
         locker_id: this.$route.params.id
-      }
+      };
 
       return this.$store
         .dispatch("locker-claims/loadWhere", {
@@ -205,18 +205,18 @@ export default {
             })
           )
             .map(claim => claim.client_id)
-            .uniq()
+            .uniq();
 
-          console.info("Gonna load next clients: " + clientIds)
+          console.info("Gonna load next clients: " + clientIds);
 
           return Promise.all(
             clientIds.map(lockerId =>
               this.$store.dispatch("clients/loadById", { id: lockerId })
             )
           ).then(() => {
-            this.loading.claims = false
-          })
-        })
+            this.loading.claims = false;
+          });
+        });
     },
     deleteLocker() {
       this.$refs.delete
@@ -227,14 +227,14 @@ export default {
         )
         .then(confirm => {
           if (confirm) {
-            this.$store.dispatch("lockers/delete", { id: this.locker.id })
-            this.$emit("delete")
-            this.$router.push({ path: "/lockers" })
+            this.$store.dispatch("lockers/delete", { id: this.locker.id });
+            this.$emit("delete");
+            this.$router.push({ path: "/lockers" });
           }
-        })
+        });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

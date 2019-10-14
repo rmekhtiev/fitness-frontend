@@ -89,9 +89,9 @@
 </template>
 
 <script>
-import auth from "../../mixins/auth"
-import TrainerDialog from "./TrainerDialog"
-import Confirm from "../Confirm"
+import auth from "../../mixins/auth";
+import TrainerDialog from "./TrainerDialog";
+import Confirm from "../Confirm";
 
 export default {
   name: "TrainerInfoCard",
@@ -117,7 +117,7 @@ export default {
 
   computed: {
     hall() {
-      return this.$store.getters["halls/byId"]({ id: this.trainer.hall_id })
+      return this.$store.getters["halls/byId"]({ id: this.trainer.hall_id });
     }
   },
 
@@ -129,11 +129,11 @@ export default {
           .then(async response => {
             await this.$store.dispatch("trainers/loadById", {
               id: response.data.data.id
-            })
-          })
+            });
+          });
 
-        this.$emit("update")
-      })
+        this.$emit("update");
+      });
     },
 
     deleteTrainer() {
@@ -145,15 +145,15 @@ export default {
         )
         .then(confirm => {
           if (confirm) {
-            this.$store.dispatch("trainers/delete", { id: this.trainer.id })
+            this.$store.dispatch("trainers/delete", { id: this.trainer.id });
             // this.$store.dispatch('trainers/loadById', {id: trainerId});
 
-            this.$emit("delete")
+            this.$emit("delete");
           }
-        })
+        });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

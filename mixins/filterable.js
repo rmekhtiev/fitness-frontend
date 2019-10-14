@@ -1,4 +1,4 @@
-import _ from "lodash"
+import _ from "lodash";
 
 export default {
   data: () => ({
@@ -10,22 +10,22 @@ export default {
       return _(this.filter)
         .omitBy(_.isNull)
         .omitBy(_.isUndefined)
-        .value()
+        .value();
     }
   },
 
   methods: {
     loadItems() {
-      console.error("Override this method")
+      console.error("Override this method");
     },
 
     /**
      * @deprecated
      */
     loadFiltered() {
-      console.warn("This method is deprecated")
+      console.warn("This method is deprecated");
 
-      this.loadItems()
+      this.loadItems();
     }
   }
-}
+};

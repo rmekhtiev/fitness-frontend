@@ -73,9 +73,9 @@
 </template>
 
 <script>
-import BarSellDialog from "./BarSellDialog"
-import BarDialog from "./BarDialog"
-import Confirm from "../Confirm"
+import BarSellDialog from "./BarSellDialog";
+import BarDialog from "./BarDialog";
+import Confirm from "../Confirm";
 
 export default {
   name: "BarItemListItem",
@@ -126,19 +126,19 @@ export default {
           disabled: false,
           click: this.deleteItem
         }
-      ]
+      ];
     }
   },
 
   methods: {
     openMenu(e) {
-      e.preventDefault()
-      this.menu.display = false
-      this.menu.posX = e.clientX
-      this.menu.posY = e.clientY
+      e.preventDefault();
+      this.menu.display = false;
+      this.menu.posX = e.clientX;
+      this.menu.posY = e.clientY;
       this.$nextTick(() => {
-        this.menu.display = true
-      })
+        this.menu.display = true;
+      });
     },
 
     editItem() {
@@ -146,11 +146,11 @@ export default {
         this.$axios.patch("bar-items/" + this.barItem.id, form).then(() => {
           this.$store.dispatch("bar-items/loadById", {
             id: this.barItem.id
-          })
+          });
 
-          this.$emit("update")
-        })
-      })
+          this.$emit("update");
+        });
+      });
     },
 
     sellItem() {
@@ -160,11 +160,11 @@ export default {
           .then(() => {
             this.$store.dispatch("bar-items/loadById", {
               id: this.barItem.id
-            })
+            });
 
-            this.$emit("update")
-          })
-      })
+            this.$emit("update");
+          });
+      });
     },
 
     deleteItem() {
@@ -174,14 +174,14 @@ export default {
         })
         .then(confirm => {
           if (confirm) {
-            this.$store.dispatch("bar-items/delete", { id: this.barItem.id })
-            this.$emit("delete")
+            this.$store.dispatch("bar-items/delete", { id: this.barItem.id });
+            this.$emit("delete");
           }
-          this.$router.push({ path: "/bar-items" })
-        })
+          this.$router.push({ path: "/bar-items" });
+        });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

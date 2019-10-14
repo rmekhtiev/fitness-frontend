@@ -109,22 +109,22 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import client from "../../mixins/client"
+import client from "../../mixins/client";
 
-import ClientInfoCard from "../../components/clients/ClientInfoCard"
+import ClientInfoCard from "../../components/clients/ClientInfoCard";
 
-import SubscriptionInfoCard from "../../components/subscriptions/SubscriptionInfoCard"
+import SubscriptionInfoCard from "../../components/subscriptions/SubscriptionInfoCard";
 
-import LockerClaimListItem from "../../components/locker-claims/LockerClaimListItem"
-import LockerClaimDialog from "../../components/locker-claims/LockerClaimDialog"
+import LockerClaimListItem from "../../components/locker-claims/LockerClaimListItem";
+import LockerClaimDialog from "../../components/locker-claims/LockerClaimDialog";
 
 export default {
   head() {
     return {
       title: this.client.name
-    }
+    };
   },
 
   components: {
@@ -160,44 +160,44 @@ export default {
 
   computed: {
     client() {
-      return this.$store.getters["clients/byId"]({ id: this.$route.params.id })
+      return this.$store.getters["clients/byId"]({ id: this.$route.params.id });
     },
 
     lockerFilter() {
       return {
         client_id: this.$route.params.id,
         after: this.$moment().format("YYYY-MM-DD")
-      }
+      };
     },
 
     groupFilter() {
       return {
         id: this.groupsIds
-      }
+      };
     },
 
     lockerClaims() {
       return this.$store.getters["locker-claims/where"]({
         filter: this.lockerFilter
-      })
+      });
     },
 
     groups() {
       return this.$store.getters["groups/where"]({
         filter: this.groupFilter
-      })
+      });
     }
   },
 
   watch: {
     fab(val) {
-      this.tooltips = false
-      this.tooltipsDisabled = false
+      this.tooltips = false;
+      this.tooltipsDisabled = false;
       val &&
         setTimeout(() => {
-          this.tooltips = true
-          this.$nextTick(() => (this.tooltipsDisabled = true))
-        }, 250)
+          this.tooltips = true;
+          this.$nextTick(() => (this.tooltipsDisabled = true));
+        }, 250);
     }
   },
 
@@ -206,18 +206,18 @@ export default {
     let lockerClaimsFilter = {
       client_id: params.id,
       after: $moment().format("YYYY-MM-DD")
-    }
+    };
 
     return Promise.all([
       store.dispatch("clients/loadById", {
         id: params.id
       }),
       store.dispatch("halls/loadAll")
-    ])
+    ]);
   },
 
   async mounted() {
-    await Promise.all([this.loadLockerClaims(), this.loadGroups()])
+    await Promise.all([this.loadLockerClaims(), this.loadGroups()]);
   },
 
   methods: {
@@ -226,17 +226,17 @@ export default {
         this.$axios.post("locker-claims", form).then(async response => {
           await this.$store.dispatch("locker-claims/loadById", {
             id: response.data.data.id
-          })
-        })
+          });
+        });
 
         this.$store.dispatch("locker-claims/loadWhere", {
           filter: this.lockerFilter
-        })
-      })
+        });
+      });
     },
 
     loadLockerClaims() {
-      this.loading.lockers = true
+      this.loading.lockers = true;
 
       return this.$store
         .dispatch("locker-claims/loadWhere", {
@@ -249,33 +249,33 @@ export default {
             })
           )
             .map(claim => claim.locker_id)
-            .uniq()
+            .uniq();
 
-          console.info("Gonna load next lockers: " + lockerIds)
+          console.info("Gonna load next lockers: " + lockerIds);
 
           return Promise.all(
             lockerIds.map(lockerId =>
               this.$store.dispatch("lockers/loadById", { id: lockerId })
             )
           ).then(() => {
-            this.loading.lockers = false
-          })
-        })
+            this.loading.lockers = false;
+          });
+        });
     },
 
     loadGroups() {
-      this.loading.groups = true
+      this.loading.groups = true;
 
       return this.$store
         .dispatch("groups/loadWhere", {
           filter: this.groupFilter
         })
         .then(() => {
-          this.loading.groups = false
-        })
+          this.loading.groups = false;
+        });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

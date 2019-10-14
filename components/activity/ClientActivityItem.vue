@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import DefaultActivityItem from "./DefaultActivityItem"
+import DefaultActivityItem from "./DefaultActivityItem";
 
 export default {
   name: "ClientActivityItem",
@@ -23,7 +23,7 @@ export default {
     DefaultActivityItem
   },
   extends: DefaultActivityItem
-}
+};
 </script>
 
 <style scoped></style>

@@ -47,7 +47,7 @@ export default {
     subject() {
       return this.$store.getters[this.activity.subject_type + "/byId"]({
         id: this.activity.subject_id
-      })
+      });
     },
 
     slot() {
@@ -57,10 +57,10 @@ export default {
           "." +
           this.activity.description,
         { subject: this.activity.subject }
-      )
+      );
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

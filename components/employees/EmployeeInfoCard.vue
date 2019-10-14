@@ -64,9 +64,9 @@
 </template>
 
 <script>
-import auth from "../../mixins/auth"
-import EmployeeDialog from "./EmployeeDialog"
-import Confirm from "../Confirm"
+import auth from "../../mixins/auth";
+import EmployeeDialog from "./EmployeeDialog";
+import Confirm from "../Confirm";
 
 export default {
   name: "EmployeeInfoCard",
@@ -92,7 +92,7 @@ export default {
 
   computed: {
     hall() {
-      return this.$store.getters["halls/byId"]({ id: this.employee.hall_id })
+      return this.$store.getters["halls/byId"]({ id: this.employee.hall_id });
     }
   },
 
@@ -104,11 +104,11 @@ export default {
           .then(async response => {
             await this.$store.dispatch("employees/loadById", {
               id: response.data.data.id
-            })
-          })
+            });
+          });
 
-        this.$emit("update")
-      })
+        this.$emit("update");
+      });
     },
 
     deleteEmployee() {
@@ -120,15 +120,15 @@ export default {
         )
         .then(confirm => {
           if (confirm) {
-            this.$store.dispatch("employees/delete", { id: this.employee.id })
+            this.$store.dispatch("employees/delete", { id: this.employee.id });
 
-            this.$emit("delete")
+            this.$emit("delete");
           }
-          this.$router.push({ path: "/employees" })
-        })
+          this.$router.push({ path: "/employees" });
+        });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import GroupForm from "./GroupForm"
+import GroupForm from "./GroupForm";
 export default {
   name: "GroupDialog",
 
@@ -69,30 +69,30 @@ export default {
 
   created() {
     if (this.group) {
-      Object.assign(this.form, this.group)
+      Object.assign(this.form, this.group);
     }
   },
 
   methods: {
     open() {
-      this.dialog = true
+      this.dialog = true;
 
       return new Promise((resolve, reject) => {
-        this.resolve = resolve
-        this.reject = reject
-      })
+        this.resolve = resolve;
+        this.reject = reject;
+      });
     },
 
     save() {
-      this.resolve(this.form)
-      this.dialog = false
+      this.resolve(this.form);
+      this.dialog = false;
     },
 
     cancel() {
-      this.dialog = false
+      this.dialog = false;
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

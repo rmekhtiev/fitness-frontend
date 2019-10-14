@@ -91,13 +91,13 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import serverSidePaginated from "../../mixins/server-side-paginated"
-import selectedHallAware from "../../mixins/selectedHallAware"
+import serverSidePaginated from "../../mixins/server-side-paginated";
+import selectedHallAware from "../../mixins/selectedHallAware";
 
-import LockerListItem from "../../components/lockers/LockerListItem"
-import LockerDialog from "../../components/lockers/LockerDialog"
+import LockerListItem from "../../components/lockers/LockerListItem";
+import LockerDialog from "../../components/lockers/LockerDialog";
 
 export default {
   name: "Index",
@@ -105,7 +105,7 @@ export default {
   head() {
     return {
       title: "Шкафчики"
-    }
+    };
   },
 
   components: {
@@ -131,7 +131,7 @@ export default {
       })
         .omitBy(_.isNull)
         .omitBy(_.isUndefined)
-        .value()
+        .value();
     }
   },
 
@@ -142,7 +142,7 @@ export default {
           page: 1
         }
       })
-    ])
+    ]);
   },
 
   methods: {
@@ -150,13 +150,13 @@ export default {
       let clientIds = this.items
         .filter(locker => locker.claim)
         .map(locker => locker.claim.client_id)
-        .filter((value, index, self) => self.indexOf(value) === index)
+        .filter((value, index, self) => self.indexOf(value) === index);
 
       return this.$store.dispatch("clients/loadWhere", {
         filter: {
           client_id: clientIds
         }
-      })
+      });
     },
 
     openLockerDialog() {
@@ -166,12 +166,12 @@ export default {
           this.$router.push({
             name: "lockers-id",
             params: { id: response.data.data.id }
-          })
-        })
-      })
+          });
+        });
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

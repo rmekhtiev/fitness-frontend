@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import BarEditForm from "./BarForm"
+import BarEditForm from "./BarForm";
 
 export default {
   name: "BarEditDialog",
@@ -69,7 +69,7 @@ export default {
 
   computed: {
     halls() {
-      return this.$store.getters["halls/all"]
+      return this.$store.getters["halls/all"];
     }
   },
 
@@ -77,30 +77,30 @@ export default {
     // console.log(this.barItem);
 
     if (this.barItem) {
-      Object.assign(this.form, this.barItem)
+      Object.assign(this.form, this.barItem);
     }
   },
 
   methods: {
     open() {
-      this.dialog = true
+      this.dialog = true;
 
       return new Promise((resolve, reject) => {
-        this.resolve = resolve
-        this.reject = reject
-      })
+        this.resolve = resolve;
+        this.reject = reject;
+      });
     },
 
     save() {
-      this.resolve(this.form)
-      this.dialog = false
+      this.resolve(this.form);
+      this.dialog = false;
     },
 
     cancel() {
-      this.dialog = false
+      this.dialog = false;
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

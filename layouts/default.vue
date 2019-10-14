@@ -34,13 +34,13 @@
 </template>
 
 <script>
-import auth from "../mixins/auth"
+import auth from "../mixins/auth";
 
-import Profile from "../components/app/drawer/profile"
-import Menu from "../components/app/drawer/menu"
+import Profile from "../components/app/drawer/profile";
+import Menu from "../components/app/drawer/menu";
 
-import ScannerDialog from "../components/ScannerDialog"
-import ClientSearchDialog from "../components/ClientSearchDialog"
+import ScannerDialog from "../components/ScannerDialog";
+import ClientSearchDialog from "../components/ClientSearchDialog";
 
 export default {
   components: {
@@ -60,7 +60,7 @@ export default {
         "drawer-menu": Menu
       },
       title: "MULTIPOWER"
-    }
+    };
   }
-}
+};
 </script>
