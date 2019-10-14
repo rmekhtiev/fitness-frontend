@@ -139,7 +139,7 @@
 import _ from "lodash";
 
 import serverSidePaginated from "../../mixins/server-side-paginated";
-import selectedHallAware from "../../mixins/selectedHallAware";
+import selectedHallAware from "../../mixins/selected-hall-aware";
 
 import IssueListItem from "../../components/issues/IssueListItem";
 import IssueDialog from "../../components/issues/IssueDialog";

@@ -88,7 +88,7 @@ import _ from "lodash";
 import BarItemListItem from "../../components/bar-items/BarItemListItem";
 
 import serverSidePaginated from "../../mixins/server-side-paginated";
-import selectedHallAware from "../../mixins/selectedHallAware";
+import selectedHallAware from "../../mixins/selected-hall-aware";
 import BarDialog from "../../components/bar-items/BarDialog";
 
 export default {

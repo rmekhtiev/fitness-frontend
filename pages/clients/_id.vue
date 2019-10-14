@@ -111,6 +111,7 @@
 <script>
 import _ from "lodash";
 
+import fabWithTooltips from "../../mixins/fab-with-tooltips";
 import client from "../../mixins/client";
 
 import ClientInfoCard from "../../components/clients/ClientInfoCard";
@@ -134,13 +135,9 @@ export default {
     LockerClaimDialog
   },
 
-  mixins: [client],
+  mixins: [client, fabWithTooltips],
 
   data: () => ({
-    fab: false,
-    tooltips: false,
-    tooltipsDisabled: false,
-
     dialogs: {
       lockerClaim: false
     },
@@ -186,18 +183,6 @@ export default {
       return this.$store.getters["groups/where"]({
         filter: this.groupFilter
       });
-    }
-  },
-
-  watch: {
-    fab(val) {
-      this.tooltips = false;
-      this.tooltipsDisabled = false;
-      val &&
-        setTimeout(() => {
-          this.tooltips = true;
-          this.$nextTick(() => (this.tooltipsDisabled = true));
-        }, 250);
     }
   },
 

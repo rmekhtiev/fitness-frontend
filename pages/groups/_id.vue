@@ -126,6 +126,7 @@
 </template>
 
 <script>
+import fabWithTooltips from "../../mixins/fab-with-tooltips";
 import group from "../../mixins/group";
 
 import ClientListItem from "../../components/clients/ClientListItem";
@@ -149,13 +150,7 @@ export default {
     Confirm
   },
 
-  mixins: [group],
-
-  data: () => ({
-    fab: false,
-    tooltips: false,
-    tooltipsDisabled: false
-  }),
+  mixins: [group, fabWithTooltips],
 
   computed: {
     clients() {
@@ -173,18 +168,6 @@ export default {
 
     group() {
       return this.$store.getters["groups/byId"]({ id: this.$route.params.id });
-    }
-  },
-
-  watch: {
-    fab(val) {
-      this.tooltips = false;
-      this.tooltipsDisabled = false;
-      val &&
-        setTimeout(() => {
-          this.tooltips = true;
-          this.$nextTick(() => (this.tooltipsDisabled = true));
-        }, 250);
     }
   },
 

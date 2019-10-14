@@ -34,7 +34,7 @@
 <script>
 import _ from "lodash";
 
-import selectedHallAware from "../../mixins/selectedHallAware";
+import selectedHallAware from "../../mixins/selected-hall-aware";
 import filterable from "../../mixins/filterable";
 
 export default {

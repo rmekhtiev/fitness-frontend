@@ -116,7 +116,7 @@
 import _ from "lodash";
 
 import serverSidePaginated from "../../mixins/server-side-paginated";
-import selectedHallAware from "../../mixins/selectedHallAware";
+import selectedHallAware from "../../mixins/selected-hall-aware";
 
 import TrainerListItem from "../../components/trainers/TrainerListItem";
 import TrainerDialog from "../../components/trainers/TrainerDialog";

@@ -94,7 +94,7 @@
 import _ from "lodash";
 
 import serverSidePaginated from "../../mixins/server-side-paginated";
-import selectedHallAware from "../../mixins/selectedHallAware";
+import selectedHallAware from "../../mixins/selected-hall-aware";
 
 import LockerListItem from "../../components/lockers/LockerListItem";
 import LockerDialog from "../../components/lockers/LockerDialog";

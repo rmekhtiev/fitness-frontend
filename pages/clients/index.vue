@@ -87,7 +87,7 @@
 import _ from "lodash";
 
 import serverSidePaginated from "../../mixins/server-side-paginated";
-import selectedHallAware from "../../mixins/selectedHallAware";
+import selectedHallAware from "../../mixins/selected-hall-aware";
 
 import ClientListItem from "../../components/clients/ClientListItem";
 import ClientDialog from "../../components/clients/ClientDialog";
