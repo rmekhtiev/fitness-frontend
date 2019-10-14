@@ -2,7 +2,11 @@
   <div>
     <v-layout row wrap>
       <v-flex xs12 sm6 lg4 xl3>
-        <group-info-card :group="group" class="mb-2 mx-auto" />
+        <group-info-card
+          v-if="!isLoading"
+          :group="group"
+          class="mb-2 mx-auto"
+        />
       </v-flex>
 
       <v-flex xs12 sm6 lg8 xl9>
@@ -17,81 +21,6 @@
         </v-card>
       </v-flex>
     </v-layout>
-
-    <v-data-iterator :items="clients" :items-per-page="15">
-      <template v-slot:header>
-        <v-layout class="px-4 mt-2 mb-  3" style="color: rgba(0, 0, 0, .54);">
-          <v-flex xs8 md3>
-            <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate">
-                ФИО
-              </div>
-            </div>
-          </v-flex>
-
-          <v-flex md3>
-            <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate">
-                Абонемент
-              </div>
-            </div>
-          </v-flex>
-
-          <v-flex md3 />
-
-          <v-flex md3>
-            <div style="display: flex; width: 100%">
-              <div
-                style="flex: 1 1 0%;"
-                class="overline text-truncate text-right"
-              >
-                Последнее посещение
-              </div>
-            </div>
-          </v-flex>
-        </v-layout>
-      </template>
-
-      <template v-slot:default="props">
-        <v-card>
-          <v-list>
-            <template v-for="(item, index) in props.items">
-              <v-list-item
-                :to="{ name: 'clients-id', params: { id: item.id } }"
-              >
-                <v-list-item-content class="py-0">
-                  <client-list-item :client="item" />
-                </v-list-item-content>
-
-                <v-list-item-action class="my-0">
-                  <v-menu bottom left>
-                    <template v-slot:activator="{ on }">
-                      <v-btn icon @click.prevent="on.click">
-                        <v-icon color="grey lighten-1">
-                          mdi-dots-vertical
-                        </v-icon>
-                      </v-btn>
-                    </template>
-
-                    <v-list dense flat>
-                      <v-list-item @click.prevent="removeClientFromGroup(item)">
-                        <v-list-item-icon>
-                          <v-icon>mdi-close</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content class="pr-6">
-                          <v-list-item-title>Убрать</v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </v-list-item-action>
-              </v-list-item>
-              <v-divider v-if="index + 1 < props.items.length" :key="index" />
-            </template>
-          </v-list>
-        </v-card>
-      </template>
-    </v-data-iterator>
 
     <v-speed-dial v-model="fab" fixed bottom right>
       <template v-slot:activator>
@@ -119,17 +48,17 @@
       </v-tooltip>
     </v-speed-dial>
 
-    <group-add-client-dialog ref="addClient" :group="group" />
+    <!--<group-add-client-dialog ref="addClient" :group="group" />-->
 
     <confirm ref="removeClientConfirm" />
   </div>
 </template>
 
 <script>
-import fabWithTooltips from "../../mixins/fab-with-tooltips";
+import singleResource from "../../mixins/single-resource";
 import group from "../../mixins/group";
+import fabWithTooltips from "../../mixins/fab-with-tooltips";
 
-import ClientListItem from "../../components/clients/ClientListItem";
 import GroupInfoCard from "../../components/groups/GroupInfoCard";
 import GroupAddClientDialog from "../../components/groups/GroupAddClientDialog";
 import Confirm from "../../components/Confirm";
@@ -144,13 +73,21 @@ export default {
 
   components: {
     GroupEventCalendar,
-    ClientListItem,
     GroupInfoCard,
     GroupAddClientDialog,
     Confirm
   },
 
-  mixins: [group, fabWithTooltips],
+  mixins: [singleResource, group, fabWithTooltips],
+
+  data: () => ({
+    loading: {
+      resource: false,
+      hall: true,
+      trainer: true,
+      clients: true
+    }
+  }),
 
   computed: {
     clients() {
@@ -172,57 +109,49 @@ export default {
   },
 
   fetch({ store, params }) {
-    return Promise.all([
-      store.dispatch("halls/loadAll"), // todo: load related
-      store.dispatch("trainers/loadAll"), // todo: load related
-
-      store.dispatch("groups/loadById", { id: params.id }).then(async () => {
-        let group = store.getters["groups/byId"]({ id: params.id }),
-          promises = [];
-
-        if (group.trainer_id) {
-          promises.push(
-            store.dispatch("trainers/loadById", { id: group.trainer_id })
-          ); // todo: load related
-        }
-
-        if (group.hall_id) {
-          promises.push(
-            store.dispatch("halls/loadById", { id: group.hall_id })
-          ); // todo: load related
-        }
-
-        promises.push(
-          store.dispatch("clients/loadRelated", {
-            // todo: simplify to one function
-            parent: {
-              type: "groups",
-              id: params.id
-            },
-            options: {
-              per_page: -1
-            }
-          })
-        );
-
-        return await Promise.all(promises);
-      })
-    ]);
+    return store.dispatch("groups/loadById", { id: params.id });
   },
 
-  mounted() {},
+  mounted() {
+    this.loadRelated();
+  },
 
   methods: {
-    addClientToGroup() {
-      this.$refs.addClient.open().then(async form => {
-        await this.$axios
-          .put("/groups/" + this.group.id + "/clients/" + form.client_id, form)
-          .then(async response => {
-            console.log(response);
-          });
+    loadRelated() {
+      let promises = [this.loadTrainer(), this.loadHall(), this.loadClients()];
 
-        await this.$store.dispatch("clients/loadRelated", {
-          // todo: simplify to one function
+      return Promise.all(promises);
+    },
+
+    loadHall() {
+      this.loading.hall = true;
+
+      return this.$store
+        .dispatch("halls/loadById", {
+          id: this.group.hall_id
+        })
+        .then(() => {
+          this.loading.hall = false;
+        });
+    },
+
+    loadTrainer() {
+      this.loading.trainer = true;
+
+      return this.$store
+        .dispatch("trainers/loadById", {
+          id: this.group.trainer_id
+        })
+        .then(() => {
+          this.loading.trainer = false;
+        });
+    },
+
+    loadClients() {
+      this.loading.clients = true;
+
+      return this.$store
+        .dispatch("clients/loadRelated", {
           parent: {
             type: "groups",
             id: this.group.id
@@ -230,37 +159,34 @@ export default {
           options: {
             per_page: -1
           }
+        })
+        .then(() => {
+          this.loading.clients = false;
         });
+    },
+
+    addClientToGroup() {
+      return this.$refs.addClient.open().then(async form => {
+        await this.$axios
+          .put("/groups/" + this.group.id + "/clients/" + form.client_id, form)
+          .then(() => {
+            this.loadClients();
+          });
       });
     },
 
     removeClientFromGroup(client) {
-      console.log(client);
-
-      this.$refs.removeClientConfirm
+      return this.$refs.removeClientConfirm
         .open("Убрать клиента " + client.name + " из группы", "Вы уверены?", {
           color: "red"
         })
         .then(async confirm => {
-          console.log(confirm);
-
           if (confirm) {
             await this.$axios
               .delete("/groups/" + this.group.id + "/clients/" + client.id)
-              .then(async response => {
-                console.log(response);
+              .then(() => {
+                this.loadClients();
               });
-
-            await this.$store.dispatch("clients/loadRelated", {
-              // todo: simplify to one function
-              parent: {
-                type: "groups",
-                id: this.group.id
-              },
-              options: {
-                per_page: -1
-              }
-            });
           }
         });
     }

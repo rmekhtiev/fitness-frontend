@@ -34,6 +34,10 @@ export default function({ $axios, store }) {
     resourceModule({ name: "trainers", httpClient: $axios })
   );
   store.registerModule(
+    "schedules",
+    resourceModule({ name: "schedules", httpClient: $axios })
+  );
+  store.registerModule(
     "groups",
     resourceModule({ name: "groups", httpClient: $axios })
   );

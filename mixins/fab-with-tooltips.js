@@ -9,7 +9,7 @@ export default {
     fab(val) {
       this.tooltips = false;
       this.tooltipsDisabled = false;
-      val &&
+      if (val)
         setTimeout(() => {
           this.tooltips = true;
           this.$nextTick(() => (this.tooltipsDisabled = true));

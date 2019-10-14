@@ -78,7 +78,7 @@ export default {
       });
     },
 
-    pureClientsFilter: function() {
+    pureFilter: function() {
       return _({
         primary_hall_id: this.selectedHallId,
         ...this.filter
