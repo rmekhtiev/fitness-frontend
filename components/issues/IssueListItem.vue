@@ -1,6 +1,5 @@
 <template>
   <v-layout>
-
     <v-flex xs8 md2>
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate">

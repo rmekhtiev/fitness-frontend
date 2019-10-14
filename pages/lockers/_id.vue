@@ -88,7 +88,7 @@
             <v-icon style="font-size: 4rem">
               mdi-inbox
             </v-icon>
-            <br>
+            <br />
             Пусто
           </v-card-text>
           <template v-for="(childClaim, index) in claims" v-else>

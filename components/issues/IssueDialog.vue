@@ -36,7 +36,7 @@ export default {
   components: {
     IssueForm
   },
-  
+
   props: {
     fullscreen: {
       type: Boolean,
@@ -50,7 +50,7 @@ export default {
 
     issue: {
       type: Object,
-      required: false,
+      required: false
     },
 
     isEdit: {
@@ -86,8 +86,15 @@ export default {
       return this.$store.getters["employees/all"]
     },
     issues() {
-      return this.$store.getters['issues/all'];
-    },
+      return this.$store.getters["issues/all"]
+    }
+  },
+  created() {
+    console.log(this.issue)
+
+    if (this.issue) {
+      Object.assign(this.form, this.issue)
+    }
   },
 
   methods: {
@@ -99,7 +106,6 @@ export default {
         this.reject = reject
       })
     },
-       
 
     save() {
       this.resolve(this.form)
@@ -109,14 +115,7 @@ export default {
     cancel() {
       this.dialog = false
     }
-  },
-    created() {
-      console.log(this.issue);
-
-      if(this.issue) {
-        Object.assign(this.form, this.issue);
-      }
-    },
+  }
 }
 </script>
 

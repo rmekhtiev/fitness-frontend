@@ -108,7 +108,7 @@
               </v-list-item>
             </template>
             <template v-for="(item, index) in props.items" v-else>
-              <v-list-item :to="{name: 'issues-id', params: {id:item.id}}">
+              <v-list-item :to="{ name: 'issues-id', params: { id: item.id } }">
                 <issue-list-item :issue="item" />
               </v-list-item>
               <v-divider v-if="index + 1 < props.items.length" :key="index" />
