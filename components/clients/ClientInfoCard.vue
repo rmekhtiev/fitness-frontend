@@ -34,7 +34,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list three-line>
+      <v-list two-line>
         <v-list-item
           v-if="client.phone_number"
           :href="'tel:' + client.phone_number"
