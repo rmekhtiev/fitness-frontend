@@ -30,11 +30,11 @@
 </template>
 
 <script>
-import { QrcodeStream } from "vue-qrcode-reader"
+import { QrcodeStream } from "vue-qrcode-reader";
 
-import client from "../mixins/client"
+import client from "../mixins/client";
 
-import ClientInfoCard from "./clients/ClientInfoCard"
+import ClientInfoCard from "./clients/ClientInfoCard";
 
 export default {
   name: "LockerClaimDialog",
@@ -64,18 +64,18 @@ export default {
 
   computed: {
     client() {
-      return this.$store.getters["clients/byId"]({ id: this.client_id })
+      return this.$store.getters["clients/byId"]({ id: this.client_id });
     }
   },
 
   methods: {
     async onInit(promise) {
       try {
-        await promise
+        await promise;
 
         // successfully initialized
       } catch (error) {
-        this.$toast.error(error)
+        this.$toast.error(error);
       }
     },
 
@@ -87,36 +87,36 @@ export default {
           content, // decoded String
           // eslint-disable-next-line no-unused-vars
           location // QR code coordinates
-        } = await promise
+        } = await promise;
 
-        console.log(content)
+        console.log(content);
 
-        let parsed = JSON.parse(content)
+        const parsed = JSON.parse(content);
 
         if (parsed.client_id) {
-          this.loadClient(parsed.client_id)
-          this.client_id = parsed.client_id
+          this.loadClient(parsed.client_id);
+          this.client_id = parsed.client_id;
         } else {
-          this.$toast.error("Неизвестный формат")
+          this.$toast.error("Неизвестный формат");
         }
       } catch (error) {
-        this.$toast.error("Неизвестный формат")
+        this.$toast.error("Неизвестный формат");
       }
     },
 
     loadClient(client_id) {
-      this.$store.dispatch("clients/loadById", { id: client_id })
+      this.$store.dispatch("clients/loadById", { id: client_id });
     },
 
     open() {
-      this.dialog = true
+      this.dialog = true;
     },
 
     close() {
-      this.dialog = false
+      this.dialog = false;
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

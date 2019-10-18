@@ -60,11 +60,11 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import { mask } from "vue-the-mask"
+import { mask } from "vue-the-mask";
 
-import auth from "../../mixins/auth"
+import auth from "../../mixins/auth";
 
 export default {
   name: "ClientForm",
@@ -98,22 +98,22 @@ export default {
         primary_hall_id: this.me.associated_employee
           ? this.me.associated_employee.hall_id
           : null
-      }
+      };
     }
   },
 
   created() {
-    let newVal = { ...this.value }
+    const newVal = { ...this.value };
 
     _(this.defaultForm).each((item, index) => {
       if (!this.value[index]) {
-        newVal[index] = item
+        newVal[index] = item;
       }
-    })
+    });
 
-    this.$emit("input", newVal)
+    this.$emit("input", newVal);
   }
-}
+};
 </script>
 
 <style scoped></style>

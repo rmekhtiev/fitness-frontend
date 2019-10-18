@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import hall from "../../mixins/employee"
+import hall from "../../mixins/employee";
 
 export default {
   name: "EmployeeListItem",
@@ -42,7 +42,7 @@ export default {
       required: true
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

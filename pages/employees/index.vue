@@ -69,19 +69,19 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import serverSidePaginated from "../../mixins/server-side-paginated"
-import selectedHallAware from "../../mixins/selectedHallAware"
+import serverSidePaginated from "../../mixins/server-side-paginated";
+import selectedHallAware from "../../mixins/selected-hall-aware";
 
-import EmployeeListItem from "../../components/employees/EmployeeListItem"
-import EmployeeDialog from "../../components/employees/EmployeeDialog"
+import EmployeeListItem from "../../components/employees/EmployeeListItem";
+import EmployeeDialog from "../../components/employees/EmployeeDialog";
 
 export default {
   head() {
     return {
       title: "Сотрудники"
-    }
+    };
   },
 
   components: {
@@ -96,14 +96,14 @@ export default {
   }),
 
   computed: {
-    pureFilter: function() {
+    pureFilter() {
       return _({
         hall_id: this.selectedHallId,
         ...this.filter
       })
         .omitBy(_.isNull)
         .omitBy(_.isUndefined)
-        .value()
+        .value();
     }
   },
 
@@ -112,15 +112,15 @@ export default {
       store.dispatch("employees/loadAll"),
       store.dispatch("halls/loadAll"),
       store.dispatch("users/loadAll") // todo: load only related
-    ])
+    ]);
   },
 
   methods: {
     loadRelated() {
-      let userIds = this.items
+      const userIds = this.items
         .map(employee => employee.associated_user_id)
         .filter((value, index, self) => self.indexOf(value) === index)
-        .filter(value => value !== null)
+        .filter(value => value !== null);
 
       return this.$store.dispatch("users/loadWhere", {
         filter: {
@@ -129,23 +129,23 @@ export default {
         options: {
           per_page: -1
         }
-      })
+      });
     },
     openEmployeeDialog() {
       this.$refs.employeeDialog.open().then(form => {
         this.$axios.post("employees", form).then(async response => {
           await this.$store.dispatch("employees/loadById", {
             id: response.data.data.id
-          })
+          });
           this.$router.push({
             name: "employees-id",
             params: { id: response.data.data.id }
-          })
-        })
-      })
+          });
+        });
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

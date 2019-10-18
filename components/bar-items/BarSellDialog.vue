@@ -79,14 +79,14 @@ export default {
 
   computed: {
     price() {
-      return this.barItem.cost * this.form.quantity
+      return this.barItem.cost * this.form.quantity;
     }
   },
 
   watch: {
     "form.quantity"(value) {
       if (!value) {
-        this.form.quantity = 1
+        this.form.quantity = 1;
       }
     }
   },
@@ -95,24 +95,24 @@ export default {
 
   methods: {
     open() {
-      this.dialog = true
+      this.dialog = true;
 
       return new Promise((resolve, reject) => {
-        this.resolve = resolve
-        this.reject = reject
-      })
+        this.resolve = resolve;
+        this.reject = reject;
+      });
     },
 
     save() {
-      this.resolve(this.form)
-      this.dialog = false
+      this.resolve(this.form);
+      this.dialog = false;
     },
 
     cancel() {
-      this.dialog = false
+      this.dialog = false;
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

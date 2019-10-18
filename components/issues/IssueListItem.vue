@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import issue from "../../mixins/issue"
+import issue from "../../mixins/issue";
 
 export default {
   name: "IssueListItem",
@@ -74,7 +74,7 @@ export default {
       required: true
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

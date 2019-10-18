@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import ClientForm from "./ClientForm"
+import ClientForm from "./ClientForm";
 export default {
   name: "ClientDialog",
 
@@ -68,30 +68,30 @@ export default {
 
   created() {
     if (this.client) {
-      Object.assign(this.form, this.client)
+      Object.assign(this.form, this.client);
     }
   },
 
   methods: {
     open() {
-      this.dialog = true
+      this.dialog = true;
 
       return new Promise((resolve, reject) => {
-        this.resolve = resolve
-        this.reject = reject
-      })
+        this.resolve = resolve;
+        this.reject = reject;
+      });
     },
 
     save() {
-      this.resolve(this.form)
-      this.dialog = false
+      this.resolve(this.form);
+      this.dialog = false;
     },
 
     cancel() {
-      this.dialog = false
+      this.dialog = false;
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

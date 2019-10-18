@@ -29,9 +29,9 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import auth from "../../mixins/auth"
+import auth from "../../mixins/auth";
 
 export default {
   name: "IssueForm",
@@ -72,8 +72,8 @@ export default {
   computed: {
     defaultForm() {
       return {
-        hall_id: this.$store.getters["selectedHallId"]
-          ? this.$store.getters["selectedHallId"]
+        hall_id: this.$store.getters.selectedHallId
+          ? this.$store.getters.selectedHallId
           : null,
         employee_id: this.me.associated_employee
           ? this.me.associated_employee.id
@@ -81,22 +81,22 @@ export default {
         topic: null,
         description: null,
         status: "pending"
-      }
+      };
     }
   },
 
   created() {
-    let newVal = { ...this.value }
+    const newVal = { ...this.value };
 
     _(this.defaultForm).each((item, index) => {
       if (!this.value[index]) {
-        newVal[index] = item
+        newVal[index] = item;
       }
-    })
+    });
 
-    this.$emit("input", newVal)
+    this.$emit("input", newVal);
   }
-}
+};
 </script>
 
 <style scoped></style>

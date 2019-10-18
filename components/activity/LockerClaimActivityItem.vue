@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import DefaultActivityItem from "./DefaultActivityItem"
+import DefaultActivityItem from "./DefaultActivityItem";
 
 export default {
   name: "LockerClaimActivityItem",
@@ -33,14 +33,18 @@ export default {
 
   computed: {
     client() {
-      return this.$store.getters["clients/byId"]({ id: this.subject.client_id })
+      return this.$store.getters["clients/byId"]({
+        id: this.subject.client_id
+      });
     },
 
     locker() {
-      return this.$store.getters["lockers/byId"]({ id: this.subject.locker_id })
+      return this.$store.getters["lockers/byId"]({
+        id: this.subject.locker_id
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

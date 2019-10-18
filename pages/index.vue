@@ -22,7 +22,8 @@
           <p>
             If you have questions, please join the official
             <a href="https://chat.vuetifyjs.com/" target="_blank" title="chat">
-              discord </a>.
+              discord </a
+            >.
           </p>
           <p>
             Find a bug? Report it on the github
@@ -31,7 +32,8 @@
               target="_blank"
               title="contribute"
             >
-              issue board </a>.
+              issue board </a
+            >.
           </p>
           <p>
             Thank you for developing with Vuetify and I look forward to bringing
@@ -40,11 +42,11 @@
           <div class="text-xs-right">
             <em><small>&mdash; John Leider</small></em>
           </div>
-          <hr class="my-3">
+          <hr class="my-3" />
           <a href="https://nuxtjs.org/" target="_blank">
             Nuxt Documentation
           </a>
-          <br>
+          <br />
           <a href="https://github.com/nuxt/nuxt.js" target="_blank">
             Nuxt GitHub
           </a>
@@ -61,18 +63,18 @@
 </template>
 
 <script>
-import Logo from "~/components/Logo.vue"
-import VuetifyLogo from "~/components/VuetifyLogo.vue"
+import Logo from "~/components/Logo.vue";
+import VuetifyLogo from "~/components/VuetifyLogo.vue";
 
 export default {
   head() {
     return {
       title: "Главная"
-    }
+    };
   },
   components: {
     Logo,
     VuetifyLogo
   }
-}
+};
 </script>

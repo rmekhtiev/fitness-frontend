@@ -63,8 +63,8 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
-import HallListItem from "../../components/hall/HallListItem"
+import { mapGetters } from "vuex";
+import HallListItem from "../../components/hall/HallListItem";
 
 export default {
   name: "Index",
@@ -72,7 +72,7 @@ export default {
   head() {
     return {
       title: "Залы"
-    }
+    };
   },
 
   components: {
@@ -86,9 +86,9 @@ export default {
   },
 
   fetch({ store }) {
-    return Promise.all([store.dispatch("halls/loadAll")])
+    return Promise.all([store.dispatch("halls/loadAll")]);
   }
-}
+};
 </script>
 
 <style scoped></style>

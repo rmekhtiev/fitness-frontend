@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import ClientListItem from "./clients/ClientListItem"
+import ClientListItem from "./clients/ClientListItem";
 export default {
   name: "ClientSearchDialog",
 
@@ -112,11 +112,11 @@ export default {
     filter() {
       return {
         search: this.search
-      }
+      };
     },
 
     clients() {
-      return this.$store.getters["clients/where"]({ filter: this.filter })
+      return this.$store.getters["clients/where"]({ filter: this.filter });
     }
   },
 
@@ -124,18 +124,18 @@ export default {
     loadFiltered() {
       this.$store.dispatch("clients/loadWhere", {
         filter: this.filter
-      })
+      });
     },
 
     open() {
-      this.dialog = true
+      this.dialog = true;
     },
 
     close() {
-      this.dialog = false
+      this.dialog = false;
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

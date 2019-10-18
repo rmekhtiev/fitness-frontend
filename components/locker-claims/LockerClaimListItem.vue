@@ -84,10 +84,10 @@
 </template>
 
 <script>
-import lockerClaim from "../../mixins/locker-claim"
+import lockerClaim from "../../mixins/locker-claim";
 
-import Confirm from "../Confirm"
-import LockerClaimDialog from "./LockerClaimDialog"
+import Confirm from "../Confirm";
+import LockerClaimDialog from "./LockerClaimDialog";
 
 export default {
   name: "LockerClaimListItem",
@@ -113,15 +113,15 @@ export default {
 
   computed: {
     locker() {
-      return this.$store.getters["lockers/byId"]({ id: this.claim.locker_id })
+      return this.$store.getters["lockers/byId"]({ id: this.claim.locker_id });
     },
 
     hall() {
-      return this.$store.getters["halls/byId"]({ id: this.locker.hall_id })
+      return this.$store.getters["halls/byId"]({ id: this.locker.hall_id });
     },
 
     client() {
-      return this.$store.getters["clients/byId"]({ id: this.claim.client_id })
+      return this.$store.getters["clients/byId"]({ id: this.claim.client_id });
     }
   },
 
@@ -131,14 +131,14 @@ export default {
         .open("Удалить бронь", "Вы уверены?", { color: "red" })
         .then(confirm => {
           if (confirm) {
-            let lockerId = this.claim.locker_id
+            const lockerId = this.claim.locker_id;
 
-            this.$store.dispatch("locker-claims/delete", { id: this.claim.id })
-            this.$store.dispatch("lockers/loadById", { id: lockerId })
+            this.$store.dispatch("locker-claims/delete", { id: this.claim.id });
+            this.$store.dispatch("lockers/loadById", { id: lockerId });
 
-            this.$emit("delete")
+            this.$emit("delete");
           }
-        })
+        });
     },
 
     updateClaim() {
@@ -148,14 +148,14 @@ export default {
           .then(async response => {
             await this.$store.dispatch("locker-claims/loadById", {
               id: response.data.data.id
-            })
-          })
+            });
+          });
 
-        this.$emit("update")
-      })
+        this.$emit("update");
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

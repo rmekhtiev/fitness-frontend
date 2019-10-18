@@ -113,19 +113,19 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import serverSidePaginated from "../../mixins/server-side-paginated"
-import selectedHallAware from "../../mixins/selectedHallAware"
+import serverSidePaginated from "../../mixins/server-side-paginated";
+import selectedHallAware from "../../mixins/selected-hall-aware";
 
-import TrainerListItem from "../../components/trainers/TrainerListItem"
-import TrainerDialog from "../../components/trainers/TrainerDialog"
+import TrainerListItem from "../../components/trainers/TrainerListItem";
+import TrainerDialog from "../../components/trainers/TrainerDialog";
 
 export default {
   head() {
     return {
       title: "Тренеры"
-    }
+    };
   },
 
   components: {
@@ -140,14 +140,14 @@ export default {
   }),
 
   computed: {
-    pureFilter: function() {
+    pureFilter() {
       return _({
         hall_id: this.selectedHallId,
         ...this.filter
       })
         .omitBy(_.isNull)
         .omitBy(_.isUndefined)
-        .value()
+        .value();
     }
   },
 
@@ -155,7 +155,7 @@ export default {
     return Promise.all([
       store.dispatch("trainers/loadAll"),
       store.dispatch("halls/loadAll")
-    ])
+    ]);
   },
 
   methods: {
@@ -164,20 +164,20 @@ export default {
         this.$axios.post("trainers", form).then(async response => {
           await this.$store.dispatch("trainers/loadById", {
             id: response.data.data.id
-          })
+          });
           this.$router.push({
             name: "trainers-id",
             params: { id: response.data.data.id }
-          })
-        })
-      })
+          });
+        });
+      });
     },
 
     loadRelated() {
-      let employeeIds = this.items
+      const employeeIds = this.items
         .map(trainer => trainer.associated_employee_id)
         .filter((value, index, self) => self.indexOf(value) === index)
-        .filter(value => value !== null)
+        .filter(value => value !== null);
 
       return this.$store.dispatch("employees/loadWhere", {
         filter: {
@@ -186,10 +186,10 @@ export default {
         options: {
           per_page: -1
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

@@ -1,4 +1,4 @@
-import filterable from "./filterable"
+import filterable from "./filterable";
 
 export default {
   mixins: [filterable],
@@ -15,13 +15,13 @@ export default {
 
   computed: {
     items() {
-      return this.$store.getters[this.resource + "/where"](this.serverPayload)
+      return this.$store.getters[this.resource + "/where"](this.serverPayload);
     },
 
     totalItems() {
       return this.$store.getters[this.resource + "/lastMeta"]
         ? this.$store.getters[this.resource + "/lastMeta"].pagination.total
-        : 0
+        : 0;
     },
 
     serverPayload() {
@@ -31,14 +31,14 @@ export default {
           page: this.iteratorOptions.page,
           per_page: this.iteratorOptions.itemsPerPage
         }
-      }
+      };
     }
   },
 
   watch: {
     iteratorOptions: {
       handler() {
-        this.loadItems()
+        this.loadItems();
       },
       deep: true
     }
@@ -46,23 +46,23 @@ export default {
 
   methods: {
     loadItems() {
-      this.itemsLoading = true
+      this.itemsLoading = true;
 
       return this.$store
         .dispatch(this.resource + "/loadWhere", this.serverPayload)
         .then(async () => {
           return this.loadRelated().then(() => {
-            this.itemsLoading = false
-          })
-        })
+            this.itemsLoading = false;
+          });
+        });
     },
 
     loadRelated() {
-      return Promise.resolve()
+      return Promise.resolve();
     }
   },
 
   async beforeMount() {
-    await this.loadItems()
+    await this.loadItems();
   }
-}
+};

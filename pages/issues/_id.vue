@@ -9,9 +9,9 @@ export default {
   head() {
     return {
       title: "Проблема" // todo:
-    }
+    };
   }
-}
+};
 </script>
 
 <style scoped></style>

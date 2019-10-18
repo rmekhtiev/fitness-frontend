@@ -15,11 +15,11 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import { mask } from "vue-the-mask"
+import { mask } from "vue-the-mask";
 
-import auth from "../../mixins/auth"
+import auth from "../../mixins/auth";
 
 export default {
   name: "EmployeeForm",
@@ -58,25 +58,25 @@ export default {
         first_name: null,
         middle_name: null,
         last_name: null,
-        hall_id: this.$store.getters["selectedHallId"]
-          ? this.$store.getters["selectedHallId"]
+        hall_id: this.$store.getters.selectedHallId
+          ? this.$store.getters.selectedHallId
           : null
-      }
+      };
     }
   },
 
   created() {
-    let newVal = { ...this.value }
+    const newVal = { ...this.value };
 
     _(this.defaultForm).each((item, index) => {
       if (!this.value[index]) {
-        newVal[index] = item
+        newVal[index] = item;
       }
-    })
+    });
 
-    this.$emit("input", newVal)
+    this.$emit("input", newVal);
   }
-}
+};
 </script>
 
 <style scoped></style>

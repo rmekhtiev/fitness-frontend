@@ -52,9 +52,15 @@
               mdi-map-marker
             </v-icon>
           </v-list-item-icon>
-          <v-list-item-content>
+          <v-list-item-content v-if="hall">
             <v-list-item-title>{{ hall.title }}</v-list-item-title>
             <v-list-item-subtitle>{{ hall.address }}</v-list-item-subtitle>
+          </v-list-item-content>
+          <v-list-item-content v-else>
+            <v-progress-linear
+              indeterminate
+              color="primary"
+            ></v-progress-linear>
           </v-list-item-content>
         </v-list-item>
 
@@ -67,8 +73,15 @@
               mdi-account-star
             </v-icon>
           </v-list-item-icon>
-          <v-list-item-content>
+          <v-list-item-content v-if="trainer">
             <v-list-item-title>{{ trainer.name }}</v-list-item-title>
+            <v-list-item-subtitle>Основной тренер</v-list-item-subtitle>
+          </v-list-item-content>
+          <v-list-item-content v-else>
+            <v-progress-linear
+              indeterminate
+              color="primary"
+            ></v-progress-linear>
           </v-list-item-content>
         </v-list-item>
 
@@ -99,10 +112,10 @@
 </template>
 
 <script>
-import GroupDialog from "./GroupDialog"
-import Confirm from "../Confirm"
-import auth from "../../mixins/auth"
-import group from "../../mixins/group"
+import Confirm from "../Confirm";
+import auth from "../../mixins/auth";
+import group from "../../mixins/group";
+import GroupDialog from "./GroupDialog";
 
 export default {
   name: "GroupInfoCard",
@@ -126,13 +139,11 @@ export default {
     }
   },
 
-  computed: {
-    hall() {
-      return this.$store.getters["halls/byId"]({ id: this.group.hall_id })
-    },
+  data: () => ({}),
 
-    trainer() {
-      return this.$store.getters["trainers/byId"]({ id: this.group.trainer_id })
+  computed: {
+    isLoading() {
+      return Object.values(this.loading).some(element => element === true);
     }
   },
 
@@ -144,11 +155,11 @@ export default {
           .then(async response => {
             await this.$store.dispatch("groups/loadById", {
               id: response.data.data.id
-            })
-          })
+            });
+          });
 
-        this.$emit("update")
-      })
+        this.$emit("update");
+      });
     },
 
     deleteGroup() {
@@ -159,16 +170,17 @@ export default {
           { color: "red" }
         )
         .then(() => {
-          this.$router.back()
           this.$store
             .dispatch("groups/delete", { id: this.group.id })
             .then(() => {
-              this.$toast.success("Группа удалена")
-            })
-        })
+              this.$toast.success("Группа удалена");
+            });
+
+          this.$emit("delete");
+        });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

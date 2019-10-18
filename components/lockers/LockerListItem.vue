@@ -53,8 +53,8 @@
 </template>
 
 <script>
-import locker from "../../mixins/locker"
-import lockerClaim from "../../mixins/locker-claim"
+import locker from "../../mixins/locker";
+import lockerClaim from "../../mixins/locker-claim";
 
 export default {
   name: "LockerListItem",
@@ -75,14 +75,14 @@ export default {
 
   computed: {
     claim() {
-      return this.locker.claim
+      return this.locker.claim;
     },
 
     client() {
-      return this.$store.getters["clients/byId"]({ id: this.claim.client_id })
+      return this.$store.getters["clients/byId"]({ id: this.claim.client_id });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

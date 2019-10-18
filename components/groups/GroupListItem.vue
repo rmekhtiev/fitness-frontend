@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import group from "../../mixins/group"
+import group from "../../mixins/group";
 
 export default {
   name: "GroupListItem",
@@ -62,7 +62,7 @@ export default {
       required: true
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

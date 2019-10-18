@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import VueQrcode from "@chenfengyuan/vue-qrcode"
+import VueQrcode from "@chenfengyuan/vue-qrcode";
 
 export default {
   name: "SubscriptionInfoCard",
@@ -101,7 +101,7 @@ export default {
     activeSubscription() {
       return this.$store.getters["subscriptions/byId"]({
         id: this.client.active_subscription.id
-      })
+      });
     }
   },
 
@@ -110,22 +110,22 @@ export default {
       this.$axios
         .get("/clients/" + this.client.id + "/print")
         .then(response => {
-          let print = window.open(
+          const print = window.open(
             "",
             "",
             "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
-          )
-          print.document.write(response.data)
+          );
+          print.document.write(response.data);
 
-          print.document.close()
-          print.focus()
-          print.print()
-        })
+          print.document.close();
+          print.focus();
+          print.print();
+        });
 
       // this.$htmlToPaper('subscription-contents');
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

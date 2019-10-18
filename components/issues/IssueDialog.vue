@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import IssueForm from "../../components/issues/IssueForm"
+import IssueForm from "../../components/issues/IssueForm";
 export default {
   name: "IssueDialog",
 
@@ -72,33 +72,33 @@ export default {
 
   computed: {
     halls() {
-      return this.$store.getters["halls/all"]
+      return this.$store.getters["halls/all"];
     },
     employees() {
-      return this.$store.getters["employees/all"]
+      return this.$store.getters["employees/all"];
     }
   },
 
   methods: {
     open() {
-      this.dialog = true
+      this.dialog = true;
 
       return new Promise((resolve, reject) => {
-        this.resolve = resolve
-        this.reject = reject
-      })
+        this.resolve = resolve;
+        this.reject = reject;
+      });
     },
 
     save() {
-      this.resolve(this.form)
-      this.dialog = false
+      this.resolve(this.form);
+      this.dialog = false;
     },
 
     cancel() {
-      this.dialog = false
+      this.dialog = false;
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

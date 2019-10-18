@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import DefaultActivityItem from "./DefaultActivityItem"
+import DefaultActivityItem from "./DefaultActivityItem";
 
 export default {
   name: "IssueActivityItem",
@@ -34,10 +34,10 @@ export default {
     hall() {
       return this.$store.getters["halls/byId"]({
         id: this.activity.subject.hall_id
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>
