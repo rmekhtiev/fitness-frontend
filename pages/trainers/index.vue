@@ -1,43 +1,5 @@
 <template>
   <div id="clients">
-    <v-layout id="filters">
-      <!--      <v-flex md3 class="hidden-sm-and-down">-->
-      <!--        <v-autocomplete-->
-      <!--          v-model="filter.trainer_id"-->
-      <!--          :items="trainers"-->
-
-      <!--          item-text="name"-->
-      <!--          item-value="id"-->
-
-      <!--          label="Тренер"-->
-      <!--          single-line-->
-      <!--          filled-->
-
-      <!--          clearable-->
-
-      <!--          @input="loadItems"-->
-      <!--        ></v-autocomplete>-->
-      <!--      </v-flex>-->
-
-      <!--      <v-flex md3 class="hidden-sm-and-down">-->
-      <!--        <v-autocomplete-->
-      <!--          v-model="filter.phone_number"-->
-      <!--          :items="items"-->
-
-      <!--          item-text="phone_number"-->
-      <!--          item-value="phone_number"-->
-
-      <!--          label="Номер телефона"-->
-      <!--          single-line-->
-      <!--          filled-->
-
-      <!--          clearable-->
-
-      <!--          @input="loadItems"-->
-      <!--        ></v-autocomplete>-->
-      <!--      </v-flex>-->
-    </v-layout>
-
     <v-data-iterator
       :items="items"
       :options.sync="iteratorOptions"
