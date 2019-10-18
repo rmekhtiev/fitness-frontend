@@ -55,16 +55,29 @@
           </v-list-item-icon>
         </v-list-item>
 
-        <v-list-item v-if="client.email" :href="'mailto:' + client.email">
+        <v-list-item v-if="client.whats_up_number">
           <v-list-item-icon>
             <v-icon color="primary">
-              mdi-email
+              mdi-whatsapp
             </v-icon>
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title>{{ client.email }}</v-list-item-title>
-            <v-list-item-subtitle>Email</v-list-item-subtitle>
+            <v-list-item-title>{{ client.whats_up_number }}</v-list-item-title>
+            <v-list-item-subtitle>Номер WhatsUp</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item v-if="client.instagram">
+          <v-list-item-icon>
+            <v-icon color="primary">
+              mdi-instagram
+            </v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ client.instagram }}</v-list-item-title>
+            <v-list-item-subtitle>Instagram</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
 
