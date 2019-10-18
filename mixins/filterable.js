@@ -6,7 +6,7 @@ export default {
   }),
 
   computed: {
-    pureFilter: function() {
+    pureFilter() {
       return _(this.filter)
         .omitBy(_.isNull)
         .omitBy(_.isUndefined)

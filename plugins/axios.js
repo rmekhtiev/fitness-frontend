@@ -1,6 +1,6 @@
 export default function(nuxt) {
-  let { $axios, redirect, app } = nuxt;
-  let { $toast, $auth } = app;
+  const { $axios, redirect, app } = nuxt;
+  const { $toast, $auth } = app;
 
   // eslint-disable-next-line no-unused-vars
   $axios.onRequest(config => {});
@@ -13,9 +13,7 @@ export default function(nuxt) {
 
       if (
         error.response.status === 401 &&
-        error.response.data.message
-          .toLowerCase()
-          .indexOf("token has expired") !== -1
+        error.response.data.message.toLowerCase().includes("token has expired")
       ) {
         $auth.logout().then(() => {
           redirect({

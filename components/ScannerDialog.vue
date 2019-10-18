@@ -91,7 +91,7 @@ export default {
 
         console.log(content);
 
-        let parsed = JSON.parse(content);
+        const parsed = JSON.parse(content);
 
         if (parsed.client_id) {
           this.loadClient(parsed.client_id);

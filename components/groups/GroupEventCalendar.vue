@@ -160,7 +160,7 @@ export default {
     },
 
     updateRange(range) {
-      let { start, end } = range;
+      const { start, end } = range;
 
       console.log(range);
 

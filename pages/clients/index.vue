@@ -79,7 +79,7 @@ export default {
   }),
 
   computed: {
-    pureFilter: function() {
+    pureFilter() {
       return _({
         primary_hall_id: this.selectedHallId,
         ...this.filter
@@ -118,7 +118,7 @@ export default {
     },
 
     loadRelated() {
-      let clientIds = this.items
+      const clientIds = this.items
         .map(client => client.id)
         .filter((value, index, self) => self.indexOf(value) === index)
         .filter(value => value !== null);

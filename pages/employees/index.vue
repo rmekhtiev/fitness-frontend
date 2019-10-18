@@ -96,7 +96,7 @@ export default {
   }),
 
   computed: {
-    pureFilter: function() {
+    pureFilter() {
       return _({
         hall_id: this.selectedHallId,
         ...this.filter
@@ -117,7 +117,7 @@ export default {
 
   methods: {
     loadRelated() {
-      let userIds = this.items
+      const userIds = this.items
         .map(employee => employee.associated_user_id)
         .filter((value, index, self) => self.indexOf(value) === index)
         .filter(value => value !== null);

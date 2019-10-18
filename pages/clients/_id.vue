@@ -188,7 +188,7 @@ export default {
 
   fetch: ({ store, params, $moment }) => {
     // eslint-disable-next-line no-unused-vars
-    let lockerClaimsFilter = {
+    const lockerClaimsFilter = {
       client_id: params.id,
       after: $moment().format("YYYY-MM-DD")
     };
@@ -228,7 +228,7 @@ export default {
           filter: this.lockerFilter
         })
         .then(() => {
-          let lockerIds = _(
+          const lockerIds = _(
             this.$store.getters["locker-claims/where"]({
               filter: this.lockerFilter
             })

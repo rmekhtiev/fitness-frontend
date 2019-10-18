@@ -11,8 +11,8 @@ export default {
     },
 
     updatedDay() {
-      let date = this.$moment.utc(this.issue.updated_at).local();
-      let now = this.$moment().local();
+      const date = this.$moment.utc(this.issue.updated_at).local();
+      const now = this.$moment().local();
       if (Math.abs(date.diff(now, "days")) < 2) {
         if (date.dayOfYear() == now.dayOfYear()) {
           return "Сегодня";

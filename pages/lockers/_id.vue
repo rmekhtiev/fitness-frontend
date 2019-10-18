@@ -175,7 +175,7 @@ export default {
           id: params.id
         })
         .then(async () => {
-          let locker = store.getters["lockers/byId"]({ id: params.id });
+          const locker = store.getters["lockers/byId"]({ id: params.id });
 
           return await store.dispatch("halls/loadById", { id: locker.hall_id });
         })
@@ -190,7 +190,7 @@ export default {
     loadLockerClaims() {
       this.loading.claims = true;
 
-      let lockerClaimsFilter = {
+      const lockerClaimsFilter = {
         locker_id: this.$route.params.id
       };
 
@@ -199,7 +199,7 @@ export default {
           filter: lockerClaimsFilter
         })
         .then(async () => {
-          let clientIds = _(
+          const clientIds = _(
             this.$store.getters["locker-claims/where"]({
               filter: lockerClaimsFilter
             })

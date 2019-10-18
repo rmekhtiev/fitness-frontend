@@ -97,7 +97,7 @@ export default {
 
   watch: {
     // eslint-disable-next-line no-unused-vars
-    "form.hall_id": function(newVal, oldVal) {
+    "form.hall_id"(newVal, oldVal) {
       this.$store.dispatch("lockers/loadWhere", {
         filter: this.lockersFilter
       });

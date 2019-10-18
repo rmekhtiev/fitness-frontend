@@ -66,7 +66,7 @@ export default {
 
   methods: {
     loadRelated() {
-      let promises = [
+      const promises = [
         this.loadTrainer(),
         this.loadHall(),
         this.loadClients(),

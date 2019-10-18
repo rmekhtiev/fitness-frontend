@@ -168,7 +168,7 @@ export default {
   }),
 
   computed: {
-    pureFilter: function() {
+    pureFilter() {
       return _({
         hall_id: this.selectedHallId,
         ...this.filter
@@ -179,10 +179,9 @@ export default {
     },
 
     employees() {
-      return this.$store.getters["selectedHall"]
+      return this.$store.getters.selectedHall
         ? this.$store.getters["employees/all"].filter(
-            item =>
-              item.hall_id === this.$store.getters["selectedHallIdForFilter"]
+            item => item.hall_id === this.$store.getters.selectedHallIdForFilter
           )
         : this.$store.getters["employees/all"];
     }
@@ -212,7 +211,7 @@ export default {
     },
 
     loadRelated() {
-      let employeeIds = this.items
+      const employeeIds = this.items
         .map(issue => issue.employee_id)
         .filter((value, index, self) => self.indexOf(value) === index)
         .filter(value => value !== null);

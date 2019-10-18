@@ -73,9 +73,9 @@
 </template>
 
 <script>
+import Confirm from "../Confirm";
 import BarSellDialog from "./BarSellDialog";
 import BarDialog from "./BarDialog";
-import Confirm from "../Confirm";
 
 export default {
   name: "BarItemListItem",

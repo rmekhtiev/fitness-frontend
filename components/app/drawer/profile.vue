@@ -75,7 +75,7 @@ export default {
     },
 
     hall() {
-      return this.$store.getters["selectedHall"];
+      return this.$store.getters.selectedHall;
     },
 
     halls() {

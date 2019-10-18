@@ -131,7 +131,7 @@ export default {
         .open("Удалить бронь", "Вы уверены?", { color: "red" })
         .then(confirm => {
           if (confirm) {
-            let lockerId = this.claim.locker_id;
+            const lockerId = this.claim.locker_id;
 
             this.$store.dispatch("locker-claims/delete", { id: this.claim.id });
             this.$store.dispatch("lockers/loadById", { id: lockerId });

@@ -51,15 +51,15 @@ export default {
         title: null,
         amount: null,
         cost: null,
-        hall_id: this.$store.getters["selectedHallId"]
-          ? this.$store.getters["selectedHallId"]
+        hall_id: this.$store.getters.selectedHallId
+          ? this.$store.getters.selectedHallId
           : null
       };
     }
   },
 
   created() {
-    let newVal = { ...this.value };
+    const newVal = { ...this.value };
 
     _(this.defaultForm).each((item, index) => {
       if (!this.value[index]) {

@@ -40,12 +40,12 @@ import IssueActivityItem from "../components/activity/IssueActivityItem";
 import ClientGroupActivityItem from "../components/activity/ClientGroupActivityItem";
 
 function isToday(momentDate, reference) {
-  let today = reference.clone().startOf("day");
+  const today = reference.clone().startOf("day");
   return momentDate.isSame(today, "d");
 }
 
 function isYesterday(momentDate, reference) {
-  let yesterday = reference
+  const yesterday = reference
     .clone()
     .subtract(1, "days")
     .startOf("day");
@@ -67,7 +67,7 @@ function isTwoWeeksOrMore(momentDate, reference) {
 }
 
 function loadSubject(activities, type, store) {
-  let chunks = _(activities).chunk(10);
+  const chunks = _(activities).chunk(10);
 
   switch (type) {
     case "client-group":
@@ -116,10 +116,10 @@ function loadSubject(activities, type, store) {
 }
 
 function loadRelated(activities, type, store) {
-  let subjectIds = _(activities)
+  const subjectIds = _(activities)
     .map(activity => activity.subject_id)
     .uniq();
-  let subjects = store.getters[type + "/all"].filter(subject =>
+  const subjects = store.getters[type + "/all"].filter(subject =>
     subjectIds.includes(subject.id)
   );
 
@@ -163,11 +163,10 @@ export default {
 
   computed: {
     activities() {
-      return this.$store.getters["selectedHall"]
+      return this.$store.getters.selectedHall
         ? _.filter(
             this.$store.getters["activities/all"],
-            item =>
-              item.hall_id === this.$store.getters["selectedHallIdForFilter"]
+            item => item.hall_id === this.$store.getters.selectedHallIdForFilter
           )
         : this.$store.getters["activities/all"];
     },
@@ -194,7 +193,7 @@ export default {
           }
         })
         .then(async () => {
-          let activities = store.getters["activities/page"];
+          const activities = store.getters["activities/page"];
 
           return await Promise.all(
             _(activities)
@@ -211,8 +210,8 @@ export default {
 
   methods: {
     humanizeDaysDiff(days) {
-      let target = this.$moment().subtract(days, "d");
-      let today = this.$moment();
+      const target = this.$moment().subtract(days, "d");
+      const today = this.$moment();
 
       if (isToday(target, today)) {
         return "Сегодня";
@@ -242,7 +241,7 @@ export default {
 
     loadMore() {
       return this.$store.dispatch("activities/loadNextPage").then(async () => {
-        let activities = this.$store.getters["activities/page"];
+        const activities = this.$store.getters["activities/page"];
 
         return await Promise.all(
           _(activities)

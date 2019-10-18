@@ -91,14 +91,14 @@ export default {
     },
 
     daysTill() {
-      let date = this.$moment.utc(this.activeSubscription.valid_till);
-      let days_till = this.$moment(this.activeSubscription.valid_till).diff(
+      const date = this.$moment.utc(this.activeSubscription.valid_till);
+      const days_till = this.$moment(this.activeSubscription.valid_till).diff(
         this.$moment(),
         "days"
       );
-      let now = this.$moment().startOf("day");
-      let sub = this.client.active_subscription;
-      //sub = null;
+      const now = this.$moment().startOf("day");
+      const sub = this.client.active_subscription;
+      // sub = null;
       console.log(sub);
       if (Math.abs(date.diff(now, "days")) === 0) {
         return "Сегодня";

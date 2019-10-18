@@ -65,8 +65,8 @@
 
 <script>
 import auth from "../../mixins/auth";
-import EmployeeDialog from "./EmployeeDialog";
 import Confirm from "../Confirm";
+import EmployeeDialog from "./EmployeeDialog";
 
 export default {
   name: "EmployeeInfoCard",

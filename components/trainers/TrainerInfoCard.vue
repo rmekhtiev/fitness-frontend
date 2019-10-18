@@ -90,8 +90,8 @@
 
 <script>
 import auth from "../../mixins/auth";
-import TrainerDialog from "./TrainerDialog";
 import Confirm from "../Confirm";
+import TrainerDialog from "./TrainerDialog";
 
 export default {
   name: "TrainerInfoCard",

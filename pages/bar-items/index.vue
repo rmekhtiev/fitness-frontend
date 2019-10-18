@@ -110,7 +110,7 @@ export default {
   }),
 
   computed: {
-    pureFilter: function() {
+    pureFilter() {
       return _({
         hall_id: this.selectedHallId,
         ...this.filter

@@ -1,7 +1,7 @@
 export default {
   computed: {
     selectedHallId() {
-      return this.$store.getters["selectedHallIdForFilter"];
+      return this.$store.getters.selectedHallIdForFilter;
     }
   },
 

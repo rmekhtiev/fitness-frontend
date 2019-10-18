@@ -112,10 +112,10 @@
 </template>
 
 <script>
-import GroupDialog from "./GroupDialog";
 import Confirm from "../Confirm";
 import auth from "../../mixins/auth";
 import group from "../../mixins/group";
+import GroupDialog from "./GroupDialog";
 
 export default {
   name: "GroupInfoCard",
