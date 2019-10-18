@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    <v-flex xs6 md4>
+    <v-flex xs8 md3 >
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate">
           <div class="body-2 text-truncate" :title="client.full_name">
@@ -17,7 +17,7 @@
       </div>
     </v-flex>
 
-    <v-flex md4>
+    <v-flex xs8 md3>
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="mt-1">
           <div class="pr-4">
@@ -60,6 +60,21 @@
         </div>
       </div>
     </v-flex>
+
+    <v-flex xs8 md3 />
+
+    <v-flex xs8 md3>
+      <div style="display: flex; width: 100%">
+        <div v-if="lastVisitHistoryRecord" style="flex: 1 1 0%;" class="text-truncate text-right">
+          <div class="body-2 text-truncate" >
+            {{ updatedDay }}
+          </div>
+          <div class="caption text-truncate">
+            {{ updatedTime }}
+          </div>
+        </div>
+      </div>
+    </v-flex>
   </v-layout>
 </template>
 
@@ -88,6 +103,30 @@ export default {
       return this.$store.getters["subscriptions/byId"]({
         id: this.client.active_subscription.id
       })
+    },
+
+    lastVisitHistoryRecord(){
+      return this.client.last_visit_history_record;
+    },
+
+    updatedDay() {
+      let date = this.$moment.utc(this.lastVisitHistoryRecord.datetime).local()
+      let now = this.$moment().local()
+      if (Math.abs(date.diff(now, "days")) < 2) {
+        if (date.dayOfYear() == now.dayOfYear()) {
+          return "Сегодня"
+        } else if (date.dayOfYear() == now.dayOfYear() - 1) {
+          return "Вчера"
+        }
+      }
+      return date.format("DD MMM")
+    },
+
+    updatedTime() {
+      return this.$moment
+              .utc(this.lastVisitHistoryRecord.datetime)
+              .local()
+              .format("HH:mm")
     },
 
     daysTill() {
