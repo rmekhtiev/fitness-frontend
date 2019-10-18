@@ -52,9 +52,15 @@
               mdi-map-marker
             </v-icon>
           </v-list-item-icon>
-          <v-list-item-content>
+          <v-list-item-content v-if="hall">
             <v-list-item-title>{{ hall.title }}</v-list-item-title>
             <v-list-item-subtitle>{{ hall.address }}</v-list-item-subtitle>
+          </v-list-item-content>
+          <v-list-item-content v-else>
+            <v-progress-linear
+              indeterminate
+              color="primary"
+            ></v-progress-linear>
           </v-list-item-content>
         </v-list-item>
 
@@ -67,9 +73,15 @@
               mdi-account-star
             </v-icon>
           </v-list-item-icon>
-          <v-list-item-content>
+          <v-list-item-content v-if="trainer">
             <v-list-item-title>{{ trainer.name }}</v-list-item-title>
             <v-list-item-subtitle>Основной тренер</v-list-item-subtitle>
+          </v-list-item-content>
+          <v-list-item-content v-else>
+            <v-progress-linear
+              indeterminate
+              color="primary"
+            ></v-progress-linear>
           </v-list-item-content>
         </v-list-item>
 
@@ -127,15 +139,11 @@ export default {
     }
   },
 
-  computed: {
-    hall() {
-      return this.$store.getters["halls/byId"]({ id: this.group.hall_id });
-    },
+  data: () => ({}),
 
-    trainer() {
-      return this.$store.getters["trainers/byId"]({
-        id: this.group.trainer_id
-      });
+  computed: {
+    isLoading() {
+      return Object.values(this.loading).some(element => element === true);
     }
   },
 
@@ -162,12 +170,13 @@ export default {
           { color: "red" }
         )
         .then(() => {
-          this.$router.back();
           this.$store
             .dispatch("groups/delete", { id: this.group.id })
             .then(() => {
               this.$toast.success("Группа удалена");
             });
+
+          this.$emit("delete");
         });
     }
   }

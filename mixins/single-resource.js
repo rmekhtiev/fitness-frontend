@@ -6,9 +6,7 @@ export default {
   }),
 
   computed: {
-    isLoading() {
-      return Object.values(this.loading).some(element => element === true);
-    }
+    // todo
   },
 
   methods: {

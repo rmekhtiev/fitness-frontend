@@ -1,11 +1,12 @@
 <template>
-  <div>
+  <div v-if="group">
     <v-layout row wrap>
       <v-flex xs12 sm6 lg4 xl3>
         <group-info-card
-          v-if="!isLoading"
           :group="group"
           class="mb-2 mx-auto"
+          @update="loadRelated()"
+          @delete="$router.back()"
         />
       </v-flex>
 
@@ -21,6 +22,49 @@
         </v-card>
       </v-flex>
     </v-layout>
+
+    <v-data-iterator :items="clients ? clients : []" :items-per-page="15">
+      <template v-slot:header>
+        <client-list-header></client-list-header>
+      </template>
+
+      <template v-slot:default="props">
+        <client-list-card
+          v-slot:default="itemProps"
+          :items-loading="loading.clients"
+          :items="props.items"
+        >
+          <v-list-item-content class="py-0">
+            <client-list-item :client="itemProps.item" />
+          </v-list-item-content>
+
+          <v-list-item-action class="my-0">
+            <v-menu bottom left>
+              <template v-slot:activator="{ on }">
+                <v-btn icon @click.prevent="on.click">
+                  <v-icon color="grey lighten-1">
+                    mdi-dots-vertical
+                  </v-icon>
+                </v-btn>
+              </template>
+
+              <v-list dense flat>
+                <v-list-item
+                  @click.prevent="removeClientFromGroup(itemProps.item)"
+                >
+                  <v-list-item-icon>
+                    <v-icon>mdi-close</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content class="pr-6">
+                    <v-list-item-title>Убрать</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-list-item-action>
+        </client-list-card>
+      </template>
+    </v-data-iterator>
 
     <v-speed-dial v-model="fab" fixed bottom right>
       <template v-slot:activator>
@@ -48,7 +92,7 @@
       </v-tooltip>
     </v-speed-dial>
 
-    <!--<group-add-client-dialog ref="addClient" :group="group" />-->
+    <group-add-client-dialog v-if="!isLoading" ref="addClient" :group="group" />
 
     <confirm ref="removeClientConfirm" />
   </div>
@@ -63,15 +107,21 @@ import GroupInfoCard from "../../components/groups/GroupInfoCard";
 import GroupAddClientDialog from "../../components/groups/GroupAddClientDialog";
 import Confirm from "../../components/Confirm";
 import GroupEventCalendar from "../../components/groups/GroupEventCalendar";
+import ClientListHeader from "../../components/clients/ClientListHeader";
+import ClientListCard from "../../components/clients/ClientListCard";
+import ClientListItem from "../../components/clients/ClientListItem";
 
 export default {
   head() {
     return {
-      title: this.group.title
+      title: this.group ? this.group.title : ""
     };
   },
 
   components: {
+    ClientListItem,
+    ClientListCard,
+    ClientListHeader,
     GroupEventCalendar,
     GroupInfoCard,
     GroupAddClientDialog,
@@ -90,17 +140,8 @@ export default {
   }),
 
   computed: {
-    clients() {
-      return this.$store.getters["clients/related"]({
-        // todo: simplify to one function
-        parent: {
-          type: "groups",
-          id: this.$route.params.id
-        },
-        options: {
-          per_page: -1
-        }
-      });
+    isLoading() {
+      return Object.values(this.loading).some(element => element === true);
     },
 
     group() {
@@ -117,52 +158,10 @@ export default {
   },
 
   methods: {
-    loadRelated() {
-      let promises = [this.loadTrainer(), this.loadHall(), this.loadClients()];
-
-      return Promise.all(promises);
-    },
-
-    loadHall() {
-      this.loading.hall = true;
-
-      return this.$store
-        .dispatch("halls/loadById", {
-          id: this.group.hall_id
-        })
-        .then(() => {
-          this.loading.hall = false;
-        });
-    },
-
-    loadTrainer() {
-      this.loading.trainer = true;
-
-      return this.$store
-        .dispatch("trainers/loadById", {
-          id: this.group.trainer_id
-        })
-        .then(() => {
-          this.loading.trainer = false;
-        });
-    },
-
-    loadClients() {
-      this.loading.clients = true;
-
-      return this.$store
-        .dispatch("clients/loadRelated", {
-          parent: {
-            type: "groups",
-            id: this.group.id
-          },
-          options: {
-            per_page: -1
-          }
-        })
-        .then(() => {
-          this.loading.clients = false;
-        });
+    loadResource() {
+      return this.$store.dispatch("groups/loadById", {
+        id: this.$route.params.id
+      });
     },
 
     addClientToGroup() {
@@ -170,6 +169,7 @@ export default {
         await this.$axios
           .put("/groups/" + this.group.id + "/clients/" + form.client_id, form)
           .then(() => {
+            this.loadResource();
             this.loadClients();
           });
       });
@@ -185,6 +185,7 @@ export default {
             await this.$axios
               .delete("/groups/" + this.group.id + "/clients/" + client.id)
               .then(() => {
+                this.loadResource();
                 this.loadClients();
               });
           }

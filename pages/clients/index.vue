@@ -22,48 +22,14 @@
       :items-per-page="15"
     >
       <template v-slot:header>
-        <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
-          <v-flex xs6 md4>
-            <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate">
-                ФИО
-              </div>
-            </div>
-          </v-flex>
-
-          <v-flex md4>
-            <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate">
-                Абонемент
-              </div>
-            </div>
-          </v-flex>
-        </v-layout>
+        <client-list-header></client-list-header>
       </template>
 
       <template v-slot:default="props">
-        <v-card>
-          <v-list>
-            <template v-if="itemsLoading">
-              <v-list-item>
-                <v-progress-linear
-                  color="primary accent-4"
-                  indeterminate
-                  rounded
-                  height="6"
-                />
-              </v-list-item>
-            </template>
-            <template v-for="(item, index) in props.items" v-else>
-              <v-list-item
-                :to="{ name: 'clients-id', params: { id: item.id } }"
-              >
-                <client-list-item :client="item" />
-              </v-list-item>
-              <v-divider v-if="index + 1 < props.items.length" :key="index" />
-            </template>
-          </v-list>
-        </v-card>
+        <client-list-card
+          :items-loading="itemsLoading"
+          :items="props.items"
+        ></client-list-card>
       </template>
     </v-data-iterator>
 
@@ -89,8 +55,9 @@ import _ from "lodash";
 import serverSidePaginated from "../../mixins/server-side-paginated";
 import selectedHallAware from "../../mixins/selected-hall-aware";
 
-import ClientListItem from "../../components/clients/ClientListItem";
+import ClientListHeader from "../../components/clients/ClientListHeader";
 import ClientDialog from "../../components/clients/ClientDialog";
+import ClientListCard from "../../components/clients/ClientListCard";
 
 export default {
   head() {
@@ -100,8 +67,9 @@ export default {
   },
 
   components: {
+    ClientListCard,
     ClientDialog,
-    ClientListItem
+    ClientListHeader
   },
 
   mixins: [selectedHallAware, serverSidePaginated],
