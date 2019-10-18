@@ -1,43 +1,5 @@
 <template>
   <div id="clients">
-    <v-layout id="filters">
-      <!--      <v-flex md3 class="hidden-sm-and-down">-->
-      <!--        <v-autocomplete-->
-      <!--          v-model="filter.trainer_id"-->
-      <!--          :items="trainers"-->
-
-      <!--          item-text="name"-->
-      <!--          item-value="id"-->
-
-      <!--          label="Тренер"-->
-      <!--          single-line-->
-      <!--          filled-->
-
-      <!--          clearable-->
-
-      <!--          @input="loadItems"-->
-      <!--        ></v-autocomplete>-->
-      <!--      </v-flex>-->
-
-      <!--      <v-flex md3 class="hidden-sm-and-down">-->
-      <!--        <v-autocomplete-->
-      <!--          v-model="filter.phone_number"-->
-      <!--          :items="items"-->
-
-      <!--          item-text="phone_number"-->
-      <!--          item-value="phone_number"-->
-
-      <!--          label="Номер телефона"-->
-      <!--          single-line-->
-      <!--          filled-->
-
-      <!--          clearable-->
-
-      <!--          @input="loadItems"-->
-      <!--        ></v-autocomplete>-->
-      <!--      </v-flex>-->
-    </v-layout>
-
     <v-data-iterator
       :items="items"
       :options.sync="iteratorOptions"
@@ -81,15 +43,17 @@
             <template v-if="itemsLoading">
               <v-list-item>
                 <v-progress-linear
-                  color="primary accent-4"
-                  indeterminate
-                  rounded
-                  height="6"
+                        color="primary accent-4"
+                        indeterminate
+                        rounded
+                        height="6"
                 />
               </v-list-item>
             </template>
-            <template v-for="item in props.items" v-else>
-              <trainer-list-item :key="item.id" :trainer="item" />
+            <template v-for="(item,index) in props.items" v-else>
+              <v-list-item :to="{ name: 'trainers-id', params: { id: item.id } }">
+                <trainer-list-item :trainer="item" />
+              </v-list-item>
               <v-divider v-if="index + 1 < props.items.length" :key="index" />
             </template>
           </v-list>
