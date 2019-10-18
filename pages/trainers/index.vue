@@ -81,15 +81,17 @@
             <template v-if="itemsLoading">
               <v-list-item>
                 <v-progress-linear
-                  color="primary accent-4"
-                  indeterminate
-                  rounded
-                  height="6"
+                        color="primary accent-4"
+                        indeterminate
+                        rounded
+                        height="6"
                 />
               </v-list-item>
             </template>
-            <template v-for="item in props.items" v-else>
-              <trainer-list-item :key="item.id" :trainer="item" />
+            <template v-for="(item,index) in props.items" v-else>
+              <v-list-item :to="{ name: 'trainers-id', params: { id: item.id } }">
+                <trainer-list-item :trainer="item" />
+              </v-list-item>
               <v-divider v-if="index + 1 < props.items.length" :key="index" />
             </template>
           </v-list>

@@ -44,9 +44,9 @@
                 />
               </v-list-item>
             </template>
-            <template v-for="item in props.items" v-else>
+            <template v-for="(item,index) in props.items" v-else>
               <employee-list-item :employee="item" />
-              <v-divider />
+              <v-divider v-if="index + 1 < props.items.length" :key="index" />
             </template>
           </v-list>
         </v-card>
