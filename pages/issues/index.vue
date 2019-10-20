@@ -49,7 +49,7 @@
     >
       <template v-slot:header>
         <v-layout class="px-2 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
-          <v-flex xs4 md2>
+          <v-flex xs2 md2>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
                 ФИО
@@ -57,7 +57,7 @@
             </div>
           </v-flex>
 
-          <v-flex xs8 md3>
+          <v-flex xs3 md3>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
                 Адрес
@@ -65,7 +65,7 @@
             </div>
           </v-flex>
 
-          <v-flex xs8 md3>
+          <v-flex xs2 md3>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
                 Статус
@@ -73,7 +73,7 @@
             </div>
           </v-flex>
 
-          <v-flex xs8 md6>
+          <v-flex xs3 md6>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
                 Проблема
@@ -81,7 +81,7 @@
             </div>
           </v-flex>
 
-          <v-flex xs8 md3>
+          <v-flex xs2 md3>
             <div style="display: flex; width: 100%">
               <div
                 style="flex: 1 1 0%;"
