@@ -1,49 +1,48 @@
 <template>
   <div>
     <v-card :class="classes" :to="to">
+      <div class="text-right pt-4">
+        <v-btn
+                v-if="isHallAdmin || isOwner"
+                color="primary"
+                text
+                small
+                @click="updateIssue()"
+        >
+          <v-icon>mdi-pencil</v-icon>
+        </v-btn>
+
+        <v-btn
+                v-if="isHallAdmin || isOwner"
+                color="red"
+                text
+                small
+                @click="deleteIssue()"
+        >
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
+      </div>
       <v-list-item>
         <v-list-item-avatar color="grey" />
         <v-list-item-content>
           <v-list-item-title class="headline">
             {{ issue.topic }}
           </v-list-item-title>
-          <div class="body-2 text-truncate" :title="issue.status">
+          <v-list-item-subtitle>
             {{ $t("statuses.all." + issue.status) }}
-          </div>
-
-          <div style="position: absolute; right: .5rem; top: .5rem;">
-            <v-btn
-              v-if="isHallAdmin || isOwner"
-              color="primary"
-              text
-              small
-              @click="updateIssue()"
-            >
-              <v-icon>mdi-pencil</v-icon>
-            </v-btn>
-
-            <v-btn
-              v-if="isHallAdmin || isOwner"
-              color="red"
-              text
-              small
-              @click="deleteIssue()"
-            >
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-          </div>
+          </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
 
       <v-list two-line>
         <v-list-item nuxt exact>
           <v-list-item-icon>
-            <v-icon mt-5 large color="primary">
-              mdi-map-marker
+            <v-icon color="primary">
+              mdi-account
             </v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title class="headline">
+            <v-list-item-title>
               {{ employee.full_name }}
             </v-list-item-title>
             <div class="body-2 text-truncate">
@@ -55,13 +54,16 @@
         <v-list-item nuxt exact>
           <v-list-item-icon>
             <v-icon color="primary">
-              mdi-map-marker
+              mdi-tooltip-text
             </v-icon>
           </v-list-item-icon>
-
           <v-list-item-content>
-            {{ issue.description }}
-            {{ issue.id }}
+            <div>
+              {{ issue.description }}
+            </div>
+            <div class="body-2 text-truncate">
+              {{ issue.id }}
+            </div>
           </v-list-item-content>
         </v-list-item>
       </v-list>

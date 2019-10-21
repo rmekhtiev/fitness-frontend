@@ -3,6 +3,7 @@
     <v-layout row wrap>
       <v-flex xs12 sm12 lg8 xl6>
         <issue-info-card :issue="issue" class="mb-2 mx-auto" />
+        <issue-discussion></issue-discussion>
       </v-flex>
     </v-layout>
   </div>
@@ -10,9 +11,11 @@
 
 <script>
 import IssueInfoCard from "../../components/issues/IssueInfoCard"
+import IssueDiscussion from "../../components/issues/IssueDiscussion";
 
 export default {
   components: {
+    IssueDiscussion,
     IssueInfoCard
   },
 
