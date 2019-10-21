@@ -3,18 +3,14 @@
     <v-card class="pr-10">
       <v-timeline dense clipped>
         <v-timeline-item fill-dot class="white--text mb-12" large>
-          <v-text-field
-            hide-details
-            flat
-            label="Комментировать..."
-            solo
-          >
-            <template v-slot:append>
-              <v-btn>
-                Комментировать
+          <template>
+            <form ref="commentForm">
+              <v-text-field v-model="form.text" />
+              <v-btn @click="save()">
+                Отправить
               </v-btn>
-            </template>
-          </v-text-field>
+            </form>
+          </template>
         </v-timeline-item>
 
         <v-list v-if="!loading.records">
@@ -26,12 +22,11 @@
                     {{ comment.text }}
                   </div>
                   <div class="body-2 text-truncate grey--text">
-                    Денис Тихонов
-                    <!--todo добавить атрибут-->
+                    {{comment.user_name}}
                   </div>
                 </v-flex>
                 <v-flex class="text-right">
-                  {{ comment.created_at }}
+                  {{ commentTime(comment) }}
                 </v-flex>
               </v-flex>
             </v-timeline-item>
@@ -42,12 +37,27 @@
   </div>
 </template>
 <script>
+import auth from "../../mixins/auth"
+
 export default {
   name: "IssueDiscussion",
+  mixins: [auth],
+  props: {
+    value: {
+      type: Object,
+      default: () => ({})
+    }
+  },
+
   data: () => ({
+    form: {
+      text: null,
+      user_id: "f6bf21c5-f23b-4a3e-be0a-1c4b5dc69598",
+      issue_id: "14c16d4c-42e6-4946-b9ad-510ad66a1c10"
+    },
+
     loading: {
-      lockers: true,
-      groups: true
+      comments: true
     }
   }),
 
@@ -80,6 +90,19 @@ export default {
         .then(() => {
           this.loading.comments = false
         })
+    },
+    commentTime(comment) {
+      return this.$moment.utc(comment.created_at).format("D.M.YYYY в HH:mm")
+    },
+
+    save() {
+      const IssueId = this.$route.params.id
+      this.$axios.post("issue-discussions", this.form).then(async response => {
+        await this.$store.dispatch("issue-discussions/loadWhere", {
+          filter: this.commentFilter
+        })
+        this.router.push({ path: `/issues/${IssueId}` })
+      })
     }
   }
 }
