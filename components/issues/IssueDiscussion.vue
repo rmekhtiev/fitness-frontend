@@ -4,7 +4,7 @@
       <v-timeline dense clipped>
         <v-timeline-item fill-dot class="white--text mb-12" large>
           <template>
-            <form ref="commentForm">
+            <form ref="commentForm" name="commentForm" @submit.prevent="save()">
               <v-text-field v-model="form.text" />
               <v-btn @click="save()">
                 Отправить
@@ -22,7 +22,7 @@
                     {{ comment.text }}
                   </div>
                   <div class="body-2 text-truncate grey--text">
-                    {{comment.user_name}}
+                    {{ comment.user_name }}
                   </div>
                 </v-flex>
                 <v-flex class="text-right">
@@ -95,17 +95,20 @@ export default {
       return this.$moment.utc(comment.created_at).format("D.M.YYYY в HH:mm")
     },
 
-    save() {
-      const IssueId = this.$route.params.id
+    save: function() {
       this.form.issue_id = this.$route.params.id
       this.form.user_id = this.me.id
       this.$axios.post("issue-discussions", this.form).then(async response => {
         await this.$store.dispatch("issue-discussions/loadWhere", {
           filter: this.commentFilter
         })
-        this.router.push({ path: `/issues/${IssueId}` })
+          Object.assign(this.$data, this.$options.data.call(this))
       })
     }
   }
 }
 </script>
+
+
+
+
