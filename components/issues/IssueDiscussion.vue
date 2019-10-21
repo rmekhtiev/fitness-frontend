@@ -52,8 +52,8 @@ export default {
   data: () => ({
     form: {
       text: null,
-      user_id: "f6bf21c5-f23b-4a3e-be0a-1c4b5dc69598",
-      issue_id: "14c16d4c-42e6-4946-b9ad-510ad66a1c10"
+      user_id: null,
+      issue_id: null
     },
 
     loading: {
@@ -97,6 +97,8 @@ export default {
 
     save() {
       const IssueId = this.$route.params.id
+      this.form.issue_id = this.$route.params.id
+      this.form.user_id = this.me.id
       this.$axios.post("issue-discussions", this.form).then(async response => {
         await this.$store.dispatch("issue-discussions/loadWhere", {
           filter: this.commentFilter
