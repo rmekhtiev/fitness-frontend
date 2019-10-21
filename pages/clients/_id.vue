@@ -70,6 +70,33 @@
             />
           </v-card-text>
         </v-card>
+        <v-card class="mb-2 mx-auto">
+          <v-card-text>
+            <div class="overline">
+              История посещений
+            </div>
+          </v-card-text>
+          <v-timeline dense>
+            <v-list v-if="!loading.records">
+              <template v-for="(record, index) in records">
+                <v-timeline-item
+                        small
+                >
+                  {{ recordTime(record) }}
+                </v-timeline-item>
+
+              </template>
+            </v-list>
+            <v-card-text v-else class="text-center">
+              <v-progress-linear
+                      height="16"
+                      rounded
+                      color="primary"
+                      indeterminate
+              />
+            </v-card-text>
+          </v-timeline>
+        </v-card>
       </v-flex>
     </v-layout>
 
@@ -151,7 +178,8 @@ export default {
 
     loading: {
       lockers: true,
-      groups: true
+      groups: true,
+      records: true,
     }
   }),
 
@@ -172,6 +200,11 @@ export default {
         id: this.groupsIds
       };
     },
+    recordFilter() {
+      return {
+        client_id: this.$route.params.id,
+      };
+    },
 
     lockerClaims() {
       return this.$store.getters["locker-claims/where"]({
@@ -183,7 +216,12 @@ export default {
       return this.$store.getters["groups/where"]({
         filter: this.groupFilter
       });
-    }
+    },
+    records() {
+      return this.$store.getters["visit-history-records/where"]({
+        filter: this.recordFilter
+      });
+    },
   },
 
   fetch: ({ store, params, $moment }) => {
@@ -202,7 +240,11 @@ export default {
   },
 
   async mounted() {
-    await Promise.all([this.loadLockerClaims(), this.loadGroups()]);
+    await Promise.all([
+      this.loadLockerClaims(),
+      this.loadGroups(),
+      this.loadRecords(),
+    ]);
   },
 
   methods: {
@@ -258,8 +300,22 @@ export default {
         .then(() => {
           this.loading.groups = false;
         });
-    }
+    },
+    loadRecords() {
+      this.loading.records = true;
+
+      return this.$store
+              .dispatch("visit-history-records/loadWhere", {
+                filter: this.recordFilter
+              })
+              .then(() => {
+                this.loading.records = false;
+              });
+    },
+    recordTime(record) {
+      return this.$moment.utc(record.datetime).format("D MMMM YYYY года в HH:mm");
   }
+}
 };
 </script>
 
