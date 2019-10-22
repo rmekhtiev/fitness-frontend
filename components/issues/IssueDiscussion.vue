@@ -61,6 +61,10 @@ export default {
     }
   }),
 
+  created() {
+    this.interval = setInterval(() => this.loadComments(), 1000);
+  },
+
   computed: {
     commentFilter() {
       return {
@@ -82,7 +86,6 @@ export default {
   methods: {
     loadComments() {
       this.loading.groups = true
-
       return this.$store
         .dispatch("issue-discussions/loadWhere", {
           filter: this.commentFilter
@@ -105,7 +108,7 @@ export default {
           Object.assign(this.$data, this.$options.data.call(this))
       })
     }
-  }
+  },
 }
 </script>
 
