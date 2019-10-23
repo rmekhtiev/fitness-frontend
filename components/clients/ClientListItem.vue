@@ -28,15 +28,6 @@
                 </v-icon>
                 Заморожен до {{ activeSubscription.frozen_till }}
               </div>
-              <div
-                v-else-if="activeSubscription.inactive"
-                class="body-2 green--text"
-              >
-                <v-icon middle color="green">
-                  mdi-clock
-                </v-icon>
-                Будет активирован {{ activeSubscription.issue_date }}
-              </div>
               <div v-else>
                 <v-progress-linear
                   :value="durationPercent"
@@ -51,8 +42,17 @@
               </div>
             </div>
             <div
-              v-else-if="client.subscriptions_count > 0"
+              v-else-if="client.inactive_subscription"
               class="body-2 orange--text darken-4"
+            >
+              <v-icon middle color="orange">
+                mdi-clock
+              </v-icon>
+              Будет активирован {{inactiveSubscription.issue_date}}
+            </div>
+            <div
+                    v-else-if="client.subscriptions_count > 0"
+                    class="body-2 orange--text darken-4"
             >
               <v-icon middle color="orange">
                 mdi-clock
@@ -96,6 +96,12 @@ export default {
     activeSubscription() {
       return this.$store.getters["subscriptions/byId"]({
         id: this.client.active_subscription.id
+      })
+    },
+
+    inactiveSubscription() {
+      return this.$store.getters["subscriptions/byId"]({
+        id: this.client.inactive_subscription.id
       })
     },
 
