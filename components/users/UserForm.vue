@@ -29,6 +29,12 @@ export default {
       default: () => ({})
     },
 
+    user: {
+      type: Object,
+      required: false,
+      default: () => ({})
+    },
+
     roles: {
       type: Array,
       default: () => []

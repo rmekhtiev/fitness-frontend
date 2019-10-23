@@ -18,11 +18,17 @@ export default {
       return this.$store.getters["users/byId"]({
         id: this.$route.params.id
       });
+    },
+    roles() {
+      return this.$store.getters["roles/all"];
     }
   },
 
   fetch({ store, params }) {
-    return Promise.all([store.dispatch("users/loadById", { id: params.id })]);
+    return Promise.all(
+      [store.dispatch("users/loadById", { id: params.id })],
+      store.dispatch("roles/loadAll")
+    );
   }
 };
 </script>

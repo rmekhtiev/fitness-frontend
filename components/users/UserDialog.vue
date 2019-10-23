@@ -38,6 +38,12 @@ export default {
       default: ""
     },
 
+    user: {
+      type: Object,
+      required: false,
+      default: () => ({})
+    },
+
     isEdit: {
       type: Boolean,
       default: false
@@ -57,10 +63,15 @@ export default {
       primary_role: null
     }
   }),
-
   computed: {
     roles() {
       return this.$store.getters["roles/all"];
+    }
+  },
+
+  created() {
+    if (this.user) {
+      Object.assign(this.form, this.user);
     }
   },
 
