@@ -58,11 +58,19 @@ export default {
 
     loading: {
       comments: true
+    },
+
+    return: {
+      polling: null
     }
   }),
 
   created() {
-    this.interval = setInterval(() => this.loadComments(), 1000);
+    this.interval = setInterval(() => this.loadComments(), 3000);
+  },
+
+  beforeDestroy () {
+    clearInterval(this.interval);
   },
 
   computed: {
