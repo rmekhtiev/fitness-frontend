@@ -46,6 +46,10 @@ export default {
     value: {
       type: Object,
       default: () => ({})
+    },
+    comments:{
+      type: Array,
+      default: () => ({})
     }
   },
 
@@ -65,43 +69,7 @@ export default {
     }
   }),
 
-  created() {
-    this.interval = setInterval(() => this.loadComments(), 3000);
-  },
-
-  beforeDestroy () {
-    clearInterval(this.interval);
-  },
-
-  computed: {
-    commentFilter() {
-      return {
-        issue_id: this.$route.params.id
-      }
-    },
-
-    comments() {
-      return this.$store.getters["issue-discussions/where"]({
-        filter: this.commentFilter
-      })
-    }
-  },
-
-  async mounted() {
-    await Promise.all([this.loadComments()])
-  },
-
   methods: {
-    loadComments() {
-      this.loading.groups = true
-      return this.$store
-        .dispatch("issue-discussions/loadWhere", {
-          filter: this.commentFilter
-        })
-        .then(() => {
-          this.loading.comments = false
-        })
-    },
     commentTime(comment) {
       return this.$moment.utc(comment.created_at).format("D.M.YYYY в HH:mm")
     },
@@ -109,11 +77,9 @@ export default {
     save: function() {
       this.form.issue_id = this.$route.params.id
       this.form.user_id = this.me.id
-      this.$axios.post("issue-discussions", this.form).then(async response => {
-        await this.$store.dispatch("issue-discussions/loadWhere", {
-          filter: this.commentFilter
-        })
-          Object.assign(this.$data, this.$options.data.call(this))
+      this.$axios.post("issue-discussions", this.form).then(() => {
+        this.$emit('createComment')
+        this.form.text = null
       })
     }
   },

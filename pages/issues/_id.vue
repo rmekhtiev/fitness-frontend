@@ -3,7 +3,7 @@
     <v-layout row wrap>
       <v-flex xs12 sm12 lg8 xl6>
         <issue-info-card :issue="issue" class="mb-2 mx-auto" />
-        <issue-discussion></issue-discussion>
+        <issue-discussion :comments="comments" @createComment="loadComments()"></issue-discussion>
       </v-flex>
     </v-layout>
   </div>
@@ -19,6 +19,20 @@ export default {
     IssueInfoCard
   },
 
+  data: () => ({
+    loading: {
+      comments: true
+    },
+  }),
+
+  created() {
+    this.interval = setInterval(() => this.loadComments(),3000);
+  },
+
+  beforeDestroy () {
+    clearInterval(this.interval);
+  },
+
   computed: {
     issue() {
       return this.$store.getters["issues/byId"]({ id: this.$route.params.id })
@@ -30,8 +44,24 @@ export default {
               item.hall_id === this.$store.getters["selectedHallIdForFilter"]
           )
         : this.$store.getters["employees/all"]
-    }
+    },
+    commentFilter() {
+      return {
+        issue_id: this.$route.params.id
+      }
+    },
+
+    comments() {
+      return this.$store.getters["issue-discussions/where"]({
+        filter: this.commentFilter
+      })
+    },
   },
+
+  async mounted() {
+    await Promise.all([this.loadComments()])
+  },
+
 
   fetch({ store, params }) {
     return Promise.all([
@@ -39,6 +69,19 @@ export default {
       store.dispatch("halls/loadAll"),
       store.dispatch("employees/loadAll")
     ])
+  },
+
+  methods:{
+    loadComments() {
+      this.loading.groups = true
+      return this.$store
+              .dispatch("issue-discussions/loadWhere", {
+                filter: this.commentFilter
+              })
+              .then(() => {
+                this.loading.comments = false
+              })
+    },
   },
 
   head() {
