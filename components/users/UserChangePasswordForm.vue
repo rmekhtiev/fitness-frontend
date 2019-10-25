@@ -1,14 +1,6 @@
 <template>
   <v-form>
-    <v-text-field v-model="value.name" label="ФИО" />
-    <v-text-field v-model="value.email" label="E-mail" />
-    <v-select
-      v-model="value.primary_role_id"
-      label="Должность"
-      :items="roles"
-      item-text="name"
-      item-value="id"
-    />
+    <v-text-field v-model="value.password" label="Новый пароль" />
   </v-form>
 </template>
 
@@ -18,7 +10,7 @@ import _ from "lodash";
 import auth from "../../mixins/auth";
 
 export default {
-  name: "UserForm",
+  name: "UserChangePasswordForm",
 
   mixins: [auth],
 
@@ -34,11 +26,6 @@ export default {
       default: () => ({})
     },
 
-    roles: {
-      type: Array,
-      default: () => []
-    },
-
     isEdit: {
       type: Boolean,
       default: false
@@ -48,9 +35,7 @@ export default {
   computed: {
     defaultForm() {
       return {
-        name: null,
-        email: null,
-        primary_role_id: null
+        password: null
       };
     }
   },

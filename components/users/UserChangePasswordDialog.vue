@@ -15,18 +15,21 @@
       </v-toolbar>
 
       <v-card-text>
-        <user-form v-model="form" :roles="roles" :is-edit="isEdit" />
+        <user-change-password-form
+          v-model="form"
+          :is-edit="isEdit"
+        ></user-change-password-form>
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import UserForm from "./UserForm";
+import UserChangePasswordForm from "./UserChangePasswordForm";
 export default {
-  name: "UserDialog",
+  name: "UserChangePasswordDialog",
 
-  components: { UserForm },
+  components: { UserChangePasswordForm },
   props: {
     fullscreen: {
       type: Boolean,
@@ -57,16 +60,9 @@ export default {
     reject: null,
 
     form: {
-      name: null,
-      email: null,
-      primary_role: null
+      password: null
     }
   }),
-  computed: {
-    roles() {
-      return this.$store.getters["roles/all"];
-    }
-  },
 
   created() {
     if (this.user) {

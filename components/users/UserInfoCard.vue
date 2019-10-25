@@ -10,7 +10,6 @@
           <v-list-item-subtitle>
             {{ $t("users.primary_role.name." + user.primary_role.name) }}
           </v-list-item-subtitle>
-
           <div style="position: absolute; right: .5rem; top: .5rem;">
             <v-btn
               v-if="isOwner"
@@ -28,7 +27,18 @@
           </div>
         </v-list-item-content>
       </v-list-item>
+      <v-list-item>
+        <v-btn v-if="isOwner" @click="changePassword()">
+          Сменить пароль
+        </v-btn>
+      </v-list-item>
     </v-card>
+    <user-change-password-dialog
+      ref="changePassword"
+      title="Изменение пароля пользователя"
+      :user="user"
+      is-edit
+    ></user-change-password-dialog>
     <user-dialog
       ref="edit"
       title="Редактировать пользователя"
@@ -44,10 +54,12 @@
 import auth from "../../mixins/auth";
 import Confirm from "../../components/Confirm";
 import UserDialog from "./UserDialog";
+import UserChangePasswordDialog from "./UserChangePasswordDialog";
 
 export default {
   name: "UserInfoCard",
   components: {
+    UserChangePasswordDialog,
     UserDialog,
     Confirm
   },
@@ -72,6 +84,18 @@ export default {
         this.$emit("update");
       });
     },
+    changePassword() {
+      this.$refs.changePassword.open().then(form => {
+        this.$axios
+          .patch("users/" + this.user.id, form)
+          .then(async response => {
+            await this.$store.dispatch("users/loadById", {
+              id: response.data.data.id
+            });
+          });
+        this.$emit("update");
+      });
+    },
     deleteUser() {
       this.$refs.deleteUserConfirm
         .open(
@@ -83,8 +107,8 @@ export default {
           if (confirm) {
             this.$store.dispatch("users/delete", { id: this.user.id });
             this.$emit("delete");
+            this.$router.push({ path: "/users" });
           }
-          this.$router.push({ path: "/users" });
         });
     }
   }
