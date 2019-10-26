@@ -87,7 +87,7 @@
                 style="flex: 1 1 0%;"
                 class="overline text-truncate text-right"
               >
-                Дата
+                Посл. обновление
               </div>
             </div>
           </v-flex>

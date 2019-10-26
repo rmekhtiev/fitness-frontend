@@ -13,7 +13,7 @@
           </template>
         </v-timeline-item>
 
-        <v-list v-if="!loading.records">
+        <v-list>
           <template v-for="comment in comments">
             <v-timeline-item small>
               <v-flex row>
@@ -59,14 +59,7 @@ export default {
       user_id: null,
       issue_id: null
     },
-
-    loading: {
-      comments: true
-    },
-
-    return: {
-      polling: null
-    }
+    
   }),
 
   methods: {

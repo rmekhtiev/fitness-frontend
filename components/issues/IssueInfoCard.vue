@@ -1,23 +1,23 @@
 <template>
   <div>
-    <v-card :class="classes" :to="to">
+    <v-card>
       <div class="text-right pt-4">
         <v-btn
-                v-if="isHallAdmin || isOwner"
-                color="primary"
-                text
-                small
-                @click="updateIssue()"
+          v-if="isHallAdmin || isOwner"
+          color="primary"
+          text
+          small
+          @click="updateIssue()"
         >
           <v-icon>mdi-pencil</v-icon>
         </v-btn>
 
         <v-btn
-                v-if="isHallAdmin || isOwner"
-                color="red"
-                text
-                small
-                @click="deleteIssue()"
+          v-if="isHallAdmin || isOwner"
+          color="red"
+          text
+          small
+          @click="deleteIssue()"
         >
           <v-icon>mdi-delete</v-icon>
         </v-btn>
@@ -84,6 +84,7 @@ import routable from "vuetify/es5/mixins/routable"
 import IssueDialog from "./IssueDialog"
 import Confirm from "../Confirm"
 import auth from "../../mixins/auth"
+import issue from "../../mixins/issue"
 
 export default {
   name: "IssueInfoCard",
@@ -94,13 +95,9 @@ export default {
   },
   // extend: VCard,
 
-  mixins: [routable, auth],
+  mixins: [auth, issue],
 
   props: {
-    link: {
-      type: Boolean,
-      default: false
-    },
     issue: {
       type: Object,
       required: true
@@ -108,25 +105,6 @@ export default {
   },
 
   computed: {
-    componentTag() {
-      return "v-card"
-    },
-
-    primaryHall() {
-      return this.$store.getters["halls/byId"]({ id: this.issue.hall_id })
-    },
-
-    employee() {
-      return this.$store.getters["employees/byId"]({
-        id: this.issue.employee_id
-      })
-    },
-
-    classes() {
-      return {
-        ...routable.options.computed.classes.call(this)
-      }
-    }
   },
 
   methods: {
@@ -153,8 +131,6 @@ export default {
         )
         .then(confirm => {
           if (confirm) {
-            let issueId = this.issue.id
-
             this.$store.dispatch("issues/delete", { id: this.issue.id })
 
             this.$emit("delete")

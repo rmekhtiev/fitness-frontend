@@ -10,6 +10,11 @@ export default {
       return this.$store.getters["halls/byId"]({ id: this.issue.hall_id })
     },
 
+    primaryHall() {
+      return this.$store.getters["halls/byId"]({ id: this.issue.hall_id })
+    },
+
+
     updatedDay() {
       let date = this.$moment.utc(this.issue.updated_at).local()
       let now = this.$moment().local()

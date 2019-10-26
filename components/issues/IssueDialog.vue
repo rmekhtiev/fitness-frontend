@@ -20,7 +20,6 @@
           :halls="halls"
           :employees="employees"
           :is-edit="isEdit"
-          :issue="issue"
         />
       </v-card-text>
     </v-card>

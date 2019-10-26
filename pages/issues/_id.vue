@@ -3,7 +3,10 @@
     <v-layout row wrap>
       <v-flex xs12 sm12 lg8 xl6>
         <issue-info-card :issue="issue" class="mb-2 mx-auto" />
-        <issue-discussion :comments="comments" @createComment="loadComments()"></issue-discussion>
+        <issue-discussion
+          :comments="comments"
+          @createComment="loadComments()"
+        />
       </v-flex>
     </v-layout>
   </div>
@@ -11,7 +14,7 @@
 
 <script>
 import IssueInfoCard from "../../components/issues/IssueInfoCard"
-import IssueDiscussion from "../../components/issues/IssueDiscussion";
+import IssueDiscussion from "../../components/issues/IssueDiscussion"
 
 export default {
   components: {
@@ -22,46 +25,24 @@ export default {
   data: () => ({
     loading: {
       comments: true
-    },
+    }
   }),
-
-  created() {
-    this.interval = setInterval(() => this.loadComments(),3000);
-  },
-
-  beforeDestroy () {
-    clearInterval(this.interval);
-  },
 
   computed: {
     issue() {
       return this.$store.getters["issues/byId"]({ id: this.$route.params.id })
-    },
-    employees() {
-      return this.$store.getters["selectedHall"]
-        ? this.$store.getters["employees/all"].filter(
-            item =>
-              item.hall_id === this.$store.getters["selectedHallIdForFilter"]
-          )
-        : this.$store.getters["employees/all"]
     },
     commentFilter() {
       return {
         issue_id: this.$route.params.id
       }
     },
-
     comments() {
       return this.$store.getters["issue-discussions/where"]({
         filter: this.commentFilter
       })
-    },
+    }
   },
-
-  async mounted() {
-    await Promise.all([this.loadComments()])
-  },
-
 
   fetch({ store, params }) {
     return Promise.all([
@@ -71,17 +52,29 @@ export default {
     ])
   },
 
-  methods:{
+  created() {
+    this.interval = setInterval(() => this.loadComments(), 3000)
+  },
+
+  beforeDestroy() {
+    clearInterval(this.interval)
+  },
+
+  async mounted() {
+    await Promise.all([this.loadComments()])
+  },
+
+  methods: {
     loadComments() {
       this.loading.groups = true
       return this.$store
-              .dispatch("issue-discussions/loadWhere", {
-                filter: this.commentFilter
-              })
-              .then(() => {
-                this.loading.comments = false
-              })
-    },
+        .dispatch("issue-discussions/loadWhere", {
+          filter: this.commentFilter
+        })
+        .then(() => {
+          this.loading.comments = false
+        })
+    }
   },
 
   head() {
