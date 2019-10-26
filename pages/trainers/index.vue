@@ -1,5 +1,5 @@
 <template>
-  <div id="clients">
+  <div id="trainers">
     <v-data-iterator
       :items="items"
       :options.sync="iteratorOptions"
