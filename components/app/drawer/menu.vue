@@ -147,7 +147,7 @@ export default {
       { title: "Залы", icon: "mdi-domain", to: { name: "halls" } },
       {
         title: "Пользователи",
-        icon: "mdi-locker-multiple",
+        icon: "mdi-account-card-details",
         to: { name: "users" }
       }
     ]

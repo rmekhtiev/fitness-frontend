@@ -28,7 +28,7 @@
         </v-list-item-content>
       </v-list-item>
       <v-list-item>
-        <v-btn v-if="isOwner" @click="changePassword()">
+        <v-btn text color="primary" v-if="isOwner" @click="changePassword()">
           Сменить пароль
         </v-btn>
       </v-list-item>
@@ -39,8 +39,8 @@
       :user="user"
       is-edit
     ></user-change-password-dialog>
-    <user-dialog
-      ref="edit"
+    <user-update-dialog
+      ref="updateUserDialog"
       title="Редактировать пользователя"
       :user="user"
       :roles="roles"
@@ -53,14 +53,14 @@
 <script>
 import auth from "../../mixins/auth";
 import Confirm from "../../components/Confirm";
-import UserDialog from "./UserDialog";
+import UserUpdateDialog from "./UserUpdateDialog";
 import UserChangePasswordDialog from "./UserChangePasswordDialog";
 
 export default {
   name: "UserInfoCard",
   components: {
     UserChangePasswordDialog,
-    UserDialog,
+    UserUpdateDialog,
     Confirm
   },
   mixins: [auth],
@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     updateUser() {
-      this.$refs.edit.open().then(form => {
+      this.$refs.updateUserDialog.open().then(form => {
         this.$axios
           .patch("users/" + this.user.id, form)
           .then(async response => {
@@ -107,7 +107,6 @@ export default {
           if (confirm) {
             this.$store.dispatch("users/delete", { id: this.user.id });
             this.$emit("delete");
-            this.$router.push({ path: "/users" });
           }
         });
     }

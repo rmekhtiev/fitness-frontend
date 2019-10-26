@@ -15,21 +15,22 @@
       </v-toolbar>
 
       <v-card-text>
-        <user-change-password-form
+        <user-update-form
           v-model="form"
+          :roles="roles"
           :is-edit="isEdit"
-        ></user-change-password-form>
+        ></user-update-form>
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import UserChangePasswordForm from "./UserChangePasswordForm";
+import UserUpdateForm from "./UserUpdateForm";
 export default {
-  name: "UserChangePasswordDialog",
+  name: "UserUpdateDialog",
 
-  components: { UserChangePasswordForm },
+  components: { UserUpdateForm },
   props: {
     fullscreen: {
       type: Boolean,
@@ -60,10 +61,16 @@ export default {
     reject: null,
 
     form: {
-      password: null,
-      password_confirmation: null
+      name: null,
+      email: null,
+      primary_role: null
     }
   }),
+  computed: {
+    roles() {
+      return this.$store.getters["roles/all"];
+    }
+  },
 
   created() {
     if (this.user) {
@@ -84,10 +91,6 @@ export default {
     save() {
       this.resolve(this.form);
       this.dialog = false;
-      console.log("пароли разные");
-      if (this.form.password !== this.form.password_confirmation) {
-        this.$toast.error("Пароли должны совпадать", { duration: 5000 });
-      }
     },
 
     cancel() {

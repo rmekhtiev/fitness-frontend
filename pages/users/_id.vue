@@ -25,10 +25,10 @@ export default {
   },
 
   fetch({ store, params }) {
-    return Promise.all(
-      [store.dispatch("users/loadById", { id: params.id })],
+    return Promise.all([
+      store.dispatch("users/loadById", { id: params.id }),
       store.dispatch("roles/loadAll")
-    );
+    ]);
   }
 };
 </script>
