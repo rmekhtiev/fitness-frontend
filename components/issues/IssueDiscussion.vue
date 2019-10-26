@@ -14,22 +14,8 @@
         </v-timeline-item>
 
         <v-list>
-          <template v-for="comment in comments">
-            <v-timeline-item small>
-              <v-flex row>
-                <v-flex>
-                  <div>
-                    {{ comment.text }}
-                  </div>
-                  <div class="body-2 text-truncate grey--text">
-                    {{ comment.user_name }}
-                  </div>
-                </v-flex>
-                <v-flex class="text-right">
-                  {{ commentTime(comment) }}
-                </v-flex>
-              </v-flex>
-            </v-timeline-item>
+          <template v-for="item in comments">
+            <issue-comment-item :comment="item" />
           </template>
         </v-list>
       </v-timeline>
@@ -38,16 +24,18 @@
 </template>
 <script>
 import auth from "../../mixins/auth"
+import IssueCommentItem from "./IssueCommentItem"
 
 export default {
   name: "IssueDiscussion",
+  components: { IssueCommentItem },
   mixins: [auth],
   props: {
     value: {
       type: Object,
       default: () => ({})
     },
-    comments:{
+    comments: {
       type: Array,
       default: () => ({})
     }
@@ -58,27 +46,18 @@ export default {
       text: null,
       user_id: null,
       issue_id: null
-    },
-    
+    }
   }),
 
   methods: {
-    commentTime(comment) {
-      return this.$moment.utc(comment.created_at).format("D.M.YYYY в HH:mm")
-    },
-
     save: function() {
       this.form.issue_id = this.$route.params.id
       this.form.user_id = this.me.id
       this.$axios.post("issue-discussions", this.form).then(() => {
-        this.$emit('createComment')
+        this.$emit("createComment")
         this.form.text = null
       })
     }
-  },
+  }
 }
 </script>
-
-
-
-

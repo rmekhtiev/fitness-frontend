@@ -50,22 +50,9 @@
             </div>
           </v-list-item-content>
         </v-list-item>
-
-        <v-list-item nuxt exact>
-          <v-list-item-icon>
-            <v-icon color="primary">
-              mdi-tooltip-text
-            </v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <div>
-              {{ issue.description }}
-            </div>
-            <div class="body-2 text-truncate">
-              {{ issue.id }}
-            </div>
-          </v-list-item-content>
-        </v-list-item>
+        <v-card-text>
+          {{ issue.description }}
+        </v-card-text>
       </v-list>
     </v-card>
 
@@ -80,7 +67,6 @@
 </template>
 
 <script>
-import routable from "vuetify/es5/mixins/routable"
 import IssueDialog from "./IssueDialog"
 import Confirm from "../Confirm"
 import auth from "../../mixins/auth"
@@ -93,7 +79,6 @@ export default {
     Confirm,
     IssueDialog
   },
-  // extend: VCard,
 
   mixins: [auth, issue],
 
@@ -102,9 +87,6 @@ export default {
       type: Object,
       required: true
     }
-  },
-
-  computed: {
   },
 
   methods: {
@@ -142,8 +124,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.v-card {
-  /*background-color: #41b883;*/
-}
-</style>
+<style scoped></style>
