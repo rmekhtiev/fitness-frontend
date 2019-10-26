@@ -60,7 +60,8 @@ export default {
     reject: null,
 
     form: {
-      password: null
+      password: null,
+      repeat_password: null
     }
   }),
 
@@ -81,8 +82,12 @@ export default {
     },
 
     save() {
-      this.resolve(this.form);
-      this.dialog = false;
+      if (this.form.password === this.form.repeat_password) {
+        this.resolve(this.form);
+        this.dialog = false;
+      } else {
+        console.log("пароли разные");
+      }
     },
 
     cancel() {

@@ -1,6 +1,19 @@
 <template>
   <v-form>
-    <v-text-field v-model="value.password" label="Новый пароль" />
+    <v-text-field
+      v-model="value.password"
+      label="Новый пароль"
+      :append-icon="password_visible ? 'visibility' : 'visibility_off'"
+      :type="password_visible ? 'text' : 'password'"
+      @click:append="password_visible = !password_visible"
+    />
+    <v-text-field
+      v-model="value.repeat_password"
+      label="Повторите новый пароль"
+      :append-icon="repeat_password_visible ? 'visibility' : 'visibility_off'"
+      :type="repeat_password_visible ? 'text' : 'password'"
+      @click:append="repeat_password_visible = !repeat_password_visible"
+    />
   </v-form>
 </template>
 
@@ -31,6 +44,11 @@ export default {
       default: false
     }
   },
+
+  data: () => ({
+    password_visible: false,
+    repeat_password_visible: false
+  }),
 
   computed: {
     defaultForm() {
