@@ -34,6 +34,15 @@ export default ({ app }) => {
             "in-work": "Выполняется",
             ready: "Готово"
           }
+        },
+        users: {
+          primary_role: {
+            name: {
+              owner: "Владелец",
+              hall_admin: "Администратор зала",
+              concierge: "Консьерж"
+            }
+          }
         }
       }
     }

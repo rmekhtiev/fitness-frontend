@@ -143,7 +143,14 @@ export default {
       { title: "Бар", icon: "mdi-bottle-soda", to: { name: "bar-items" } }
     ],
 
-    adminActions: [{ title: "Залы", icon: "mdi-domain", to: { name: "halls" } }]
+    adminActions: [
+      { title: "Залы", icon: "mdi-domain", to: { name: "halls" } },
+      {
+        title: "Пользователи",
+        icon: "mdi-account-card-details",
+        to: { name: "users" }
+      }
+    ]
   })
 };
 </script>

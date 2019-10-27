@@ -22,6 +22,10 @@ export default function({ $axios, store }) {
     resourceModule({ name: "users", httpClient: $axios })
   );
   store.registerModule(
+    "roles",
+    resourceModule({ name: "roles", httpClient: $axios })
+  );
+  store.registerModule(
     "lockers",
     resourceModule({ name: "lockers", httpClient: $axios })
   );
