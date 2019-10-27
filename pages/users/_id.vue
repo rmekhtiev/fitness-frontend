@@ -18,9 +18,6 @@ export default {
       return this.$store.getters["users/byId"]({
         id: this.$route.params.id
       });
-    },
-    roles() {
-      return this.$store.getters["roles/all"];
     }
   },
 

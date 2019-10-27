@@ -70,6 +70,11 @@ export default {
       type: Object
     }
   },
+  computed: {
+    roles() {
+      return this.$store.getters["roles/all"];
+    }
+  },
   methods: {
     updateUser() {
       this.$refs.updateUserDialog.open().then(form => {
