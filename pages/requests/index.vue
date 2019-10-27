@@ -9,7 +9,7 @@
     >
       <template v-slot:header>
         <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
-          <v-flex xs8 md3>
+          <v-flex xs4 md4>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
                 ФИО
@@ -17,15 +17,7 @@
             </div>
           </v-flex>
 
-          <v-flex md3>
-            <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate">
-                Дата
-              </div>
-            </div>
-          </v-flex>
-
-          <v-flex md3>
+          <v-flex xs3 md3>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
                 Номер телефона
@@ -33,7 +25,16 @@
             </div>
           </v-flex>
 
-          <v-flex md3 />
+          <v-flex xs3 md3>
+            <div style="display: flex; width: 100%">
+              <div style="flex: 1 1 0%;" class="overline text-truncate">
+                Дата
+              </div>
+            </div>
+          </v-flex>
+
+          <v-flex xs2 md2></v-flex>
+
         </v-layout>
       </template>
 
@@ -62,34 +63,37 @@
 </template>
 
 <script>
+
+  import serverSidePaginated from "../../mixins/server-side-paginated";
 import RequestListItem from "../../components/requests/RequestListItem";
 
 export default {
-  data() {
+  head(){
     return {
-      items: [
-        {
-          name: "Иванов Сергей Викторович",
-          date: "26/10/2019",
-          phone: "+79864773201"
-        },
-        {
-          name: "Иванов Сергей Викторович",
-          date: "26/10/2019",
-          phone: "+79864773201"
-        },
-        {
-          name: "Иванов Сергей Викторович",
-          date: "26/10/2019",
-          phone: "+79864773201"
-        }
-      ]
+      title: "Заявки"
     };
   },
 
+  mixins: [serverSidePaginated],
+
   components: {
     RequestListItem
-  }
+  },
+
+  data: () => ({
+    resource: "requests",
+  }),
+
+  computed: {
+
+  },
+
+  fetch({ store }) {
+    return Promise.all([
+      store.dispatch("requests/loadAll"),
+    ]);
+  },
+
 };
 </script>
 

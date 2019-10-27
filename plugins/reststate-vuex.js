@@ -53,4 +53,8 @@ export default function({ $axios, store }) {
     "bar-items",
     resourceModule({ name: "bar-items", httpClient: $axios })
   );
+  store.registerModule(
+      "requests",
+      resourceModule({ name: "requests", httpClient: $axios })
+  );
 }
