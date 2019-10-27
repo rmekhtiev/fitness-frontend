@@ -48,8 +48,8 @@
       :items-per-page="15"
     >
       <template v-slot:header>
-        <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
-          <v-flex xs8 md3>
+        <v-layout class="px-2 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
+          <v-flex xs2 md2>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
                 ФИО
@@ -57,15 +57,15 @@
             </div>
           </v-flex>
 
-          <v-flex md3>
+          <v-flex xs3 md3>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
-                Зал
+                Адрес
               </div>
             </div>
           </v-flex>
 
-          <v-flex md3>
+          <v-flex xs2 md3>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
                 Статус
@@ -73,7 +73,7 @@
             </div>
           </v-flex>
 
-          <v-flex xs8 md6>
+          <v-flex xs3 md6>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
                 Проблема
@@ -81,15 +81,13 @@
             </div>
           </v-flex>
 
-          <v-flex xs8 md3 />
-
-          <v-flex md3>
+          <v-flex xs2 md3>
             <div style="display: flex; width: 100%">
               <div
                 style="flex: 1 1 0%;"
                 class="overline text-truncate text-right"
               >
-                Посл.обновление
+                Посл. обновление
               </div>
             </div>
           </v-flex>
@@ -110,7 +108,7 @@
               </v-list-item>
             </template>
             <template v-for="(item, index) in props.items" v-else>
-              <v-list-item>
+              <v-list-item :to="{ name: 'issues-id', params: { id: item.id } }">
                 <issue-list-item :issue="item" />
               </v-list-item>
               <v-divider v-if="index + 1 < props.items.length" :key="index" />

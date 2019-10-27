@@ -27,13 +27,15 @@
 </template>
 
 <script>
-import IssueForm from "../../components/issues/IssueForm";
+import IssueForm from "../../components/issues/IssueForm"
+
 export default {
   name: "IssueDialog",
 
   components: {
     IssueForm
   },
+
   props: {
     fullscreen: {
       type: Boolean,
@@ -43,6 +45,11 @@ export default {
     title: {
       type: String,
       default: ""
+    },
+
+    issue: {
+      type: Object,
+      required: false
     },
 
     isEdit: {
@@ -75,7 +82,17 @@ export default {
       return this.$store.getters["halls/all"];
     },
     employees() {
-      return this.$store.getters["employees/all"];
+      return this.$store.getters["employees/all"]
+    },
+    issues() {
+      return this.$store.getters["issues/all"]
+    }
+  },
+  created() {
+    console.log(this.issue)
+
+    if (this.issue) {
+      Object.assign(this.form, this.issue)
     }
   },
 

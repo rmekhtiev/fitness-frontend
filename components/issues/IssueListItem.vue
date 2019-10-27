@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    <v-flex xs8 md3>
+    <v-flex xs2 md2>
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate">
           <div class="body-2 text-truncate" :title="employee.name">
@@ -10,7 +10,7 @@
       </div>
     </v-flex>
 
-    <v-flex xs8 md3>
+    <v-flex xs3 md3>
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate">
           <div class="body-2 text-truncate" :title="hall.title">
@@ -23,7 +23,7 @@
       </div>
     </v-flex>
 
-    <v-flex xs8 md3>
+    <v-flex xs2 md3>
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate">
           <div class="body-2 text-truncate" :title="issue.status">
@@ -33,7 +33,7 @@
       </div>
     </v-flex>
 
-    <v-flex xs8 md6>
+    <v-flex xs3 md6>
       <div style="display: flex; width: 100%">
         <div style=" flex: 1 1 0; width: 0;" class="text-truncate">
           <div class="body-2 text-truncate" :title="issue.topic">
@@ -43,9 +43,7 @@
       </div>
     </v-flex>
 
-    <v-flex xs8 md3 />
-
-    <v-flex xs8 md3>
+    <v-flex xs2 md3>
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate text-right">
           <div class="body-2 text-truncate" :title="issue.updated_at">
