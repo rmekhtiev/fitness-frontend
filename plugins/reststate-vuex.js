@@ -60,5 +60,9 @@ export default function({ $axios, store }) {
   store.registerModule(
       "issue-discussions",
       resourceModule({ name: "issue-discussions", httpClient: $axios })
-  )
+  );
+  store.registerModule(
+      "visit-history-records",
+      resourceModule({ name: "visit-history-records", httpClient: $axios })
+  );
 }
