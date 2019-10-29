@@ -55,7 +55,10 @@
           </v-list-item-icon>
         </v-list-item>
 
-        <v-list-item v-if="client.whats_up_number">
+        <v-list-item
+          v-if="client.whats_app_number"
+          :href="'https://wa.me/' + updateWhatsAppNumber()"
+        >
           <v-list-item-icon>
             <v-icon color="primary">
               mdi-whatsapp
@@ -63,12 +66,15 @@
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title>{{ client.whats_up_number }}</v-list-item-title>
-            <v-list-item-subtitle>Номер WhatsUp</v-list-item-subtitle>
+            <v-list-item-title>{{ updateWhatsAppNumber() }}</v-list-item-title>
+            <v-list-item-subtitle>Номер WhatsApp</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item v-if="client.instagram">
+        <v-list-item
+          v-if="client.instagram"
+          :href="'https://instagram.com/' + client.instagram"
+        >
           <v-list-item-icon>
             <v-icon color="primary">
               mdi-instagram
@@ -170,6 +176,12 @@ export default {
 
         this.$emit("update");
       });
+    },
+    updateWhatsAppNumber() {
+      return this.client.whats_app_number
+        .replace(/-/g, "")
+        .replace("8", "7")
+        .replace("+", "");
     }
   }
 };
