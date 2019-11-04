@@ -1,13 +1,47 @@
 <template>
   <div v-if="group">
     <v-layout row wrap>
-      <v-flex xs12 sm6 lg4 xl3>
+      <v-flex xs12 sm6 lg4 xl3 class="mb-4">
         <group-info-card
           :group="group"
           class="mb-2 mx-auto"
           @update="loadRelated()"
           @delete="$router.back()"
         />
+
+        <v-card>
+          <v-card-text>
+            <div class="overline">
+              Расписание
+            </div>
+          </v-card-text>
+
+          <v-skeleton-loader
+            :loading="schedules.length === 0"
+            type="list-item-two-line, list-item-two-line"
+          >
+            <v-list two-line>
+              <v-list-item
+                v-for="(schedule, index) in schedules"
+                :key="'schedule-' + index"
+              >
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ $moment(schedule.start_date).format("dddd") }},
+                    {{ $moment(schedule.start_date).format("HH:mm") }} -
+                    {{ $moment(schedule.end_date).format("HH:mm") }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ $t("schedule.repeat." + schedule.recurrence_type) }}
+                    <template v-if="schedule.recurrence_until">
+                      до {{ $moment(schedule.start_date).format("LL") }}
+                    </template>
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-skeleton-loader>
+        </v-card>
       </v-flex>
 
       <v-flex xs12 sm6 lg8 xl9>
