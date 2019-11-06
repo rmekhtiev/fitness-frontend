@@ -22,7 +22,7 @@
         <div style="flex: 1 1 0%;" class="mt-1">
           <div class="pr-4">
             <div v-if="client.active_subscription">
-              <div v-if="activeSubscription.status === 'frozen'" class="body-2 blue--text">
+              <div v-if="client.status === 'frozen'" class="body-2 blue--text">
                 <v-icon middle color="blue">
                   mdi-clock
                 </v-icon>
