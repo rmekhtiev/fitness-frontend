@@ -144,27 +144,19 @@ export default {
 
   },
 
-  // created() {
-  //   this.interval = setInterval(() => this.loadParams(), 1000);
-  // },
-
   fetch({ store, params }) {
     return Promise.all([
       store.dispatch("halls/loadAll"),
 
       store.dispatch("clients/loadPage", {
       options: {
-        per_page: -1
+        page: 1
       }
       })
     ])
   },
 
   methods: {
-
-    loadParams() {
-      console.log(this.$route.params.status)
-    },
 
     openCreateDialog() {
       this.$refs.createDialog.open().then(form => {
