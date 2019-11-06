@@ -112,18 +112,17 @@ export default {
       {
         title: "Клиенты",
         icon: "mdi-account-multiple-outline",
-        items: [
-          { title: "Активные", icon: "mdi-check-all", to: "clients", params: { status: 'active'} },
-          { title: "Просроченный абонемент", icon: "mdi-clock", to: "clients", params: { status: 'expired'}},
-          { title: "Без абонемента", icon: "mdi-cancel", to: "clients", params: { status: 'null'}},
-          { title: "Заморожен", icon: "mdi-snowflake", to: "clients", params: { status: 'frozen'}},
-          {
-            title: "Все клиенты",
-            icon: "mdi-account-search-outline",
-            to: "clients",
-            params: { status:'all' },
-          }
-        ]
+        to: {name: "clients"}
+        // items: [
+        //   { title: "Активные", icon: "mdi-check-all", to: "clients", params: { status: 'active'} },
+        //   { title: "Просроченный абонемент", icon: "mdi-clock", to: "clients", params: { status: 'expired'}},
+        //   { title: "Без абонемента", icon: "mdi-cancel", to: "clients", params: { status: 'no_subscription'}},
+        //   { title: "Заморожен", icon: "mdi-snowflake", to: "clients", params: { status: 'frozen'}},
+        //   {
+        //     title: "Все клиенты",
+        //     icon: "mdi-account-search-outline",
+        //     to: "clients"}
+        // ]
       },
       {
         title: "Шкафчики",

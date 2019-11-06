@@ -12,6 +12,18 @@
           @keyup.enter="loadItems"
         />
       </v-flex>
+
+      <v-flex md3 class="hidden-sm-and-down">
+        <v-select
+                v-model="filter.status"
+                :items="statuses"
+                label="Статус"
+                single-line
+                filled
+                clearable
+                @input="loadFiltered"
+        />
+      </v-flex>
     </v-layout>
 
     <v-data-iterator
@@ -107,10 +119,18 @@ export default {
   mixins: [selectedHallAware, serverSidePaginated],
 
   data: () => ({
-    resource: "clients"
+    resource: "clients",
+    statuses: [
+      { value: "frozen", text: "Заморожен" },
+      { value: "active", text: "Активные" },
+      { value: "expired", text: "Просрочен" },
+      { value: "no_subscription", text: "Без абонемента" },
+      { value: "not_activated", text: "Не активирован" },
+    ]
   }),
 
   computed: {
+
     pureFilter: function() {
       return _({
         primary_hall_id: this.selectedHallId,
@@ -120,21 +140,32 @@ export default {
         .omitBy(_.isUndefined)
         .value()
     }
+
+
   },
 
-  fetch({ store }) {
+  // created() {
+  //   this.interval = setInterval(() => this.loadParams(), 1000);
+  // },
+
+  fetch({ store, params }) {
     return Promise.all([
       store.dispatch("halls/loadAll"),
 
       store.dispatch("clients/loadPage", {
-        options: {
-          page: 1
-        }
+      options: {
+        per_page: -1
+      }
       })
     ])
   },
 
   methods: {
+
+    loadParams() {
+      console.log(this.$route.params.status)
+    },
+
     openCreateDialog() {
       this.$refs.createDialog.open().then(form => {
         this.$axios.post("clients", form).then(async response => {
