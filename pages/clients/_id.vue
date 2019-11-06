@@ -98,11 +98,30 @@
         </template>
         <span>Шкафчик</span>
       </v-tooltip>
+      <v-tooltip left :value="tooltips">
+        <template v-slot:activator="{ on }">
+          <v-btn
+            fab
+            dark
+            small
+            color="red"
+            @click.native="openSubscriptionCreateDialog"
+          >
+            <v-icon>mdi-locker</v-icon>
+          </v-btn>
+        </template>
+        <span>Абонимент</span>
+      </v-tooltip>
     </v-speed-dial>
 
     <locker-claim-dialog
       ref="lockerClaimDialog"
       title="Новая бронь шкафчика"
+      :client="client"
+    />
+    <subscription-create-dialog
+      ref="subscriptionCreateDialog"
+      :title="'Создать абонимент для ' + client.name"
       :client="client"
     />
   </div>
@@ -119,6 +138,7 @@ import SubscriptionInfoCard from "../../components/subscriptions/SubscriptionInf
 
 import LockerClaimListItem from "../../components/locker-claims/LockerClaimListItem"
 import LockerClaimDialog from "../../components/locker-claims/LockerClaimDialog"
+import SubscriptionCreateDialog from "../../components/subscriptions/SubscriptionCreateDialog"
 
 export default {
   head() {
@@ -128,6 +148,7 @@ export default {
   },
 
   components: {
+    SubscriptionCreateDialog,
     ClientInfoCard,
     SubscriptionInfoCard,
     LockerClaimListItem,
@@ -167,6 +188,12 @@ export default {
       return {
         client_id: this.$route.params.id,
         after: this.$moment().format("YYYY-MM-DD")
+      }
+    },
+
+    subscriptionFilter() {
+      return {
+        client_id: this.$route.params.id
       }
     },
 
@@ -221,6 +248,20 @@ export default {
   },
 
   methods: {
+    openSubscriptionCreateDialog() {
+      this.$refs.subscriptionCreateDialog.open().then(form => {
+        this.$axios.post("subscriptions", form).then(async response => {
+          await this.$store.dispatch("subscriptions/loadById", {
+            id: response.data.data.id
+          })
+        })
+
+        this.$store.dispatch("subscriptions/loadWhere", {
+          filter: this.subscriptionFilter
+        })
+      })
+    },
+
     openLockerClaimDialog() {
       this.$refs.lockerClaimDialog.open().then(form => {
         this.$axios.post("locker-claims", form).then(async response => {
