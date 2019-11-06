@@ -239,7 +239,8 @@ export default {
       store.dispatch("clients/loadById", {
         id: params.id
       }),
-      store.dispatch("halls/loadAll")
+      store.dispatch("halls/loadAll"),
+      store.dispatch("subscriptions/loadAll")
     ])
   },
 
