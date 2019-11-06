@@ -20,9 +20,15 @@
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
 
-            <!--            <v-btn color="red" v-if="isHallAdmin || isOwner" @click="deleteEmployee()" text small>-->
-            <!--              <v-icon>mdi-delete</v-icon>-->
-            <!--            </v-btn>-->
+            <v-btn
+              v-if="isHallAdmin || isOwner"
+              color="red"
+              text
+              small
+              @click="deleteEmployee()"
+            >
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
 
             <v-btn
               v-if="link"
@@ -121,12 +127,12 @@ export default {
         .then(confirm => {
           if (confirm) {
             this.$store.dispatch("employees/delete", { id: this.employee.id });
-
+            this.$toast.success("Сотрудник удален");
             this.$emit("delete");
+            this.$router.back();
           }
-          this.$router.push({ path: "/employees" });
         });
-    }
+    },
   }
 };
 </script>

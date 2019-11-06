@@ -17,6 +17,7 @@
                 text
                 small
                 @click="deleteLocker()"
+                @delete="$router.back()"
               >
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
@@ -121,11 +122,11 @@ import LockerClaimListItem from "../../components/locker-claims/LockerClaimListI
 import Confirm from "../../components/Confirm";
 
 export default {
-  head() {
-    return {
-      title: "Шкафчик №" + this.locker.number
-    };
-  },
+  // head() {
+  //   return {
+  //     title: "Шкафчик №" + this.locker.number
+  //   };
+  // },
 
   components: {
     LockerClaimListItem,
@@ -228,8 +229,9 @@ export default {
         .then(confirm => {
           if (confirm) {
             this.$store.dispatch("lockers/delete", { id: this.locker.id });
+            this.$toast.success("Шкафчик удален");
             this.$emit("delete");
-            this.$router.push({ path: "/lockers" });
+            this.$router.back();
           }
         });
     }
