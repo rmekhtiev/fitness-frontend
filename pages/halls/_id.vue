@@ -1,92 +1,90 @@
 <template>
   <v-layout row wrap>
-    <!--    <v-flex xs12 md4>-->
-    <!--      <v-layout row wrap>-->
-    <!--        <v-flex xs12 sm6>-->
-    <!--          <stats-counter-card-->
-    <!--            title="Клиенты"-->
-    <!--            description="Всего / Без аб-та"-->
-    <!--            :counter="hall.clients_count + ' / 12'"-->
-    <!--            icon="mdi-arrow-up-bold"-->
-    <!--            color="success"-->
-    <!--            :change="hall.clients_count_new"-->
-    <!--            range="С прошлого месяца"-->
-    <!--          >-->
-    <!--          </stats-counter-card>-->
-    <!--        </v-flex>-->
+    <v-flex xs12 md4>
+      <v-layout row wrap>
+        <v-flex xs12 sm6>
+          <stats-counter-card
+            title="Клиенты"
+            description="Всего / Без аб-та"
+            :counter="hall.clients_count + ' / 12'"
+            icon="mdi-arrow-up-bold"
+            color="success"
+            :change="hall.clients_count_new"
+            range="С прошлого месяца"
+          >
+          </stats-counter-card>
+        </v-flex>
 
-    <!--        <v-flex xs12 sm6>-->
-    <!--          <stats-counter-card-->
-    <!--            title="Клиенты"-->
-    <!--            description="Новые"-->
-    <!--            :counter="hall.clients_count_new"-->
-    <!--            icon="mdi-arrow-up-bold"-->
-    <!--            color="success"-->
-    <!--            :change="hall.clients_count_new"-->
-    <!--            range="С прошлого месяца"-->
-    <!--          >-->
-    <!--          </stats-counter-card>-->
-    <!--        </v-flex>-->
+        <v-flex xs12 sm6>
+          <stats-counter-card
+            title="Клиенты"
+            description="Новые"
+            :counter="hall.clients_count_new"
+            icon="mdi-arrow-up-bold"
+            color="success"
+            :change="hall.clients_count_new"
+            range="С прошлого месяца"
+          >
+          </stats-counter-card>
+        </v-flex>
 
-    <!--        <v-flex xs12 sm6>-->
-    <!--          <stats-counter-card-->
-    <!--            title="Абонементы"-->
-    <!--            counter="12"-->
-    <!--            icon="mdi-arrow-up-bold"-->
-    <!--            color="success"-->
-    <!--            :change="12"-->
-    <!--            range="С прошлого месяца"-->
-    <!--          >-->
-    <!--          </stats-counter-card>-->
-    <!--        </v-flex>-->
+        <v-flex xs12 sm6>
+          <stats-counter-card
+            title="Абонементы"
+            counter="12"
+            icon="mdi-arrow-up-bold"
+            color="success"
+            :change="12"
+            range="С прошлого месяца"
+          >
+          </stats-counter-card>
+        </v-flex>
 
-    <!--        <v-flex xs12 sm6>-->
-    <!--          <stats-counter-card-->
-    <!--            title="Абонементы"-->
-    <!--            counter="12"-->
-    <!--            icon="mdi-arrow-up-bold"-->
-    <!--            color="success"-->
-    <!--            :change="12"-->
-    <!--            range="С прошлого месяца"-->
-    <!--          >-->
-    <!--          </stats-counter-card>-->
-    <!--        </v-flex>-->
-    <!--      </v-layout>-->
-    <!--    </v-flex>-->
-    <v-flex md4 sm12>
-      <v-card>
-        <table style="border: 2px solid black">
-          <tr>
-            <th>Итого по категории</th>
-            <th>Бар</th>
-            <th>Тренеры</th>
-            <th>Метод оплаты</th>
-          </tr>
-          <tr>
-            <td>{{ calculateSum.total.cash }}</td>
-            <td>{{ calculateSum.bar.cash }}</td>
-            <td>{{ calculateSum.trainers.cash }}</td>
-            <td>Наличными</td>
-          </tr>
-          <tr>
-            <td>{{ calculateSum.total.card }}</td>
-            <td>{{ calculateSum.bar.card }}</td>
-            <td>{{ calculateSum.trainers.card }}</td>
-            <td>По карте</td>
-          </tr>
-          <tr>
-            <td>{{ calculateSum.total.transfer }}</td>
-            <td>{{ calculateSum.bar.transfer }}</td>
-            <td>{{ calculateSum.trainers.transfer }}</td>
-            <td>Переводом</td>
-          </tr>
-          <tr>
-            <td>{{ calculateSum.total.total }}</td>
-            <td>{{ calculateSum.bar.total }}</td>
-            <td>{{ calculateSum.trainers.total }}</td>
-            <td>*</td>
-          </tr>
-        </table>
+        <v-flex xs12 sm6>
+          <stats-counter-card
+            title="Абонементы"
+            counter="12"
+            icon="mdi-arrow-up-bold"
+            color="success"
+            :change="12"
+            range="С прошлого месяца"
+          >
+          </stats-counter-card>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+    <v-flex>
+      <v-card outlined class="pl-4 text-center">
+        <v-flex xs12 row>
+          <v-flex xs3>Итого по категории</v-flex>
+          <v-flex xs3>Бар</v-flex>
+          <v-flex xs3>Тренеры</v-flex>
+          <v-flex xs3>Метод оплаты</v-flex>
+        </v-flex>
+        <v-flex xs12 row>
+          <v-flex xs3>{{ calculateSum.total.cash }}</v-flex>
+          <v-flex xs3>{{ calculateSum.bar.cash }}</v-flex>
+          <v-flex xs3>{{ calculateSum.trainers.cash }}</v-flex>
+          <v-flex xs3>Наличными</v-flex>
+        </v-flex>
+        <v-flex xs12 row>
+          <v-flex xs3>{{ calculateSum.total.card }}</v-flex>
+          <v-flex xs3>{{ calculateSum.bar.card }}</v-flex>
+          <v-flex xs3>{{ calculateSum.trainers.card }}</v-flex>
+          <v-flex xs3>По карте</v-flex>
+        </v-flex>
+        <v-flex xs12 row>
+          <v-flex xs3>{{ calculateSum.total.transfer }}</v-flex>
+          <v-flex xs3>{{ calculateSum.bar.transfer }}</v-flex>
+          <v-flex xs3>{{ calculateSum.trainers.transfer }}</v-flex>
+          <v-flex xs3>Переводом</v-flex>
+        </v-flex>
+        <v-flex xs12 row>
+          <v-flex xs3>{{ calculateSum.total.total }}</v-flex>
+          <v-flex xs3>{{ calculateSum.bar.total }}</v-flex>
+          <v-flex xs3>{{ calculateSum.trainers.total }}</v-flex>
+          <v-flex xs3 class="font-weight-bold">Итого</v-flex>
+        </v-flex>
       </v-card>
     </v-flex>
   </v-layout>
@@ -114,14 +112,7 @@ export default {
       { value: "App\\Models\\Trainer", text: "тренер" },
       { value: "App\\Models\\BarItem", text: "бар" }
     ],
-    methods: [
-      // { value: "cash", text: "Наличными" },
-      // { value: "card", text: "Картой" },
-      // { value: "transfer", text: "Переводом" }
-      "cash",
-      "card",
-      "transfer"
-    ],
+    methods: ["cash", "card", "transfer"],
     filter: {}
   }),
 
@@ -132,21 +123,19 @@ export default {
       });
     },
 
-    // hall() {
-    //   return this.$store.getters["halls/where"]({
-    //     filter: this.hallsFilter
-    //   });
-    // },
+    hall() {
+      return this.$store.getters["halls/byId"]({ id: this.$route.params.id });
+    },
     paymentsFilter() {
       return {
         method: this.methods
       };
     },
-    // hallsFilter() {
-    //   return {
-    //     hall_id: this.$route.params.id
-    //   };
-    // }
+    hallsFilter() {
+      return {
+        hall_id: this.$route.params.id
+      };
+    },
     calculateSum() {
       const payments = this.payments;
       const result = {
@@ -207,17 +196,14 @@ export default {
       return result;
     }
   },
-  //
-  // fetch: ({ store, params }) => {
-  //   return Promise.all([
-  //     store.dispatch("payments/loadWhere", {
-  //       filter: this.paymentsFilter
-  //     }),
-  //     store.dispatch("halls/loadById", {
-  //       id: params.id
-  //     })
-  //   ]);
-  // },
+
+  fetch: ({ store, params }) => {
+    return Promise.all([
+      store.dispatch("halls/loadById", {
+        id: params.id
+      })
+    ]);
+  },
 
   mounted() {
     Promise.all([this.loadPayments()]);
@@ -229,37 +215,14 @@ export default {
         filter: this.paymentsFilter
       });
     }
+    // loadHalls() {
+    //   this.store.dispatch("halls/loadWhere", {
+    //     filter: this.hallsFilter
+    //   });
+    // }
   }
-  // loadHalls() {
-  //   this.store.dispatch("halls/loadWhere", {
-  //     filter: this.hallsFilter
-  //   });
-  // }
 };
 </script>
 
 <style scoped>
-table {
-  font-size: 16px;
-  border-collapse: collapse;
-  text-align: center;
-}
-
-td:first-child {
-  font-weight: bold;
-  color: green;
-  padding: 10px 20px;
-}
-th {
-  padding: 10px 20px;
-  font-weight: bold;
-  border-style: solid;
-  border-width: 0 1px 1px 0;
-  border-color: grey;
-}
-td {
-  border-style: solid;
-  border-width: 0 1px 1px 0;
-  border-color: grey;
-}
 </style>
