@@ -43,6 +43,11 @@ export default ({ app }) => {
               concierge: "Консьерж"
             }
           }
+        },
+        schedule: {
+          repeat: {
+            weekly: "Еженедельно"
+          }
         }
       }
     }

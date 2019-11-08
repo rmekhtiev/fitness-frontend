@@ -43,54 +43,56 @@
       </v-list-item>
 
       <v-list two-line>
-        <v-list-item
+        <v-skeleton-loader
           v-if="group.hall_id"
-          :to="{ name: 'halls-id', params: { id: group.hall_id } }"
+          :loading="!hall"
+          type="list-item-avatar-two-line"
+          class="mx-auto"
         >
-          <v-list-item-icon>
-            <v-icon color="primary">
-              mdi-map-marker
-            </v-icon>
-          </v-list-item-icon>
-          <v-list-item-content v-if="hall">
-            <v-list-item-title>{{ hall.title }}</v-list-item-title>
-            <v-list-item-subtitle>{{ hall.address }}</v-list-item-subtitle>
-          </v-list-item-content>
-          <v-list-item-content v-else>
-            <v-progress-linear
-              indeterminate
-              color="primary"
-            ></v-progress-linear>
-          </v-list-item-content>
-        </v-list-item>
+          <v-list-item
+            v-if="group.hall_id"
+            :to="{ name: 'halls-id', params: { id: group.hall_id } }"
+          >
+            <v-list-item-avatar>
+              <v-icon color="primary">
+                mdi-map-marker
+              </v-icon>
+            </v-list-item-avatar>
+            <v-list-item-content v-if="hall">
+              <v-list-item-title>{{ hall.title }}</v-list-item-title>
+              <v-list-item-subtitle>{{ hall.address }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-skeleton-loader>
 
-        <v-list-item
+        <v-skeleton-loader
           v-if="group.trainer_id"
-          :to="{ name: 'trainers-id', params: { id: group.trainer_id } }"
+          :loading="!trainer"
+          type="list-item-avatar-two-line"
+          class="mx-auto"
         >
-          <v-list-item-icon>
-            <v-icon color="primary">
-              mdi-account-star
-            </v-icon>
-          </v-list-item-icon>
-          <v-list-item-content v-if="trainer">
-            <v-list-item-title>{{ trainer.name }}</v-list-item-title>
-            <v-list-item-subtitle>Основной тренер</v-list-item-subtitle>
-          </v-list-item-content>
-          <v-list-item-content v-else>
-            <v-progress-linear
-              indeterminate
-              color="primary"
-            ></v-progress-linear>
-          </v-list-item-content>
-        </v-list-item>
+          <v-list-item
+            v-if="group.trainer_id"
+            :to="{ name: 'trainers-id', params: { id: group.trainer_id } }"
+          >
+            <v-list-item-avatar>
+              <v-icon color="primary">
+                mdi-account-star
+              </v-icon>
+            </v-list-item-avatar>
+            <v-list-item-content v-if="trainer">
+              <v-list-item-title>{{ trainer.name }}</v-list-item-title>
+              <v-list-item-subtitle>Основной тренер</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-skeleton-loader>
 
         <v-list-item>
-          <v-list-item-icon>
+          <v-list-item-avatar>
             <v-icon color="primary">
               mdi-account
             </v-icon>
-          </v-list-item-icon>
+          </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>Участники</v-list-item-title>
             <v-list-item-subtitle>
