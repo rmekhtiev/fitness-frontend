@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="trainer">
     <v-card>
       <v-list-item>
         <v-list-item-avatar color="grey" />
@@ -146,9 +146,9 @@ export default {
         .then(confirm => {
           if (confirm) {
             this.$store.dispatch("trainers/delete", { id: this.trainer.id });
-            // this.$store.dispatch('trainers/loadById', {id: trainerId});
-
+            this.$toast.success("Тренер удален");
             this.$emit("delete");
+            this.$router.back();
           }
         });
     }

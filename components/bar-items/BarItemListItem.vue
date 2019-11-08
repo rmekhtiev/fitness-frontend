@@ -176,6 +176,7 @@ export default {
           if (confirm) {
             this.$store.dispatch("bar-items/delete", { id: this.barItem.id });
             this.$emit("delete");
+            this.$toast.success("Позиция удалена");
           }
           this.$router.push({ path: "/bar-items" });
         });

@@ -12,11 +12,11 @@
 import EmployeeInfoCard from "../../components/employees/EmployeeInfoCard";
 
 export default {
-  head() {
-    return {
-      title: this.employee.name
-    };
-  },
+  // head() {
+  //   return {
+  //     title: this.employee.name
+  //   };
+  // },
 
   components: {
     EmployeeInfoCard

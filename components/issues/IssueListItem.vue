@@ -3,8 +3,11 @@
     <v-flex xs2 md2>
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate">
-          <div class="body-2 text-truncate" :title="employee.name">
+          <div v-if="employee" class="body-2 text-truncate" :title="employee.name">
             {{ employee.name }}
+          </div>
+          <div v-else class="body-2 text-truncate">
+            Не указан
           </div>
         </div>
       </div>

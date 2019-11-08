@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="issue">
     <v-card>
       <div class="text-right pt-4">
         <v-btn
@@ -42,8 +42,11 @@
             </v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title>
+            <v-list-item-title v-if="employee">
               {{ employee.full_name }}
+            </v-list-item-title>
+            <v-list-item-title v-else>
+              Не указан
             </v-list-item-title>
             <div class="body-2 text-truncate">
               {{ primaryHall.title }}
@@ -67,10 +70,10 @@
 </template>
 
 <script>
-import IssueDialog from "./IssueDialog"
-import Confirm from "../Confirm"
-import auth from "../../mixins/auth"
-import issue from "../../mixins/issue"
+import Confirm from "../Confirm";
+import auth from "../../mixins/auth";
+import issue from "../../mixins/issue";
+import IssueDialog from "./IssueDialog";
 
 export default {
   name: "IssueInfoCard",
@@ -97,11 +100,11 @@ export default {
           .then(async response => {
             await this.$store.dispatch("issues/loadById", {
               id: response.data.data.id
-            })
-          })
+            });
+          });
 
-        this.$emit("update")
-      })
+        this.$emit("update");
+      });
     },
 
     deleteIssue() {
@@ -113,15 +116,15 @@ export default {
         )
         .then(confirm => {
           if (confirm) {
-            this.$store.dispatch("issues/delete", { id: this.issue.id })
-
-            this.$emit("delete")
+            this.$store.dispatch("issues/delete", { id: this.issue.id });
+            this.$toast.success("Проблема удалена");
+            this.$emit("delete");
+            this.$router.back();
           }
-          this.$router.push({ path: "/issues" })
-        })
+        });
     }
   }
-}
+};
 </script>
 
 <style scoped></style>
