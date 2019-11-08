@@ -24,33 +24,38 @@
               <v-list-item-subtitle class="caption">
                 Информация об абонементе
               </v-list-item-subtitle>
-              <div v-if="client.active_subscription">
-                <div v-if="activeSubscription.frozen" class="body-2 blue--text">
-                  <v-icon middle color="blue">
+                <div v-if="client.active_subscription">
+                  <div v-if="client.status === 'frozen'" class="body-2 blue--text">
+                    Заморожен до {{ activeSubscription.frozen_till }}
+                  </div>
+                    <div v-else class="body-2">
+                      {{ activeSubscription.issue_date }} &mdash; {{ activeSubscription.valid_till }}
+                    </div>
+                </div>
+                <div
+                        v-else-if="client.inactive_subscription"
+                        class="body-2 orange--text darken-4"
+                >
+                  <v-icon middle color="orange">
                     mdi-clock
                   </v-icon>
-                  Заморожен до {{ activeSubscription.frozen_till }}
+                  Будет активирован {{inactiveSubscription.issue_date}}
                 </div>
-                <div v-else class="body-2">
-                  {{ activeSubscription.issue_date }} &mdash;
-                  {{ activeSubscription.valid_till }}
+                <div
+                        v-else-if="client.subscriptions_count > 0"
+                        class="body-2 orange--text darken-4"
+                >
+                  <v-icon middle color="orange">
+                    mdi-clock
+                  </v-icon>
+                  Абонемент просрочен
                 </div>
-              </div>
-              <div
-                v-else-if="client.subscriptions_count > 0"
-                class="body-2 orange--text darken-4"
-              >
-                <v-icon middle color="orange">
-                  mdi-clock
-                </v-icon>
-                Абонемент просрочен
-              </div>
-              <div v-else class="body-2 red--text">
-                <v-icon middle color="red">
-                  error
-                </v-icon>
-                Абонемент отстутсвует
-              </div>
+                <div v-else class="body-2 red--text">
+                  <v-icon middle color="red">
+                    error
+                  </v-icon>
+                  Абонемент отстутсвует
+                </div>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -101,8 +106,14 @@ export default {
     activeSubscription() {
       return this.$store.getters["subscriptions/byId"]({
         id: this.client.active_subscription.id
-      });
-    }
+      })
+    },
+
+    inactiveSubscription() {
+      return this.$store.getters["subscriptions/byId"]({
+        id: this.client.inactive_subscription.id
+      })
+    },
   },
 
   methods: {

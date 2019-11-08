@@ -39,7 +39,7 @@
             :key="subItem.title"
             link
             nuxt
-            :to="subItem.to"
+            :to="{ name: subItem.to, params: subItem.params }"
             exact
           >
             <v-list-item-icon />
@@ -76,7 +76,7 @@
           :key="item.title"
           link
           nuxt
-          :to="item.to"
+          :to="{name: 'clients'}"
           exact
         >
           <v-list-item-icon>
@@ -112,16 +112,17 @@ export default {
       {
         title: "Клиенты",
         icon: "mdi-account-multiple-outline",
-        items: [
-          { title: "Активные", icon: "mdi-check-all", to: "#" },
-          { title: "Просроченный абонемент", icon: "mdi-clock", to: "#" },
-          { title: "Без абонемента", icon: "mdi-cancel", to: "#" },
-          {
-            title: "Все клиенты",
-            icon: "mdi-account-search-outline",
-            to: { name: "clients" }
-          }
-        ]
+        to: {name: "clients"}
+        // items: [
+        //   { title: "Активные", icon: "mdi-check-all", to: "clients", params: { status: 'active'} },
+        //   { title: "Просроченный абонемент", icon: "mdi-clock", to: "clients", params: { status: 'expired'}},
+        //   { title: "Без абонемента", icon: "mdi-cancel", to: "clients", params: { status: 'no_subscription'}},
+        //   { title: "Заморожен", icon: "mdi-snowflake", to: "clients", params: { status: 'frozen'}},
+        //   {
+        //     title: "Все клиенты",
+        //     icon: "mdi-account-search-outline",
+        //     to: "clients"}
+        // ]
       },
       {
         title: "Шкафчики",

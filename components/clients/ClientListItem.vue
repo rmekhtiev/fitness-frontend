@@ -22,7 +22,7 @@
         <div style="flex: 1 1 0%;" class="mt-1">
           <div class="pr-4">
             <div v-if="client.active_subscription">
-              <div v-if="activeSubscription.frozen" class="body-2 blue--text">
+              <div v-if="client.status === 'frozen'" class="body-2 blue--text">
                 <v-icon middle color="blue">
                   mdi-clock
                 </v-icon>
@@ -42,8 +42,17 @@
               </div>
             </div>
             <div
-              v-else-if="client.subscriptions_count > 0"
+              v-else-if="client.inactive_subscription"
               class="body-2 orange--text darken-4"
+            >
+              <v-icon middle color="orange">
+                mdi-clock
+              </v-icon>
+              Будет активирован {{inactiveSubscription.issue_date}}
+            </div>
+            <div
+                    v-else-if="client.subscriptions_count > 0"
+                    class="body-2 orange--text darken-4"
             >
               <v-icon middle color="orange">
                 mdi-clock
@@ -127,6 +136,12 @@ export default {
               .utc(this.lastVisitHistoryRecord.datetime)
               .local()
               .format("HH:mm")
+    },
+
+    inactiveSubscription() {
+      return this.$store.getters["subscriptions/byId"]({
+        id: this.client.inactive_subscription.id
+      })
     },
 
     daysTill() {
