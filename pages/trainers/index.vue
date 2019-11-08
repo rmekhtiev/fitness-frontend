@@ -1,51 +1,12 @@
 <template>
   <div id="clients">
-    <v-layout id="filters">
-
-<!--      <v-flex md3 class="hidden-sm-and-down">-->
-<!--        <v-autocomplete-->
-<!--          v-model="filter.trainer_id"-->
-<!--          :items="trainers"-->
-
-<!--          item-text="name"-->
-<!--          item-value="id"-->
-
-<!--          label="Тренер"-->
-<!--          single-line-->
-<!--          filled-->
-
-<!--          clearable-->
-
-<!--          @input="loadItems"-->
-<!--        ></v-autocomplete>-->
-<!--      </v-flex>-->
-
-<!--      <v-flex md3 class="hidden-sm-and-down">-->
-<!--        <v-autocomplete-->
-<!--          v-model="filter.phone_number"-->
-<!--          :items="items"-->
-
-<!--          item-text="phone_number"-->
-<!--          item-value="phone_number"-->
-
-<!--          label="Номер телефона"-->
-<!--          single-line-->
-<!--          filled-->
-
-<!--          clearable-->
-
-<!--          @input="loadItems"-->
-<!--        ></v-autocomplete>-->
-<!--      </v-flex>-->
-    </v-layout>
-
     <v-data-iterator
       :items="items"
       :options.sync="iteratorOptions"
       :server-items-length="totalItems"
       :loading="itemsLoading"
-
-      :items-per-page="15">
+      :items-per-page="15"
+    >
       <template v-slot:header>
         <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
           <v-flex xs8 md3>
@@ -72,9 +33,7 @@
             </div>
           </v-flex>
 
-          <v-flex md3>
-
-          </v-flex>
+          <v-flex md3 />
         </v-layout>
       </template>
 
@@ -84,16 +43,18 @@
             <template v-if="itemsLoading">
               <v-list-item>
                 <v-progress-linear
-                  color="primary accent-4"
-                  indeterminate
-                  rounded
-                  height="6"
-                ></v-progress-linear>
+                        color="primary accent-4"
+                        indeterminate
+                        rounded
+                        height="6"
+                />
               </v-list-item>
             </template>
-            <template v-else v-for="item in props.items">
-              <trainer-list-item :trainer="item"></trainer-list-item>
-              <v-divider></v-divider>
+            <template v-for="(item,index) in props.items" v-else>
+              <v-list-item :to="{ name: 'trainers-id', params: { id: item.id } }">
+                <trainer-list-item :trainer="item" />
+              </v-list-item>
+              <v-divider v-if="index + 1 < props.items.length" :key="index" />
             </template>
           </v-list>
         </v-card>
@@ -106,82 +67,93 @@
       fixed
       bottom
       right
-      @click.native="openTrainerDialog">
+      @click.native="openTrainerDialog"
+    >
       <v-icon>mdi-plus</v-icon>
     </v-btn>
 
-    <trainer-dialog ref="trainerDialog" title="Создать тренера"></trainer-dialog>
+    <trainer-dialog ref="trainerDialog" title="Создать тренера" />
   </div>
 </template>
 
 <script>
-    import serverSidePaginated from "../../mixins/server-side-paginated";
-    import selectedHallAware from "../../mixins/selectedHallAware";
+import _ from "lodash";
 
-    import TrainerListItem from "../../components/trainers/TrainerListItem";
-    import TrainerDialog from "../../components/trainers/TrainerDialog";
+import serverSidePaginated from "../../mixins/server-side-paginated";
+import selectedHallAware from "../../mixins/selected-hall-aware";
 
-    export default {
-        mixins: [
-            serverSidePaginated,
-            selectedHallAware,
-        ],
+import TrainerListItem from "../../components/trainers/TrainerListItem";
+import TrainerDialog from "../../components/trainers/TrainerDialog";
 
-        components: {
-            TrainerListItem,
-            TrainerDialog,
-        },
+export default {
+  head() {
+    return {
+      title: "Тренеры"
+    };
+  },
 
-        data: () => ({
-            resource: 'trainers',
-        }),
+  components: {
+    TrainerListItem,
+    TrainerDialog
+  },
 
-        computed: {
-            pureFilter: function () {
-                return _({
-                    hall_id: this.selectedHallId,
-                    ...this.filter
-                }).omitBy(_.isNull).omitBy(_.isUndefined).value();
-            },
-        },
+  mixins: [serverSidePaginated, selectedHallAware],
 
-        methods: {
-            openTrainerDialog() {
-                this.$refs.trainerDialog.open().then(form => {
-                    this.$axios.post('trainers', form)
-                        .then(async response => {
-                            await this.$store.dispatch('trainers/loadById', {id: response.data.data.id});
-                            this.$router.push({name: 'trainers-id', params: {id: response.data.data.id}})
-                        });
-                });
-            },
+  data: () => ({
+    resource: "trainers"
+  }),
 
-            loadRelated() {
-                let employeeIds = this.items
-                    .map(trainer => (trainer.associated_employee_id))
-                    .filter((value, index, self) => (self.indexOf(value) === index))
-                    .filter(value => value !== null);
-
-                return this.$store.dispatch('employees/loadWhere', {
-                    filter: {
-                        id: employeeIds,
-                    },
-                    options: {
-                        per_page: -1,
-                    }
-                });
-            }
-        },
-
-        fetch({store}) {
-            return Promise.all([
-                store.dispatch('trainers/loadAll'),
-                store.dispatch('halls/loadAll'),
-            ]);
-        },
+  computed: {
+    pureFilter() {
+      return _({
+        hall_id: this.selectedHallId,
+        ...this.filter
+      })
+        .omitBy(_.isNull)
+        .omitBy(_.isUndefined)
+        .value();
     }
+  },
+
+  fetch({ store }) {
+    return Promise.all([
+      store.dispatch("trainers/loadAll"),
+      store.dispatch("halls/loadAll")
+    ]);
+  },
+
+  methods: {
+    openTrainerDialog() {
+      this.$refs.trainerDialog.open().then(form => {
+        this.$axios.post("trainers", form).then(async response => {
+          await this.$store.dispatch("trainers/loadById", {
+            id: response.data.data.id
+          });
+          this.$router.push({
+            name: "trainers-id",
+            params: { id: response.data.data.id }
+          });
+        });
+      });
+    },
+
+    loadRelated() {
+      const employeeIds = this.items
+        .map(trainer => trainer.associated_employee_id)
+        .filter((value, index, self) => self.indexOf(value) === index)
+        .filter(value => value !== null);
+
+      return this.$store.dispatch("employees/loadWhere", {
+        filter: {
+          id: employeeIds
+        },
+        options: {
+          per_page: -1
+        }
+      });
+    }
+  }
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -4,49 +4,39 @@
       <v-flex xs12 md3>
         <v-text-field
           v-model="filter.topic"
-
           prepend-inner-icon="search"
           label="Поиск"
           single-line
           filled
-
           clearable
-
           @keyup.enter="loadFiltered"
-        ></v-text-field>
+        />
       </v-flex>
 
       <v-flex md3 class="hidden-sm-and-down">
         <v-autocomplete
           v-model="filter.employee_id"
           :items="employees"
-
           item-text="name"
           item-value="id"
-
           label="Сотрудник"
           single-line
           filled
-
           clearable
-
           @input="loadFiltered"
-        ></v-autocomplete>
+        />
       </v-flex>
 
       <v-flex md3 class="hidden-sm-and-down">
         <v-select
           v-model="filter.status"
           :items="statuses"
-
           label="Статус"
           single-line
           filled
-
           clearable
-
           @input="loadFiltered"
-        ></v-select>
+        />
       </v-flex>
     </v-layout>
 
@@ -55,11 +45,11 @@
       :options.sync="iteratorOptions"
       :server-items-length="totalItems"
       :loading="itemsLoading"
-
-      :items-per-page="15">
+      :items-per-page="15"
+    >
       <template v-slot:header>
-        <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
-          <v-flex xs8 md3>
+        <v-layout class="px-2 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
+          <v-flex xs2 md2>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
                 ФИО
@@ -67,15 +57,15 @@
             </div>
           </v-flex>
 
-          <v-flex md3>
+          <v-flex xs3 md3>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
-                Зал
+                Адрес
               </div>
             </div>
           </v-flex>
 
-          <v-flex md3>
+          <v-flex xs2 md3>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
                 Статус
@@ -83,7 +73,7 @@
             </div>
           </v-flex>
 
-          <v-flex xs8 md6>
+          <v-flex xs3 md6>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
                 Проблема
@@ -91,14 +81,13 @@
             </div>
           </v-flex>
 
-          <v-flex xs8 md3>
-
-          </v-flex>
-
-          <v-flex md3>
+          <v-flex xs2 md3>
             <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate text-right">
-                Посл.обновление
+              <div
+                style="flex: 1 1 0%;"
+                class="overline text-truncate text-right"
+              >
+                Посл. обновление
               </div>
             </div>
           </v-flex>
@@ -115,17 +104,14 @@
                   indeterminate
                   rounded
                   height="6"
-                ></v-progress-linear>
+                />
               </v-list-item>
             </template>
-            <template v-else v-for="(item, index) in props.items">
-              <v-list-item>
-                <issue-list-item :issue="item"></issue-list-item>
+            <template v-for="(item, index) in props.items" v-else>
+              <v-list-item :to="{ name: 'issues-id', params: { id: item.id } }">
+                <issue-list-item :issue="item" />
               </v-list-item>
-              <v-divider
-                v-if="index + 1 < props.items.length"
-                :key="index"
-              ></v-divider>
+              <v-divider v-if="index + 1 < props.items.length" :key="index" />
             </template>
           </v-list>
         </v-card>
@@ -139,96 +125,108 @@
       right
       fab
       class="mb-12"
-      @click.native="openIssueDialog">
+      @click.native="openIssueDialog"
+    >
       <v-icon>mdi-plus</v-icon>
     </v-btn>
-    <issue-dialog ref="issueDialog" title="Проблема"></issue-dialog>
+    <issue-dialog ref="issueDialog" title="Проблема" />
   </div>
 </template>
 
 <script>
-    import serverSidePaginated from "../../mixins/server-side-paginated";
-    import selectedHallAware from "../../mixins/selectedHallAware";
+import _ from "lodash";
 
-    import IssueListItem from "../../components/issues/IssueListItem";
-    import IssueDialog from "../../components/issues/IssueDialog";
-    import employee from "../../mixins/employee";
+import serverSidePaginated from "../../mixins/server-side-paginated";
+import selectedHallAware from "../../mixins/selected-hall-aware";
 
-    export default {
-        mixins: [
-            serverSidePaginated,
-            selectedHallAware,
-        ],
+import IssueListItem from "../../components/issues/IssueListItem";
+import IssueDialog from "../../components/issues/IssueDialog";
 
-        components: {
-            IssueDialog,
-            IssueListItem,
-        },
+export default {
+  head() {
+    return {
+      title: "Проблемы"
+    };
+  },
 
-        data: () => ({
-            resource: 'issues',
-            statuses: [
-                {value: 'pending', text: 'В ожидании'},
-                {value: 'in-work', text: 'Выполняется'},
-                {value: 'ready', text: 'Готово'},
-            ]
-        }),
+  components: {
+    IssueDialog,
+    IssueListItem
+  },
 
-        computed: {
-            pureFilter: function () {
-                return _({
-                    hall_id: this.selectedHallId,
-                    ...this.filter
-                }).omitBy(_.isNull).omitBy(_.isUndefined).value();
-            },
+  mixins: [serverSidePaginated, selectedHallAware],
 
-            employees() {
-                return this.$store.getters['selectedHall']
-                    ? this.$store.getters['employees/all'].filter(item => (item.hall_id === this.$store.getters['selectedHallIdForFilter']))
-                    : this.$store.getters['employees/all'];
-            },
-        },
+  data: () => ({
+    resource: "issues",
+    statuses: [
+      { value: "pending", text: "В ожидании" },
+      { value: "in-work", text: "Выполняется" },
+      { value: "ready", text: "Готово" }
+    ]
+  }),
 
-        methods: {
-            openIssueDialog() {
-                this.$refs.issueDialog.open().then(form => {
-                    this.$axios.post('issues', form)
-                        .then(async response => {
-                            await this.$store.dispatch('issues/loadById', {id: response.data.data.id});
-                            this.$router.push({name: 'issues', params: {id: response.data.data.id}})
-                        });
-                })
-            },
+  computed: {
+    pureFilter() {
+      return _({
+        hall_id: this.selectedHallId,
+        ...this.filter
+      })
+        .omitBy(_.isNull)
+        .omitBy(_.isUndefined)
+        .value();
+    },
 
-            loadRelated() {
-                let employeeIds = this.items
-                    .map(issue => (issue.employee_id))
-                    .filter((value, index, self) => (self.indexOf(value) === index))
-                    .filter(value => value !== null);
-
-                return this.$store.dispatch('employees/loadWhere', {
-                    filter: {
-                        id: employeeIds,
-                    },
-                    options: {
-                        per_page: -1,
-                    }
-                });
-
-                // return Promise.resolve();
-            }
-        },
-
-        fetch({store}) {
-            return Promise.all([
-                store.dispatch('issues/loadAll'),
-                store.dispatch('employees/loadAll'),
-                store.dispatch('halls/loadAll'),
-            ]);
-        },
+    employees() {
+      return this.$store.getters.selectedHall
+        ? this.$store.getters["employees/all"].filter(
+            item => item.hall_id === this.$store.getters.selectedHallIdForFilter
+          )
+        : this.$store.getters["employees/all"];
     }
+  },
+
+  fetch({ store }) {
+    return Promise.all([
+      store.dispatch("issues/loadAll"),
+      store.dispatch("employees/loadAll"),
+      store.dispatch("halls/loadAll")
+    ]);
+  },
+
+  methods: {
+    openIssueDialog() {
+      this.$refs.issueDialog.open().then(form => {
+        this.$axios.post("issues", form).then(async response => {
+          await this.$store.dispatch("issues/loadById", {
+            id: response.data.data.id
+          });
+          this.$router.push({
+            name: "issues",
+            params: { id: response.data.data.id }
+          });
+        });
+      });
+    },
+
+    loadRelated() {
+      const employeeIds = this.items
+        .map(issue => issue.employee_id)
+        .filter((value, index, self) => self.indexOf(value) === index)
+        .filter(value => value !== null);
+
+      return this.$store.dispatch("employees/loadWhere", {
+        filter: {
+          id: employeeIds
+        },
+        options: {
+          per_page: -1
+        }
+      });
+
+      // return Promise.resolve();
+    }
+  }
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

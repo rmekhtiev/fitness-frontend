@@ -4,16 +4,25 @@
       <v-flex md3 class="hidden-sm-and-down">
         <v-text-field
           v-model="filter.search"
-
           prepend-inner-icon="search"
           label="Поиск"
           single-line
           filled
-
           clearable
-
           @keyup.enter="loadItems"
-        ></v-text-field>
+        />
+      </v-flex>
+
+      <v-flex md3 class="hidden-sm-and-down">
+        <v-select
+                v-model="filter.status"
+                :items="statuses"
+                label="Статус"
+                single-line
+                filled
+                clearable
+                @input="loadFiltered"
+        />
       </v-flex>
     </v-layout>
 
@@ -22,52 +31,17 @@
       :options.sync="iteratorOptions"
       :server-items-length="totalItems"
       :loading="itemsLoading"
-
-      :items-per-page="15">
+      :items-per-page="15"
+    >
       <template v-slot:header>
-        <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
-          <v-flex xs6 md4>
-            <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate">
-                ФИО
-              </div>
-            </div>
-          </v-flex>
-
-          <v-flex md4>
-            <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate">
-                Абонемент
-              </div>
-            </div>
-          </v-flex>
-        </v-layout>
+        <client-list-header></client-list-header>
       </template>
 
       <template v-slot:default="props">
-        <v-card>
-          <v-list>
-            <template v-if="itemsLoading">
-              <v-list-item>
-                <v-progress-linear
-                  color="primary accent-4"
-                  indeterminate
-                  rounded
-                  height="6"
-                ></v-progress-linear>
-              </v-list-item>
-            </template>
-            <template v-else v-for="(item, index) in props.items">
-              <v-list-item :to="{name: 'clients-id', params: {id: item.id}}">
-                <client-list-item :client="item"></client-list-item>
-              </v-list-item>
-              <v-divider
-                v-if="index + 1 < props.items.length"
-                :key="index"
-              ></v-divider>
-            </template>
-          </v-list>
-        </v-card>
+        <client-list-card
+          :items-loading="itemsLoading"
+          :items="props.items"
+        ></client-list-card>
       </template>
     </v-data-iterator>
 
@@ -83,83 +57,105 @@
       <v-icon>mdi-plus</v-icon>
     </v-btn>
 
-    <client-dialog ref="createDialog" title="Новый клиент"></client-dialog>
+    <client-dialog ref="createDialog" title="Новый клиент" />
   </div>
 </template>
 
 <script>
-    import serverSidePaginated from "../../mixins/server-side-paginated";
-    import selectedHallAware from "../../mixins/selectedHallAware";
+import _ from "lodash";
 
-    import ClientListItem from '../../components/clients/ClientListItem';
-    import ClientDialog from "../../components/clients/ClientDialog";
+import serverSidePaginated from "../../mixins/server-side-paginated";
+import selectedHallAware from "../../mixins/selected-hall-aware";
 
-    export default {
-        components: {
-            ClientDialog,
-            ClientListItem,
-        },
+import ClientListHeader from "../../components/clients/ClientListHeader";
+import ClientDialog from "../../components/clients/ClientDialog";
+import ClientListCard from "../../components/clients/ClientListCard";
 
-        mixins: [
-            selectedHallAware,
-            serverSidePaginated,
-        ],
+export default {
+  head() {
+    return {
+      title: "Клиенты"
+    };
+  },
 
-        data: () => ({
-            resource: 'clients',
-        }),
+  components: {
+    ClientListCard,
+    ClientDialog,
+    ClientListHeader
+  },
 
-        computed: {
-            pureFilter: function () {
-                return _({
-                    primary_hall_id: this.selectedHallId,
-                    ...this.filter
-                }).omitBy(_.isNull).omitBy(_.isUndefined).value();
-            },
-        },
+  mixins: [selectedHallAware, serverSidePaginated],
 
-        methods: {
-            openCreateDialog() {
-                this.$refs.createDialog.open().then(form => {
-                    this.$axios.post('clients', form)
-                        .then(async response => {
-                            await this.$store.dispatch('clients/loadById', {id: response.data.data.id});
-                            this.$router.push({name: 'clients-id', params: {id: response.data.data.id}})
-                        });
-                })
-            },
+  data: () => ({
+    resource: "clients",
+    statuses: [
+      { value: "frozen", text: "Заморожен" },
+      { value: "active", text: "Активные" },
+      { value: "expired", text: "Просрочен" },
+      { value: "no_subscription", text: "Без абонемента" },
+      { value: "not_activated", text: "Не активирован" },
+    ]
+  }),
 
-            loadRelated() {
-                let clientIds = this.items
-                    .map(client => (client.id))
-                    .filter((value, index, self) => (self.indexOf(value) === index))
-                    .filter(value => value !== null);
-
-                return this.$store.dispatch('subscriptions/loadWhere', {
-                    filter: {
-                        client_id: clientIds,
-                    },
-                    options: {
-                        per_page: -1,
-                    }
-                });
-            }
-        },
-
-        fetch({store}) {
-            return Promise.all([
-                store.dispatch('halls/loadAll'),
-
-                store.dispatch('clients/loadPage', {
-                    options: {
-                        page: 1,
-                    }
-                })
-            ]);
-        },
+  computed: {
+    pureFilter() {
+      return _({
+        primary_hall_id: this.selectedHallId,
+        ...this.filter
+      })
+        .omitBy(_.isNull)
+        .omitBy(_.isUndefined)
+        .value();
     }
+
+
+  },
+
+  fetch({ store, params }) {
+    return Promise.all([
+      store.dispatch("halls/loadAll"),
+
+      store.dispatch("clients/loadPage", {
+      options: {
+        page: 1
+      }
+      })
+    ]);
+  },
+
+  methods: {
+
+    openCreateDialog() {
+      this.$refs.createDialog.open().then(form => {
+        this.$axios.post("clients", form).then(async response => {
+          await this.$store.dispatch("clients/loadById", {
+            id: response.data.data.id
+          });
+          this.$router.push({
+            name: "clients-id",
+            params: { id: response.data.data.id }
+          });
+        });
+      });
+    },
+
+    loadRelated() {
+      const clientIds = this.items
+        .map(client => client.id)
+        .filter((value, index, self) => self.indexOf(value) === index)
+        .filter(value => value !== null);
+
+      return this.$store.dispatch("subscriptions/loadWhere", {
+        filter: {
+          client_id: clientIds
+        },
+        options: {
+          per_page: -1
+        }
+      });
+    }
+  }
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

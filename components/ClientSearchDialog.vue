@@ -6,27 +6,28 @@
           <v-icon>mdi-close</v-icon>
         </v-btn>
         <v-toolbar-title>Поиск</v-toolbar-title>
-        <div class="flex-grow-1"></div>
+        <div class="flex-grow-1" />
         <v-toolbar-items>
-          <v-btn dark text @click="close()">Закрыть</v-btn>
+          <v-btn dark text @click="close()">
+            Закрыть
+          </v-btn>
         </v-toolbar-items>
       </v-toolbar>
 
       <v-card-text>
         <v-text-field
           v-model="search"
-
           prepend-inner-icon="search"
           label="Поиск"
           single-line
           filled
-
           clearable
-
           @keyup.enter="loadFiltered"
-        ></v-text-field>
+        />
 
-        <v-btn block outlined color="primary" @click="loadFiltered">Искать</v-btn>
+        <v-btn block outlined color="primary" @click="loadFiltered">
+          Искать
+        </v-btn>
       </v-card-text>
 
       <v-data-iterator :items="clients" :items-per-page="15">
@@ -48,13 +49,14 @@
               </div>
             </v-flex>
 
-            <v-flex md3>
-
-            </v-flex>
+            <v-flex md3 />
 
             <v-flex md3>
               <div style="display: flex; width: 100%">
-                <div style="flex: 1 1 0%;" class="overline text-truncate text-right">
+                <div
+                  style="flex: 1 1 0%;"
+                  class="overline text-truncate text-right"
+                >
                   Последнее посещение
                 </div>
               </div>
@@ -66,13 +68,12 @@
           <v-card>
             <v-list flat>
               <template v-for="(item, index) in props.items">
-                <v-list-item :to="{name: 'clients-id', params: {id: item.id}}">
-                  <client-list-item :client="item" @click.native="close"></client-list-item>
+                <v-list-item
+                  :to="{ name: 'clients-id', params: { id: item.id } }"
+                >
+                  <client-list-item :client="item" @click.native="close" />
                 </v-list-item>
-                <v-divider
-                  v-if="index + 1 < props.items.length"
-                  :key="index"
-                ></v-divider>
+                <v-divider v-if="index + 1 < props.items.length" :key="index" />
               </template>
             </v-list>
           </v-card>
@@ -83,60 +84,58 @@
 </template>
 
 <script>
-    import ClientListItem from "./clients/ClientListItem";
-    export default {
-        name: "ClientSearchDialog",
+import ClientListItem from "./clients/ClientListItem";
+export default {
+  name: "ClientSearchDialog",
 
-        components: {
-            ClientListItem
-        },
+  components: {
+    ClientListItem
+  },
 
-        props: {
-            fullscreen: {
-                type: Boolean,
-                default: true,
-            },
-        },
-
-        data: () => ({
-            dialog: false,
-
-            resolve: null,
-            reject: null,
-
-            search: null,
-        }),
-
-        computed: {
-            filter() {
-                return {
-                    search: this.search,
-                }
-            },
-
-            clients() {
-                return this.$store.getters['clients/where']({filter: this.filter});
-            }
-        },
-
-        methods: {
-            loadFiltered() {
-              this.$store.dispatch('clients/loadWhere', {
-                  filter: this.filter
-              })
-            },
-
-            open() {
-                this.dialog = true;
-            },
-
-            close() {
-                this.dialog = false;
-            }
-        }
+  props: {
+    fullscreen: {
+      type: Boolean,
+      default: true
     }
+  },
+
+  data: () => ({
+    dialog: false,
+
+    resolve: null,
+    reject: null,
+
+    search: null
+  }),
+
+  computed: {
+    filter() {
+      return {
+        search: this.search
+      };
+    },
+
+    clients() {
+      return this.$store.getters["clients/where"]({ filter: this.filter });
+    }
+  },
+
+  methods: {
+    loadFiltered() {
+      this.$store.dispatch("clients/loadWhere", {
+        filter: this.filter
+      });
+    },
+
+    open() {
+      this.dialog = true;
+    },
+
+    close() {
+      this.dialog = false;
+    }
+  }
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

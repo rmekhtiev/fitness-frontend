@@ -13,7 +13,10 @@
 
           <v-flex xs4 sm2>
             <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate text-right">
+              <div
+                style="flex: 1 1 0%;"
+                class="overline text-truncate text-right"
+              >
                 Клиенты
               </div>
             </div>
@@ -21,7 +24,10 @@
 
           <v-flex hidden-xs-only sm2>
             <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate text-right">
+              <div
+                style="flex: 1 1 0%;"
+                class="overline text-truncate text-right"
+              >
                 Шкафчики
               </div>
             </div>
@@ -29,7 +35,10 @@
 
           <v-flex hidden-xs-only sm2>
             <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate text-right">
+              <div
+                style="flex: 1 1 0%;"
+                class="overline text-truncate text-right"
+              >
                 Сотрудники
               </div>
             </div>
@@ -41,10 +50,10 @@
         <v-card>
           <v-list>
             <template v-for="item in props.items">
-              <v-list-item :to="{name: 'halls-id', params: {id: item.id}}">
-                <hall-list-item :hall="item"></hall-list-item>
+              <v-list-item :to="{ name: 'halls-id', params: { id: item.id } }">
+                <hall-list-item :hall="item" />
               </v-list-item>
-              <v-divider></v-divider>
+              <v-divider />
             </template>
           </v-list>
         </v-card>
@@ -54,30 +63,32 @@
 </template>
 
 <script>
-    import {mapGetters} from 'vuex';
-    import HallListItem from "../../components/hall/HallListItem";
+import { mapGetters } from "vuex";
+import HallListItem from "../../components/hall/HallListItem";
 
-    export default {
-        name: "index",
+export default {
+  name: "Index",
 
-        components: {
-            HallListItem,
-        },
+  head() {
+    return {
+      title: "Залы"
+    };
+  },
 
-        computed: {
-            ...mapGetters({
-                halls: 'halls/all',
-            }),
-        },
+  components: {
+    HallListItem
+  },
 
-        fetch({store}) {
-            return Promise.all([
-                store.dispatch('halls/loadAll'),
-            ]);
-        },
-    }
+  computed: {
+    ...mapGetters({
+      halls: "halls/all"
+    })
+  },
+
+  fetch({ store }) {
+    return Promise.all([store.dispatch("halls/loadAll")]);
+  }
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

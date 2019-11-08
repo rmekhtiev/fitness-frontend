@@ -1,28 +1,26 @@
 import filterable from "./filterable";
 
 export default {
-  mixins: [
-    filterable
-  ],
+  mixins: [filterable],
 
   data: () => ({
-    resource: '',
+    resource: "",
 
     iteratorOptions: {
       itemsPerPage: 15,
-      page: 1,
+      page: 1
     },
-    itemsLoading: true,
+    itemsLoading: true
   }),
 
   computed: {
     items() {
-      return this.$store.getters[this.resource + '/where'](this.serverPayload);
+      return this.$store.getters[this.resource + "/where"](this.serverPayload);
     },
 
     totalItems() {
-      return this.$store.getters[this.resource + '/lastMeta']
-        ? this.$store.getters[this.resource + '/lastMeta'].pagination.total
+      return this.$store.getters[this.resource + "/lastMeta"]
+        ? this.$store.getters[this.resource + "/lastMeta"].pagination.total
         : 0;
     },
 
@@ -31,9 +29,9 @@ export default {
         filter: this.pureFilter,
         options: {
           page: this.iteratorOptions.page,
-          per_page: this.iteratorOptions.itemsPerPage,
+          per_page: this.iteratorOptions.itemsPerPage
         }
-      }
+      };
     }
   },
 
@@ -42,27 +40,29 @@ export default {
       handler() {
         this.loadItems();
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
 
   methods: {
     loadItems() {
       this.itemsLoading = true;
 
-      return this.$store.dispatch(this.resource + '/loadWhere', this.serverPayload).then(async () => {
-        return this.loadRelated().then(() => {
-          this.itemsLoading = false;
+      return this.$store
+        .dispatch(this.resource + "/loadWhere", this.serverPayload)
+        .then(async () => {
+          return this.loadRelated().then(() => {
+            this.itemsLoading = false;
+          });
         });
-      });
     },
 
     loadRelated() {
       return Promise.resolve();
-    },
+    }
   },
 
   async beforeMount() {
     await this.loadItems();
-  },
-}
+  }
+};
