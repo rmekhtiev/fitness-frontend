@@ -1,5 +1,5 @@
 <template>
-  <v-app dark>
+  <v-app>
     <v-navigation-drawer v-model="drawer" app fixed>
       <drawer-profile />
 
@@ -29,6 +29,7 @@
 
       <scanner-dialog ref="scanner" />
       <client-search-dialog ref="search" />
+      <confirm ref="confirm"></confirm>
     </v-content>
   </v-app>
 </template>
@@ -41,9 +42,11 @@ import Menu from "../components/app/drawer/menu";
 
 import ScannerDialog from "../components/ScannerDialog";
 import ClientSearchDialog from "../components/ClientSearchDialog";
+import Confirm from "../components/Confirm";
 
 export default {
   components: {
+    Confirm,
     "drawer-profile": Profile,
     "drawer-menu": Menu,
     ScannerDialog,
