@@ -76,7 +76,7 @@
           :key="item.title"
           link
           nuxt
-          :to="{name: 'clients'}"
+          :to="item.to"
           exact
         >
           <v-list-item-icon>
@@ -112,7 +112,7 @@ export default {
       {
         title: "Клиенты",
         icon: "mdi-account-multiple-outline",
-        to: {name: "clients"}
+        to: { name: "clients" }
         // items: [
         //   { title: "Активные", icon: "mdi-check-all", to: "clients", params: { status: 'active'} },
         //   { title: "Просроченный абонемент", icon: "mdi-clock", to: "clients", params: { status: 'expired'}},
