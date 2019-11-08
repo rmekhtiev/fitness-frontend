@@ -56,13 +56,17 @@ export default function({ $axios, store }) {
   store.registerModule(
     "bar-items",
     resourceModule({ name: "bar-items", httpClient: $axios })
-  )
-  store.registerModule(
-      "issue-discussions",
-      resourceModule({ name: "issue-discussions", httpClient: $axios })
   );
   store.registerModule(
-      "visit-history-records",
-      resourceModule({ name: "visit-history-records", httpClient: $axios })
+    "issue-discussions",
+    resourceModule({ name: "issue-discussions", httpClient: $axios })
+  );
+  store.registerModule(
+    "visit-history-records",
+    resourceModule({ name: "visit-history-records", httpClient: $axios })
+  );
+  store.registerModule(
+    "payments",
+    resourceModule({ name: "payments", httpClient: $axios })
   );
 }

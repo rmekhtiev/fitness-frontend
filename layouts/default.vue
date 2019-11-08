@@ -23,8 +23,8 @@
       </v-btn>
     </v-app-bar>
     <v-content>
-      <v-container grid-list-md>
-        <nuxt />
+      <v-container grid-list-md fluid>
+        <nuxt/>
       </v-container>
 
       <scanner-dialog ref="scanner" />

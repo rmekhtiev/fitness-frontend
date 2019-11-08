@@ -50,7 +50,7 @@
             <v-list-item-subtitle>Телефон</v-list-item-subtitle>
           </v-list-item-content>
 
-          <v-list-item-icon>
+          <v-list-item-icon :href="'sms:' + client.phone_number">
             <v-icon>mdi-message-text</v-icon>
           </v-list-item-icon>
         </v-list-item>

@@ -18,17 +18,34 @@
             </div>
           </v-card-text>
 
-          <v-list v-if="!loading.lockers">
-            <template v-for="(claim, index) in lockerClaims">
-              <locker-claim-list-item :key="'claim' + index" :claim="claim" />
+          <template
+            v-if="!loading.lockers">
+
+            <v-card-text
+              v-if="lockerClaims.length === 0"
+              class="text-center">
+              <v-icon style="font-size: 4rem">mdi-inbox</v-icon>
+              <br>
+              Пусто
+            </v-card-text>
+
+            <template
+              v-else
+              v-for="(claim, index) in lockerClaims">
+              <locker-claim-list-item
+                :key="'claim' + index"
+                :claim="claim">
+              </locker-claim-list-item>
 
               <v-divider
                 v-if="index + 1 < lockerClaims.length"
                 :key="'claim-divider' + index"
               />
             </template>
-          </v-list>
-          <v-card-text v-else class="text-center">
+          </template>
+          <v-card-text
+            v-else
+            class="text-center">
             <v-progress-linear
               height="16"
               rounded
@@ -44,8 +61,18 @@
             </div>
           </v-card-text>
 
-          <v-list v-if="!loading.groups">
-            <template v-for="(group, index) in groups">
+          <v-list
+            v-if="!loading.groups">
+            <v-card-text
+              v-if="groupsIds.length === 0"
+              class="text-center">
+              <v-icon style="font-size: 4rem">mdi-inbox</v-icon>
+              <br>
+              Пусто
+            </v-card-text>
+            <template
+              v-else
+              v-for="(group, index) in groups">
               <v-list-item
                 :key="'group-' + index"
                 :to="{ name: 'groups-id', params: { id: group.id } }"
@@ -239,10 +266,12 @@ export default {
       });
     },
 
-    groups() {
-      return this.$store.getters["groups/where"]({
-        filter: this.groupFilter
-      });
+            groups() {
+                return this.groupsIds.length === 0
+                    ? []
+                    : this.$store.getters['groups/where']({
+                        filter: this.groupFilter,
+                    });
     },
     records() {
       return this.$store.getters["visit-history-records/where"]({
