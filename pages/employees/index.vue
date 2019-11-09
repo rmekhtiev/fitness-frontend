@@ -1,18 +1,20 @@
 <template>
   <div id="employees">
-    <v-flex md3 class="hidden-sm-and-down">
-      <v-autocomplete
-        v-model="filter.employee_id"
-        :items="items"
-        item-text="name"
-        item-value="id"
-        label="Сотрудник"
-        single-line
-        filled
-        clearable
-        @input="loadFiltered"
-      />
-    </v-flex>
+    <v-layout id="filters">
+      <v-flex xs12>
+        <v-autocomplete
+          v-model="filter.employee_id"
+          :items="items"
+          item-text="name"
+          item-value="id"
+          label="Сотрудник"
+          single-line
+          filled
+          clearable
+          @input="loadFiltered"
+        />
+      </v-flex>
+    </v-layout>
     <v-data-iterator
       :items="items"
       :options.sync="iteratorOptions"
