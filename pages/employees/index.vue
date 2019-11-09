@@ -2,16 +2,14 @@
   <div id="employees">
     <v-layout id="filters">
       <v-flex xs12>
-        <v-autocomplete
-          v-model="filter.employee_id"
-          :items="items"
-          item-text="name"
-          item-value="id"
-          label="Сотрудник"
+        <v-text-field
+          v-model="filter.search"
+          prepend-inner-icon="search"
+          label="Поиск"
           single-line
           filled
           clearable
-          @input="loadFiltered"
+          @keyup.enter="loadItems"
         />
       </v-flex>
     </v-layout>
