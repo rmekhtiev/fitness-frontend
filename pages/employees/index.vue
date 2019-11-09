@@ -1,5 +1,18 @@
 <template>
   <div id="employees">
+    <v-flex md3 class="hidden-sm-and-down">
+      <v-autocomplete
+        v-model="filter.employee_id"
+        :items="items"
+        item-text="name"
+        item-value="id"
+        label="Сотрудник"
+        single-line
+        filled
+        clearable
+        @input="loadFiltered"
+      />
+    </v-flex>
     <v-data-iterator
       :items="items"
       :options.sync="iteratorOptions"
@@ -44,7 +57,7 @@
                 />
               </v-list-item>
             </template>
-            <template v-for="(item,index) in props.items" v-else>
+            <template v-for="(item, index) in props.items" v-else>
               <employee-list-item :employee="item" />
               <v-divider v-if="index + 1 < props.items.length" :key="index" />
             </template>
