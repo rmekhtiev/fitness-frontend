@@ -15,7 +15,7 @@
       </v-toolbar>
 
       <v-card-text>
-        <subscription-form v-model="form" :is-edit="isEdit" />
+        <subscription-form :subscription="subscription" v-model="form" :is-edit="isEdit" />
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -38,6 +38,12 @@ export default {
     },
 
     client: {
+      type: Object,
+      required: false,
+      default: () => ({})
+    },
+
+    subscription: {
       type: Object,
       required: false,
       default: () => ({})

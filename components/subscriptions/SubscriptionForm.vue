@@ -65,8 +65,9 @@
       </v-date-picker>
     </v-dialog>
      <v-card>
+       {{validTill}}
      </v-card>
-    <v-dialog
+    <v-dialog v-if="isEdit"
             ref="frozenTillDialog"
             v-model="modal.frozen_till"
             :return-value.sync="value.frozen_till"
@@ -119,7 +120,12 @@ export default {
     isEdit: {
       type: Boolean,
       default: false
-    }
+    },
+    subscription: {
+      type: Object,
+      required: false,
+      default: () => ({})
+    },
   },
   data: () => ({
     modal: {
@@ -130,14 +136,18 @@ export default {
   }),
 
    computed: {
-
-
+    validTill() {
+      let diff = this.$moment(this.value.frozen_till).diff(
+              this.$moment(),
+              "days"
+      );
+      return this.$moment(this.value.valid_till).add(diff, "day").format("YYYY-MM-DD")
+    },
     defaultForm() {
       return {
         client_id: this.$route.params.id,
         issue_date: this.$moment().format("YYYY-MM-DD"),
-        frozen_till:this.$moment().add(10, "day")
-                .format("YYYY-MM-DD"),
+        frozen_till:this.$moment().format("YYYY-MM-DD"),
         valid_till: this.$moment().add(1, "year")
                 .format("YYYY-MM-DD"),
       }

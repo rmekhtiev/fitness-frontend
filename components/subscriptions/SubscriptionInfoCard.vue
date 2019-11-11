@@ -85,10 +85,10 @@
         Печать
       </v-btn>
     </v-card-actions>
-    <subscription-dialog
+    <subscription-dialog v-if="client.active_subscription"
             ref="subscriptionDialog"
             title="Правка абонемента"
-            :subscription="subscription"
+            :subscription="activeSubscription"
             is-edit
     />
   </v-card>

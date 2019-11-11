@@ -218,13 +218,6 @@ export default {
       lockerClaim: false
     },
 
-    subscription: {
-      // todo: make computed from vuex
-      id: "0defe181-4b8c-4273-85cf-1454e414a7fa",
-      issue_date: "2019-09-08",
-      valid_till: "2019-09-22"
-    },
-
     loading: {
       lockers: true,
       groups: true,
