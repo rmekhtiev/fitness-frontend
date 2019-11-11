@@ -15,17 +15,17 @@
       </v-toolbar>
 
       <v-card-text>
-        <subscription-create-form v-model="form" :is-edit="isEdit" />
+        <subscription-form v-model="form" :is-edit="isEdit" />
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import SubscriptionCreateForm from "./SubscriptionCreateForm"
+import SubscriptionForm from "./SubscriptionForm"
 export default {
-  name: "SubscriptionCreateDialog",
-  components: { SubscriptionCreateForm },
+  name: "SubscriptionDialog",
+  components: { SubscriptionForm },
   props: {
     fullscreen: {
       type: Boolean,
@@ -58,7 +58,8 @@ export default {
     form: {
       client_id: null,
       issue_date: null,
-      valid_till: null
+      valid_till: null,
+      frozen_till: null
     }
   }),
 

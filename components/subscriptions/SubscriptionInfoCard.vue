@@ -1,5 +1,6 @@
 <template>
   <v-card>
+
     <v-card-text>
       <div class="overline">
         Абонемент
@@ -71,28 +72,45 @@
     </v-row>
 
     <v-card-actions v-if="client.active_subscription">
+      <v-btn
+              color="primary"
+              text
+              small
+              @click="updateSubscription()"
+      >
+        <v-icon>mdi-pencil</v-icon>
+      </v-btn>
       <v-spacer />
       <v-btn text color="primary" @click="print">
         Печать
       </v-btn>
     </v-card-actions>
+    <subscription-dialog
+            ref="subscriptionDialog"
+            title="Правка абонемента"
+            :subscription="subscription"
+            is-edit
+    />
   </v-card>
 </template>
 
 <script>
 import VueQrcode from "@chenfengyuan/vue-qrcode";
+import SubscriptionDialog from "./SubscriptionDialog";
 
 export default {
   name: "SubscriptionInfoCard",
 
   components: {
+    SubscriptionDialog,
     qrcode: VueQrcode
   },
 
   props: {
     subscription: {
       required: true,
-      type: Object
+      type: Object,
+      default: () => ({})
     },
 
     client: {
@@ -117,6 +135,20 @@ export default {
   },
 
   methods: {
+    updateSubscription() {
+      this.$refs.subscriptionDialog.open().then(form => {
+        this.$axios
+                .patch("subscriptions/" + this.client.active_subscription.id, form)
+                .then(async response => {
+                  await this.$store.dispatch("subscriptions/loadById", {
+                    id: response.data.data.id
+                  });
+                });
+
+        this.$emit("update");
+      });
+    },
+
     print() {
       this.$axios
         .get("/clients/" + this.client.id + "/print")

@@ -1,3 +1,4 @@
+
 <template>
   <v-form>
     <v-dialog
@@ -63,6 +64,39 @@
         </v-btn>
       </v-date-picker>
     </v-dialog>
+     <v-card>
+     </v-card>
+    <v-dialog
+            ref="frozenTillDialog"
+            v-model="modal.frozen_till"
+            :return-value.sync="value.frozen_till"
+            persistent
+            full-width
+            width="290px"
+    >
+      <template v-slot:activator="{ on }">
+        <v-text-field
+                :value="$moment(value.frozen_till).format('ll')"
+                label="Заморозка абонемента"
+                name="frozen_till"
+                readonly
+                v-on="on"
+        />
+      </template>
+      <v-date-picker v-model="value.frozen_till" scrollable locale="ru-ru">
+        <div class="flex-grow-1" />
+        <v-btn text color="primary" @click="modal.frozen_till = false">
+          Cancel
+        </v-btn>
+        <v-btn
+                text
+                color="primary"
+                @click="$refs.frozenTillDialog.save(value.frozen_till)"
+        >
+          OK
+        </v-btn>
+      </v-date-picker>
+    </v-dialog>
   </v-form>
 </template>
 
@@ -72,7 +106,7 @@ import _ from "lodash"
 import auth from "../../mixins/auth"
 
 export default {
-  name: "SubscriptionCreateForm",
+  name: "SubscriptionForm",
 
   mixins: [auth],
 
@@ -90,32 +124,36 @@ export default {
   data: () => ({
     modal: {
       issue_date: false,
-      valid_till: false
+      valid_till: false,
+      frozen_till: false,
     }
   }),
 
-  computed: {
+   computed: {
+
+
     defaultForm() {
       return {
         client_id: this.$route.params.id,
         issue_date: this.$moment().format("YYYY-MM-DD"),
-        valid_till: this.$moment()
-          .add(1, "year")
-          .format("YYYY-MM-DD")
+        frozen_till:this.$moment().add(10, "day")
+                .format("YYYY-MM-DD"),
+        valid_till: this.$moment().add(1, "year")
+                .format("YYYY-MM-DD"),
       }
     }
   },
 
   created() {
-    let newVal = { ...this.value }
+    const newVal = { ...this.value };
 
     _(this.defaultForm).each((item, index) => {
-      if (!this.value[index] || this.value[index] === null) {
-        newVal[index] = item
+      if (!this.value[index]) {
+        newVal[index] = item;
       }
-    })
+    });
 
-    this.$emit("input", newVal)
+    this.$emit("input", newVal);
   }
 }
 </script>

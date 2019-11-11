@@ -1,6 +1,6 @@
 <template>
     <v-layout>
-      <v-flex xs6 md3>
+      <v-flex xs6 md4>
         <div style="display: flex; width: 100%">
           <div style="flex: 1 1 0%;" class="text-truncate">
             <div class="body-2 text-truncate" :title="client.full_name">{{ client.name }}</div>
@@ -11,18 +11,10 @@
               {{ primaryHall.title }}
             </div>
           </div>
-          <div
-            v-if="primaryHall"
-            class="caption text-truncate"
-            :title="primaryHall.address"
-          >
-            {{ primaryHall.title }}
-          </div>
         </div>
-      </div>
     </v-flex>
 
-    <v-flex xs8 md3>
+    <v-flex xs6 md4>
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="mt-1">
           <div class="pr-4">
@@ -75,9 +67,9 @@
       </div>
     </v-flex>
 
-    <v-flex xs8 md3 />
+    <v-flex hidden-xs-only md4 />
 
-    <v-flex xs8 md3>
+    <v-flex xs6 md4>
       <div style="display: flex; width: 100%">
         <div v-if="lastVisitHistoryRecord" style="flex: 1 1 0%;" class="text-truncate text-right">
           <div class="body-2 text-truncate" >

@@ -159,7 +159,7 @@
             dark
             small
             color="red"
-            @click.native="openSubscriptionCreateDialog"
+            @click.native="openSubscriptionDialog"
           >
             <v-icon>mdi-locker</v-icon>
           </v-btn>
@@ -173,8 +173,8 @@
       title="Новая бронь шкафчика"
       :client="client"
     />
-    <subscription-create-dialog
-      ref="subscriptionCreateDialog"
+    <subscription-dialog
+      ref="subscriptionDialog"
       :title="'Создать абонимент для ' + client.name"
       :client="client"
     />
@@ -193,7 +193,8 @@ import SubscriptionInfoCard from "../../components/subscriptions/SubscriptionInf
 
 import LockerClaimListItem from "../../components/locker-claims/LockerClaimListItem"
 import LockerClaimDialog from "../../components/locker-claims/LockerClaimDialog"
-import SubscriptionCreateDialog from "../../components/subscriptions/SubscriptionCreateDialog"
+import SubscriptionDialog from "../../components/subscriptions/SubscriptionDialog"
+
 
 export default {
   head() {
@@ -203,11 +204,11 @@ export default {
   },
 
   components: {
-    SubscriptionCreateDialog,
+    SubscriptionDialog,
     ClientInfoCard,
     SubscriptionInfoCard,
     LockerClaimListItem,
-    LockerClaimDialog
+    LockerClaimDialog,
   },
 
   mixins: [client, fabWithTooltips],
@@ -305,8 +306,8 @@ export default {
   },
 
   methods: {
-    openSubscriptionCreateDialog() {
-      this.$refs.subscriptionCreateDialog.open().then(form => {
+    openSubscriptionDialog() {
+      this.$refs.subscriptionDialog.open().then(form => {
         this.$axios.post("subscriptions", form).then(async response => {
           await this.$store.dispatch("subscriptions/loadById", {
             id: response.data.data.id
@@ -332,6 +333,8 @@ export default {
         });
       });
     },
+
+
 
     loadLockerClaims() {
       this.loading.lockers = true;
