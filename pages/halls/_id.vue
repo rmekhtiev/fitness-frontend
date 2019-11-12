@@ -1,98 +1,140 @@
 <template>
-  <v-layout row wrap>
-    <v-flex xs12 md4>
-      <v-layout row wrap>
-        <v-flex xs12 sm6>
-          <stats-counter-card
-            title="Клиенты"
-            description="Всего / Без аб-та"
-            :counter="hall.clients_count + ' / 12'"
-            icon="mdi-arrow-up-bold"
-            color="success"
-            :change="hall.clients_count_new"
-            range="С прошлого месяца"
-          >
-          </stats-counter-card>
-        </v-flex>
+  <div>
+    <v-layout wrap row>
+      <v-flex xs6 md4>
+        <v-dialog
+          ref="startDialog"
+          v-model="modal.start"
+          :return-value.sync="filter.start"
+          persistent
+          full-width
+          width="290px"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              :value="$moment(filter.start).format('ll')"
+              label="Начало периода"
+              name="start"
+              readonly
+              v-on="on"
+            />
+          </template>
+          <v-date-picker v-model="filter.start" scrollable locale="ru-ru">
+            <div class="flex-grow-1" />
+            <v-btn text color="primary" @click="modal.start = false">
+              Cancel
+            </v-btn>
+            <v-btn
+              text
+              color="primary"
+              @click="$refs.startDialog.save(filter.start)"
+              @click.native="payments"
+            >
+              OK
+            </v-btn>
+          </v-date-picker>
+        </v-dialog>
+      </v-flex>
+      <v-flex xs6 md4>
+        <v-dialog
+          ref="endDialog"
+          v-model="modal.end"
+          :return-value.sync="filter.end"
+          persistent
+          full-width
+          width="290px"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              :value="$moment(filter.end).format('ll')"
+              label="Окончание периода"
+              name="end"
+              readonly
+              v-on="on"
+            />
+          </template>
+          <v-date-picker v-model="filter.end" scrollable locale="ru-ru">
+            <div class="flex-grow-1" />
+            <v-btn text color="primary" @click="modal.end = false">
+              Cancel
+            </v-btn>
+            <v-btn
+              text
+              color="primary"
+              @click="$refs.endDialog.save(filter.end)"
+              @click.native="payments"
+            >
+              OK
+            </v-btn>
+          </v-date-picker>
+        </v-dialog>
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap>
+      <v-flex xs12 md4>
+        <v-layout row wrap>
+          <v-flex xs12 sm6>
+            <stats-counter-card
+              title="Клиенты"
+              description="Всего / Без аб-та"
+              :counter="hall.clients_count + ' / 12'"
+              icon="mdi-arrow-up-bold"
+              color="success"
+              :change="hall.clients_count_new"
+              range="С прошлого месяца"
+            >
+            </stats-counter-card>
+          </v-flex>
 
-        <v-flex xs12 sm6>
-          <stats-counter-card
-            title="Клиенты"
-            description="Новые"
-            :counter="hall.clients_count_new"
-            icon="mdi-arrow-up-bold"
-            color="success"
-            :change="hall.clients_count_new"
-            range="С прошлого месяца"
-          >
-          </stats-counter-card>
-        </v-flex>
+          <v-flex xs12 sm6>
+            <stats-counter-card
+              title="Клиенты"
+              description="Новые"
+              :counter="hall.clients_count_new"
+              icon="mdi-arrow-up-bold"
+              color="success"
+              :change="hall.clients_count_new"
+              range="С прошлого месяца"
+            >
+            </stats-counter-card>
+          </v-flex>
 
-        <v-flex xs12 sm6>
-          <stats-counter-card
-            title="Абонементы"
-            counter="12"
-            icon="mdi-arrow-up-bold"
-            color="success"
-            :change="12"
-            range="С прошлого месяца"
-          >
-          </stats-counter-card>
-        </v-flex>
+          <v-flex xs12 sm6>
+            <stats-counter-card
+              title="Абонементы"
+              counter="12"
+              icon="mdi-arrow-up-bold"
+              color="success"
+              :change="12"
+              range="С прошлого месяца"
+            >
+            </stats-counter-card>
+          </v-flex>
 
-        <v-flex xs12 sm6>
-          <stats-counter-card
-            title="Абонементы"
-            counter="12"
-            icon="mdi-arrow-up-bold"
-            color="success"
-            :change="12"
-            range="С прошлого месяца"
-          >
-          </stats-counter-card>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-    <v-flex>
-      <v-card outlined class="pl-4 text-center">
-        <v-flex xs12 row>
-          <v-flex xs3>Итого по категории</v-flex>
-          <v-flex xs3>Бар</v-flex>
-          <v-flex xs3>Тренеры</v-flex>
-          <v-flex xs3>Метод оплаты</v-flex>
-        </v-flex>
-        <v-flex xs12 row>
-          <v-flex xs3>{{ calculateSum.total.cash }}</v-flex>
-          <v-flex xs3>{{ calculateSum.bar.cash }}</v-flex>
-          <v-flex xs3>{{ calculateSum.trainers.cash }}</v-flex>
-          <v-flex xs3>Наличными</v-flex>
-        </v-flex>
-        <v-flex xs12 row>
-          <v-flex xs3>{{ calculateSum.total.card }}</v-flex>
-          <v-flex xs3>{{ calculateSum.bar.card }}</v-flex>
-          <v-flex xs3>{{ calculateSum.trainers.card }}</v-flex>
-          <v-flex xs3>По карте</v-flex>
-        </v-flex>
-        <v-flex xs12 row>
-          <v-flex xs3>{{ calculateSum.total.transfer }}</v-flex>
-          <v-flex xs3>{{ calculateSum.bar.transfer }}</v-flex>
-          <v-flex xs3>{{ calculateSum.trainers.transfer }}</v-flex>
-          <v-flex xs3>Переводом</v-flex>
-        </v-flex>
-        <v-flex xs12 row>
-          <v-flex xs3>{{ calculateSum.total.total }}</v-flex>
-          <v-flex xs3>{{ calculateSum.bar.total }}</v-flex>
-          <v-flex xs3>{{ calculateSum.trainers.total }}</v-flex>
-          <v-flex xs3 class="font-weight-bold">Итого</v-flex>
-        </v-flex>
-      </v-card>
-    </v-flex>
-  </v-layout>
+          <v-flex xs12 sm6>
+            <stats-counter-card
+              title="Абонементы"
+              counter="12"
+              icon="mdi-arrow-up-bold"
+              color="success"
+              :change="12"
+              range="С прошлого месяца"
+            >
+            </stats-counter-card>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+      <v-flex>
+        <stats-money-table :items="calculateSum"></stats-money-table>
+      </v-flex>
+    </v-layout>
+  </div>
 </template>
 
 <script>
 import _ from "lodash";
 import StatsCounterCard from "../../components/cards/StatsCounterCard";
+import StatsMoneyTable from "../../components/hall/StatsMoneyTable";
 
 export default {
   head() {
@@ -101,6 +143,7 @@ export default {
     };
   },
   components: {
+    StatsMoneyTable,
     StatsCounterCard
   },
 
@@ -108,19 +151,31 @@ export default {
     loading: {
       payments: true
     },
+    resource: "payments",
+
     types: [
       { value: "App\\Models\\Trainer", text: "тренер" },
       { value: "App\\Models\\BarItem", text: "бар" }
     ],
     methods: ["cash", "card", "transfer"],
-    filter: {}
+
+    modal: {
+      start: false,
+      end: false
+    },
+
+    filter: {
+      start: "2019-11-01",
+      end: "2019-12-01"
+    }
   }),
 
   computed: {
-    payments() {
-      return this.$store.getters["payments/where"]({
-        filter: this.paymentsFilter
-      });
+    pureFilter() {
+      return _(this.filter)
+        .omitBy(_.isNull)
+        .omitBy(_.isUndefined)
+        .value();
     },
 
     hall() {
@@ -137,7 +192,9 @@ export default {
       };
     },
     calculateSum() {
-      const payments = this.payments;
+      const payments = this.$store.getters["payments/where"]({
+        filter: this.pureFilter
+      });
       const result = {
         bar: {
           cash: 0,
@@ -206,6 +263,8 @@ export default {
   },
 
   mounted() {
+    this.standartTimeFilter();
+    this.payments();
     Promise.all([this.loadPayments()]);
   },
 
@@ -214,15 +273,21 @@ export default {
       return this.$store.dispatch("payments/loadWhere", {
         filter: this.paymentsFilter
       });
+    },
+    payments() {
+      console.log(this.$moment().format("ll"));
+      this.$store
+        .dispatch(this.resource + "/loadWhere", { filter: this.pureFilter })
+        .then(async () => {
+          return Promise.resolve();
+        });
+    },
+    standartTimeFilter() {
+      this.filter.start = this.$moment().format("YYYY-MM-DD");
+      this.filter.end = this.$moment().format("YYYY-MM-DD");
     }
-    // loadHalls() {
-    //   this.store.dispatch("halls/loadWhere", {
-    //     filter: this.hallsFilter
-    //   });
-    // }
   }
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
