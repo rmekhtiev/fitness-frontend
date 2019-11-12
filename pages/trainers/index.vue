@@ -1,5 +1,18 @@
 <template>
   <div id="clients">
+    <v-layout id="filters">
+      <v-flex xs12>
+        <v-text-field
+          v-model="filter.search"
+          prepend-inner-icon="search"
+          label="Поиск"
+          single-line
+          filled
+          clearable
+          @keyup.enter="loadItems"
+        />
+      </v-flex>
+    </v-layout>
     <v-data-iterator
       :items="items"
       :options.sync="iteratorOptions"
@@ -43,15 +56,17 @@
             <template v-if="itemsLoading">
               <v-list-item>
                 <v-progress-linear
-                        color="primary accent-4"
-                        indeterminate
-                        rounded
-                        height="6"
+                  color="primary accent-4"
+                  indeterminate
+                  rounded
+                  height="6"
                 />
               </v-list-item>
             </template>
-            <template v-for="(item,index) in props.items" v-else>
-              <v-list-item :to="{ name: 'trainers-id', params: { id: item.id } }">
+            <template v-for="(item, index) in props.items" v-else>
+              <v-list-item
+                :to="{ name: 'trainers-id', params: { id: item.id } }"
+              >
                 <trainer-list-item :trainer="item" />
               </v-list-item>
               <v-divider v-if="index + 1 < props.items.length" :key="index" />
