@@ -164,8 +164,6 @@ export default {
               this.$moment(),
               "days"
       )+1;
-      console.log(diff)
-      console.log(this.client.active_subscription.frozen_till)
       return diff
     }
   },
