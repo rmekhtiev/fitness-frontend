@@ -99,6 +99,29 @@
         <v-card class="mb-2 mx-auto">
           <v-card-text>
             <div class="overline">
+              Абонементы
+            </div>
+          </v-card-text>
+
+          <v-list v-if="!loading.subscriptions">
+            <v-card-text v-if="!subscriptions" class="text-center">
+              <v-icon style="font-size: 4rem">mdi-inbox</v-icon>
+              <br>
+              Пусто
+            </v-card-text>
+            <template v-else v-for="item in subscriptions">
+              <v-list-item>
+                <v-list-item-content>
+                  с {{ item.issue_date }} &mdash; по {{ item.valid_till }}
+                </v-list-item-content>
+              </v-list-item>
+
+            </template>
+          </v-list>
+        </v-card>
+        <v-card class="mb-2 mx-auto">
+          <v-card-text>
+            <div class="overline">
               История посещений
             </div>
           </v-card-text>
@@ -163,7 +186,7 @@
             <v-icon>mdi-locker</v-icon>
           </v-btn>
         </template>
-        <span>Абонимент</span>
+        <span>Абонемент</span>
       </v-tooltip>
     </v-speed-dial>
 
@@ -174,7 +197,7 @@
     />
     <subscription-dialog
       ref="subscriptionDialog"
-      :title="'Создать абонимент для ' + client.name"
+      :title="'Создать абонемент для ' + client.name"
       :client="client"
     />
   </div>
@@ -259,16 +282,22 @@ export default {
       });
     },
 
-            groups() {
-                return this.groupsIds.length === 0
-                    ? []
-                    : this.$store.getters['groups/where']({
-                        filter: this.groupFilter,
-                    });
+    groups() {
+        return this.groupsIds.length === 0
+            ? []
+            : this.$store.getters['groups/where']({
+                filter: this.groupFilter,
+            });
     },
     records() {
       return this.$store.getters["visit-history-records/where"]({
-        filter: this.recordFilter
+        filter: this.recordFilter,
+      });
+    },
+
+    subscriptions() {
+      return this.$store.getters["subscriptions/where"]({
+        filter: this.subscriptionFilter
       });
     },
   },
@@ -294,6 +323,7 @@ export default {
       this.loadLockerClaims(),
       this.loadGroups(),
       this.loadRecords(),
+      this.loadSubscriptions(),
     ]);
   },
 
@@ -376,6 +406,17 @@ export default {
               })
               .then(() => {
                 this.loading.records = false;
+              });
+    },
+    loadSubscriptions() {
+      this.loading.subscriptions = true;
+
+      return this.$store
+              .dispatch("subscriptions/loadWhere", {
+                filter: this.subscriptionFilter
+              })
+              .then(() => {
+                this.loading.subscriptions = false;
               });
     },
     recordTime(record) {
