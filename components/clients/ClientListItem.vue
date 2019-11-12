@@ -69,18 +69,23 @@
 
     <v-flex hidden-xs-only md4 />
 
-    <v-flex xs6 md4>
-      <div style="display: flex; width: 100%">
-        <div v-if="lastVisitHistoryRecord" style="flex: 1 1 0%;" class="text-truncate text-right">
-          <div class="body-2 text-truncate" >
-            {{ updatedDay }}
-          </div>
-          <div class="caption text-truncate">
-            {{ updatedTime }}
+      <v-flex  xs4 md3>
+        <div style="display: flex; width: 100%">
+          <div style="flex: 1 1 0%;" class="text-truncate text-right">
+            <div v-if="lastVisitHistoryRecord" class="body-2">
+              <div class="body-2 text-truncate" >
+                {{ updatedDay }}
+              </div>
+              <div class="caption text-truncate">
+                {{ updatedTime }}
+              </div>
+            </div>
+            <div v-else class="body-2 pt-2">
+                &mdash;
+            </div>
           </div>
         </div>
-      </div>
-    </v-flex>
+      </v-flex>
   </v-layout>
 </template>
 

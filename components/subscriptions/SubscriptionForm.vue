@@ -1,7 +1,7 @@
 
 <template>
   <v-form>
-    <v-dialog
+   <v-dialog
       ref="issueDateDialog"
       v-model="modal.issue_date"
       :return-value.sync="value.issue_date"
@@ -12,7 +12,7 @@
       <template v-slot:activator="{ on }">
         <v-text-field
           :value="$moment(value.issue_date).format('ll')"
-          label="Начало действия абонимента"
+          label="Начало действия абонемента"
           name="issue_date"
           readonly
           v-on="on"
@@ -44,7 +44,7 @@
       <template v-slot:activator="{ on }">
         <v-text-field
           :value="$moment(value.valid_till).format('ll')"
-          label="Окончание действия абонимента"
+          label="Окончание действия абонемента"
           name="valid_till"
           readonly
           v-on="on"
@@ -71,9 +71,14 @@
 import _ from "lodash"
 
 import auth from "../../mixins/auth"
+import { QrcodeStream } from "vue-qrcode-reader";
 
 export default {
   name: "SubscriptionForm",
+
+  components: {
+    "qrcode-stream": QrcodeStream
+  },
 
   mixins: [auth],
 
@@ -121,6 +126,16 @@ export default {
     });
 
     this.$emit("input", newVal);
+  },
+
+  methods: {
+    open() {
+      this.dialog = true;
+    },
+
+    close() {
+      this.dialog = false;
+    }
   }
 }
 </script>
