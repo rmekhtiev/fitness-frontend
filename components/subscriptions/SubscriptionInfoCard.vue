@@ -27,10 +27,16 @@
               </v-list-item-subtitle>
                 <div v-if="client.active_subscription">
                   <div v-if="client.status === 'frozen'" class="body-2 blue--text">
-                    Заморожен до {{ activeSubscription.frozen_till }}
+                    <div>
+                      Заморожен с {{ activeSubscription.frozen_start }} - по {{ activeSubscription.frozen_till }}
+                    </div>
+                    <div>
+                      Дней заморозки осталось {{diff}}
+                    </div>
                   </div>
-                    <div v-else class="body-2">
-                      {{ activeSubscription.issue_date }} &mdash; {{ activeSubscription.valid_till }}
+                    <div class="body-2">
+                      Действителен
+                      с {{ activeSubscription.issue_date }} &mdash; по {{ activeSubscription.valid_till }}
                     </div>
                 </div>
                 <div
@@ -73,6 +79,23 @@
 
     <v-card-actions v-if="client.active_subscription">
       <v-btn
+              v-if="client.status === 'active'"
+              color="primary"
+              text
+              small
+              @click="freezeSubscription()"
+      >
+        <v-icon>mdi-snowflake</v-icon>
+      </v-btn>
+      <v-btn
+              v-if="client.status === 'frozen'"
+              color="red"
+              text
+              @click="deleteFreeze()"
+      >
+        Отменить заморозку
+      </v-btn>
+      <v-btn
               color="primary"
               text
               small
@@ -91,28 +114,32 @@
             :subscription="activeSubscription"
             is-edit
     />
+    <subscription-freeze-dialog v-if="client.active_subscription"
+                         ref="subscriptionFreezeDialog"
+                         title="Заморозка абонемента"
+                         :subscription="activeSubscription"
+    />
+    <confirm ref="delete" />
   </v-card>
 </template>
 
 <script>
 import VueQrcode from "@chenfengyuan/vue-qrcode";
 import SubscriptionDialog from "./SubscriptionDialog";
+import SubscriptionFreezeDialog from "./SubscriptionFreezeDialog";
+import Confirm from "../Confirm";
 
 export default {
   name: "SubscriptionInfoCard",
 
   components: {
     SubscriptionDialog,
-    qrcode: VueQrcode
+    SubscriptionFreezeDialog,
+    qrcode: VueQrcode,
+    Confirm,
   },
 
   props: {
-    subscription: {
-      required: true,
-      type: Object,
-      default: () => ({})
-    },
-
     client: {
       // todo: make computed from vuex
       required: true,
@@ -132,6 +159,15 @@ export default {
         id: this.client.inactive_subscription.id
       })
     },
+    diff() {
+      let diff = this.$moment(this.client.active_subscription.frozen_till).diff(
+              this.$moment(),
+              "days"
+      )+1;
+      console.log(diff)
+      console.log(this.client.active_subscription.frozen_till)
+      return diff
+    }
   },
 
   methods: {
@@ -147,6 +183,38 @@ export default {
 
         this.$emit("update");
       });
+    },
+
+    freezeSubscription() {
+      this.$refs.subscriptionFreezeDialog.open().then(form => {
+        this.$axios
+                .patch("subscriptions/" + this.client.active_subscription.id, form)
+                .then(async response => {
+                  await this.$store.dispatch("subscriptions/loadById", {
+                    id: response.data.data.id
+                  });
+                });
+
+        this.$emit("update");
+      });
+    },
+
+    deleteFreeze() {
+      let diff = this.$moment(this.client.active_subscription.frozen_till).diff(
+              this.$moment(),
+              "days"
+      )+1;
+      let validTill = this.$moment(this.client.active_subscription.valid_till).add(-diff, "day").format("YYYY-MM-DD")
+        this.$axios.patch("subscriptions/" + this.client.active_subscription.id, {
+          frozen_start: null,
+          frozen_till: null,
+          valid_till: validTill,
+        }).then(async response => {
+                  await this.$store.dispatch("subscriptions/loadById", {
+                    id: response.data.data.id,
+                  });
+                }),
+        this.$emit("update")
     },
 
     print() {

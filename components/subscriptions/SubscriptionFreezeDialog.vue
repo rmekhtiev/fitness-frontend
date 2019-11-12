@@ -15,17 +15,18 @@
       </v-toolbar>
 
       <v-card-text>
-        <subscription-form :subscription="subscription" v-model="form" :is-edit="isEdit" />
+        <subscription-freeze-form :subscription="subscription" v-model="form" :is-edit="isEdit" />
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import SubscriptionForm from "./SubscriptionForm"
+
+import SubscriptionFreezeForm from "./SubscriptionFreezeForm";
 export default {
-  name: "SubscriptionDialog",
-  components: { SubscriptionForm },
+  name: "SubscriptionFreezeDialog",
+  components: { SubscriptionFreezeForm },
   props: {
     fullscreen: {
       type: Boolean,

@@ -4,7 +4,6 @@
       <v-flex xs12 sm6 lg4 xl3>
         <client-info-card :client="client" class="mb-2 mx-auto" />
         <subscription-info-card
-          :subscription="subscription"
           :client="client"
           class="mb-2 mx-auto"
         />
