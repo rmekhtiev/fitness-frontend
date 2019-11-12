@@ -128,6 +128,28 @@
         <stats-money-table :items="calculateSum"></stats-money-table>
       </v-flex>
     </v-layout>
+    <v-layout>
+      <v-flex>
+        <v-card outlined class="pl-4 text-center">
+          <v-flex class="font-weight-bold title">История продаж бара</v-flex>
+          <v-flex xs12 row>
+            <v-flex xs3>Наименование</v-flex>
+            <v-flex xs3>Количество</v-flex>
+            <v-flex xs3>Метод оплаты</v-flex>
+            <v-flex xs3>Цена</v-flex>
+          </v-flex>
+          <v-flex xs12 row>
+            <template v-for="item in barPayments">
+              <v-flex xs3>{{ item.sellable_id }}</v-flex>
+              <v-flex xs3>{{ item.quantity }}</v-flex>
+              <v-flex xs3>{{ item.method }}</v-flex>
+              <v-flex xs3>{{ calculateTotal(item.cost,item.quantity) }}</v-flex>
+            </template>
+          </v-flex>
+          <v-divider />
+        </v-card>
+      </v-flex>
+    </v-layout>
   </div>
 </template>
 
@@ -249,6 +271,49 @@ export default {
       result.total.card = result.bar.card + result.trainers.card;
       result.total.transfer = result.bar.transfer + result.trainers.transfer;
       result.total.total = result.bar.total + result.trainers.total;
+      return result;
+    },
+    barPayments() {
+      const payments = this.$store.getters["payments/where"]({
+        filter: this.pureFilter
+      });
+      const barPayments = _(payments)
+        .filter({
+          sellable_type: "App\\Models\\BarItem"
+        })
+        .value();
+      const barPaymentsByMethod = _(barPayments)
+        .groupBy("method")
+        .value();
+      const transferPayments = _(barPaymentsByMethod.transfer)
+        .groupBy("sellable_id")
+        .map((objs, key) => ({
+          sellable_id: key,
+          cost: objs[0].cost,
+          method: objs[0].method,
+          quantity: _.sumBy(objs, "quantity")
+        }))
+        .value();
+      console.log("opa");
+      const cardPayments = _(barPaymentsByMethod.card)
+        .groupBy("sellable_id")
+        .map((objs, key) => ({
+          sellable_id: key,
+          cost: objs[0].cost,
+          method: objs[0].method,
+          quantity: _.sumBy(objs, "quantity")
+        }))
+        .value();
+      const cashPayments = _(barPaymentsByMethod.cash)
+        .groupBy("sellable_id")
+        .map((objs, key) => ({
+          sellable_id: key,
+          cost: objs[0].cost,
+          method: objs[0].method,
+          quantity: _.sumBy(objs, "quantity")
+        }))
+        .value();
+      const result = _.concat(cashPayments, cardPayments, transferPayments);
       console.log(result);
       return result;
     }
@@ -269,13 +334,16 @@ export default {
   },
 
   methods: {
+    calculateTotal(cost, quantity) {
+      const floatCost = parseFloat(cost);
+      return floatCost * quantity;
+    },
     loadPayments() {
       return this.$store.dispatch("payments/loadWhere", {
         filter: this.paymentsFilter
       });
     },
     payments() {
-      console.log(this.$moment().format("ll"));
       this.$store
         .dispatch(this.resource + "/loadWhere", { filter: this.pureFilter })
         .then(async () => {
