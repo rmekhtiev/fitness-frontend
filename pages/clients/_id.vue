@@ -101,8 +101,17 @@
           <v-card-text>
             <div class="overline">
               История посещений
+
             </div>
+            <v-btn class="mt-2"
+                    small
+                    color="primary"
+                    @click="addRecord()"
+            >
+              Зафиксировать посещение
+            </v-btn>
           </v-card-text>
+
           <v-timeline dense>
             <v-list v-if="!loading.records">
               <template v-for="(record, index) in records">
@@ -111,7 +120,6 @@
                 >
                   {{ recordTime(record) }}
                 </v-timeline-item>
-
               </template>
             </v-list>
             <v-card-text v-else class="text-center">
@@ -304,6 +312,14 @@ export default {
     ]);
   },
 
+  created() {
+    this.interval = setInterval(() => this.loadRecords(), 3000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this.interval);
+  },
+
   methods: {
     openSubscriptionCreateDialog() {
       this.$refs.subscriptionCreateDialog.open().then(form => {
@@ -373,7 +389,7 @@ export default {
         });
     },
     loadRecords() {
-      this.loading.records = true;
+      this.loading.records = false;
 
       return this.$store
               .dispatch("visit-history-records/loadWhere", {
@@ -385,7 +401,20 @@ export default {
     },
     recordTime(record) {
       return this.$moment.utc(record.datetime).format("D MMMM YYYY года в HH:mm");
-  }
+  },
+
+    addRecord() {
+      this.$axios.post("visit-history-records", {
+        datetime:this.$moment(),
+        client_id:this.client.id,
+        hall_id:this.client.primary_hall_id
+      }).then(async response => {
+        await this.$store.dispatch("visit-history-records/loadById", {
+          id: response.data.data.id,
+        });
+      }),
+              this.$emit("create")
+    },
 }
 };
 </script>
