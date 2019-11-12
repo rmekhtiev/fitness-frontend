@@ -187,8 +187,8 @@ export default {
     },
 
     filter: {
-      start: "2019-11-01",
-      end: "2019-12-01"
+      start: String,
+      end: String
     }
   }),
 
