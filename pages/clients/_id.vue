@@ -103,20 +103,25 @@
             </div>
           </v-card-text>
 
-          <v-list v-if="!loading.subscriptions">
+          <v-list>
             <v-card-text v-if="!subscriptions" class="text-center">
               <v-icon style="font-size: 4rem">mdi-inbox</v-icon>
               <br>
               Пусто
             </v-card-text>
-            <template v-else v-for="item in subscriptions">
+            <v-list dense v-else v-for="item in subscriptions">
               <v-list-item>
+                <v-list-item-icon>
+                  <v-icon>mdi-account-badge-horizontal-outline</v-icon>
+                </v-list-item-icon>
                 <v-list-item-content>
-                  с {{ item.issue_date }} &mdash; по {{ item.valid_till }}
+                  <v-list-item-subtitle>
+                    с {{ item.issue_date }} &mdash; по {{ item.valid_till }}
+                  </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
 
-            </template>
+            </v-list>
           </v-list>
         </v-card>
         <v-card class="mb-2 mx-auto">
