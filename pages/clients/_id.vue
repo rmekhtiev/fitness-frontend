@@ -103,13 +103,6 @@
               История посещений
 
             </div>
-            <v-btn class="mt-2"
-                    small
-                    color="primary"
-                    @click="addRecord()"
-            >
-              Зафиксировать посещение
-            </v-btn>
           </v-card-text>
 
           <v-timeline dense>
@@ -402,19 +395,6 @@ export default {
     recordTime(record) {
       return this.$moment.utc(record.datetime).format("D MMMM YYYY года в HH:mm");
   },
-
-    addRecord() {
-      this.$axios.post("visit-history-records", {
-        datetime:this.$moment(),
-        client_id:this.client.id,
-        hall_id:this.client.primary_hall_id
-      }).then(async response => {
-        await this.$store.dispatch("visit-history-records/loadById", {
-          id: response.data.data.id,
-        });
-      }),
-              this.$emit("create")
-    },
 }
 };
 </script>
