@@ -1,5 +1,18 @@
 <template>
   <div id="employees">
+    <v-layout id="filters">
+      <v-flex xs12>
+        <v-text-field
+          v-model="filter.search"
+          prepend-inner-icon="search"
+          label="Поиск"
+          single-line
+          filled
+          clearable
+          @keyup.enter="loadItems"
+        />
+      </v-flex>
+    </v-layout>
     <v-data-iterator
       :items="items"
       :options.sync="iteratorOptions"
@@ -44,7 +57,7 @@
                 />
               </v-list-item>
             </template>
-            <template v-for="(item,index) in props.items" v-else>
+            <template v-for="(item, index) in props.items" v-else>
               <employee-list-item :employee="item" />
               <v-divider v-if="index + 1 < props.items.length" :key="index" />
             </template>
