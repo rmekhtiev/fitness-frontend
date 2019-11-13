@@ -1,6 +1,7 @@
 <template>
   <v-card outlined class="pl-4 text-center">
-    <v-flex xs12 row>
+    <v-flex class="font-weight-bold title">Итоговая статистика продаж</v-flex>
+    <v-flex xs12 row class="font-weight-medium">
       <v-flex xs3>Итого по категории</v-flex>
       <v-flex xs3>Бар</v-flex>
       <v-flex xs3>Тренеры</v-flex>

@@ -24,12 +24,7 @@
             <v-btn text color="primary" @click="modal.start = false">
               Cancel
             </v-btn>
-            <v-btn
-              text
-              color="primary"
-              @click="$refs.startDialog.save(filter.start)"
-              @click.native="payments"
-            >
+            <v-btn text color="primary" @click="saveStartDateFilter">
               OK
             </v-btn>
           </v-date-picker>
@@ -58,12 +53,7 @@
             <v-btn text color="primary" @click="modal.end = false">
               Cancel
             </v-btn>
-            <v-btn
-              text
-              color="primary"
-              @click="$refs.endDialog.save(filter.end)"
-              @click.native="payments"
-            >
+            <v-btn text color="primary" @click="saveEndDateFilter">
               OK
             </v-btn>
           </v-date-picker>
@@ -125,31 +115,29 @@
         </v-layout>
       </v-flex>
       <v-flex>
-        <stats-money-table :items="calculateSum"></stats-money-table>
-      </v-flex>
-    </v-layout>
-    <v-layout>
-      <v-flex>
-        <v-card outlined class="pl-4 text-center">
-          <v-flex class="font-weight-bold title">История продаж бара</v-flex>
-          <v-flex xs12 row>
-            <v-flex xs3>Наименование</v-flex>
-            <v-flex xs3>Количество</v-flex>
-            <v-flex xs3>Метод оплаты</v-flex>
-            <v-flex xs3>Цена</v-flex>
-          </v-flex>
-          <v-flex xs12 row>
+        <v-flex>
+          <stats-money-table :items="calculateSum"></stats-money-table>
+        </v-flex>
+        <v-flex>
+          <v-card outlined class="pl-4 text-center">
+            <v-flex class="font-weight-bold title">История продаж бара</v-flex>
+            <v-flex xs12 row class="font-weight-medium">
+              <v-flex xs3>Наименование</v-flex>
+              <v-flex xs3>Метод оплаты</v-flex>
+              <v-flex xs2>Количество</v-flex>
+              <v-flex xs2>Цена за ед.</v-flex>
+              <v-flex xs2>Итого</v-flex>
+            </v-flex>
             <template v-for="item in barPayments">
-              <v-flex xs3>{{ item.sellable_id }}</v-flex>
-              <v-flex xs3>{{ item.quantity }}</v-flex>
-              <v-flex xs3>{{ item.method }}</v-flex>
-              <v-flex xs3>{{ calculateTotal(item.cost,item.quantity) }}</v-flex>
+              <bar-payment-list-item
+                :bar-payment="item"
+              ></bar-payment-list-item>
             </template>
-          </v-flex>
-          <v-divider />
-        </v-card>
+          </v-card>
+        </v-flex>
       </v-flex>
     </v-layout>
+    <v-layout> </v-layout>
   </div>
 </template>
 
@@ -157,6 +145,7 @@
 import _ from "lodash";
 import StatsCounterCard from "../../components/cards/StatsCounterCard";
 import StatsMoneyTable from "../../components/hall/StatsMoneyTable";
+import BarPaymentListItem from "../../components/hall/BarPaymentListItem";
 
 export default {
   head() {
@@ -165,6 +154,7 @@ export default {
     };
   },
   components: {
+    BarPaymentListItem,
     StatsMoneyTable,
     StatsCounterCard
   },
@@ -174,12 +164,6 @@ export default {
       payments: true
     },
     resource: "payments",
-
-    types: [
-      { value: "App\\Models\\Trainer", text: "тренер" },
-      { value: "App\\Models\\BarItem", text: "бар" }
-    ],
-    methods: ["cash", "card", "transfer"],
 
     modal: {
       start: false,
@@ -203,10 +187,10 @@ export default {
     hall() {
       return this.$store.getters["halls/byId"]({ id: this.$route.params.id });
     },
-    paymentsFilter() {
-      return {
-        method: this.methods
-      };
+    payments() {
+      return this.$store.getters["payments/where"]({
+        filter: this.pureFilter
+      });
     },
     hallsFilter() {
       return {
@@ -214,9 +198,7 @@ export default {
       };
     },
     calculateSum() {
-      const payments = this.$store.getters["payments/where"]({
-        filter: this.pureFilter
-      });
+      const payments = this.payments;
       const result = {
         bar: {
           cash: 0,
@@ -274,9 +256,7 @@ export default {
       return result;
     },
     barPayments() {
-      const payments = this.$store.getters["payments/where"]({
-        filter: this.pureFilter
-      });
+      const payments = this.payments;
       const barPayments = _(payments)
         .filter({
           sellable_type: "App\\Models\\BarItem"
@@ -294,7 +274,6 @@ export default {
           quantity: _.sumBy(objs, "quantity")
         }))
         .value();
-      console.log("opa");
       const cardPayments = _(barPaymentsByMethod.card)
         .groupBy("sellable_id")
         .map((objs, key) => ({
@@ -315,6 +294,7 @@ export default {
         .value();
       const result = _.concat(cashPayments, cardPayments, transferPayments);
       console.log(result);
+
       return result;
     }
   },
@@ -329,26 +309,38 @@ export default {
 
   mounted() {
     this.standartTimeFilter();
-    this.payments();
-    Promise.all([this.loadPayments()]);
+    Promise.all([this.loadPayments(), this.loadBarItems()]);
   },
 
   methods: {
-    calculateTotal(cost, quantity) {
-      const floatCost = parseFloat(cost);
-      return floatCost * quantity;
+    saveStartDateFilter() {
+      this.$refs.startDialog.save(this.filter.start);
+      this.loadPayments();
+      this.loadBarItems();
     },
-    loadPayments() {
-      return this.$store.dispatch("payments/loadWhere", {
-        filter: this.paymentsFilter
+    saveEndDateFilter() {
+      this.$refs.endDialog.save(this.filter.end);
+      this.loadPayments();
+      this.loadBarItems();
+    },
+    loadBarItems() {
+      const items = this.$store.getters["payments/where"]({
+        filter: this.pureFilter
+      });
+      const barItemsIds = _(items)
+        .filter({
+          sellable_type: "App\\Models\\BarItem"
+        })
+        .map(barItem => barItem.sellable_id)
+        .value();
+      return this.$store.dispatch("bar-items/loadWhere", {
+        filter: { bar_item_id: barItemsIds }
       });
     },
-    payments() {
-      this.$store
-        .dispatch(this.resource + "/loadWhere", { filter: this.pureFilter })
-        .then(async () => {
-          return Promise.resolve();
-        });
+    loadPayments() {
+      this.$store.dispatch(this.resource + "/loadWhere", {
+        filter: this.pureFilter
+      });
     },
     standartTimeFilter() {
       this.filter.start = this.$moment().format("YYYY-MM-DD");
