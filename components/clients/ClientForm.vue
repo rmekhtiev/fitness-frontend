@@ -48,6 +48,13 @@
     />
 
     <v-text-field
+      v-model="value.instagram"
+      label="Instagram"
+      name="instagram"
+      prepend-icon="mdi-instagram"
+    />
+
+    <v-text-field
       v-model="value.phone_number"
       v-mask="'+7 (###) ###-##-##'"
       label="Телефон"
@@ -55,6 +62,15 @@
       name="phone_number"
       prepend-icon="mdi-phone-outline"
       required
+    />
+
+    <v-text-field
+      v-model="value.whats_app_number"
+      v-mask="'+7 (###) ###-##-##'"
+      label="Номер WhatsApp"
+      placeholder="+7 (900) 123-45-67"
+      name="whats_app"
+      prepend-icon="mdi-whatsapp"
     />
   </v-form>
 </template>

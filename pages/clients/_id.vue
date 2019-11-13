@@ -101,8 +101,10 @@
           <v-card-text>
             <div class="overline">
               История посещений
+
             </div>
           </v-card-text>
+
           <v-timeline dense>
             <v-list v-if="!loading.records">
               <template v-for="(record, index) in records">
@@ -111,7 +113,6 @@
                 >
                   {{ recordTime(record) }}
                 </v-timeline-item>
-
               </template>
             </v-list>
             <v-card-text v-else class="text-center">
@@ -304,6 +305,14 @@ export default {
     ]);
   },
 
+  created() {
+    this.interval = setInterval(() => this.loadRecords(), 3000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this.interval);
+  },
+
   methods: {
     openSubscriptionCreateDialog() {
       this.$refs.subscriptionCreateDialog.open().then(form => {
@@ -373,7 +382,7 @@ export default {
         });
     },
     loadRecords() {
-      this.loading.records = true;
+      this.loading.records = false;
 
       return this.$store
               .dispatch("visit-history-records/loadWhere", {
@@ -385,7 +394,7 @@ export default {
     },
     recordTime(record) {
       return this.$moment.utc(record.datetime).format("D MMMM YYYY года в HH:mm");
-  }
+  },
 }
 };
 </script>
