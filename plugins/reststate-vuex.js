@@ -69,4 +69,8 @@ export default function({ $axios, store }) {
     "payments",
     resourceModule({ name: "payments", httpClient: $axios })
   );
+  store.registerModule(
+      "identifiers",
+      resourceModule({ name: "identifiers", httpClient: $axios })
+  );
 }

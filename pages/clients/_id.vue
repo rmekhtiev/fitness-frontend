@@ -249,6 +249,7 @@ export default {
       lockers: true,
       groups: true,
       records: true,
+      subscriptions: true,
     }
   }),
 
@@ -278,6 +279,12 @@ export default {
     recordFilter() {
       return {
         client_id: this.$route.params.id,
+      };
+    },
+
+    identifierFilter() {
+      return {
+        client_id: this.client.id,
       };
     },
 
@@ -329,6 +336,7 @@ export default {
       this.loadGroups(),
       this.loadRecords(),
       this.loadSubscriptions(),
+      this.loadIdentifiers(),
     ]);
   },
 
@@ -422,6 +430,17 @@ export default {
               })
               .then(() => {
                 this.loading.subscriptions = false;
+              });
+    },
+    loadIdentifiers() {
+      this.loading.identifiers = true;
+
+      return this.$store
+              .dispatch("identifiers/loadWhere", {
+                filter: this.identifierFilter
+              })
+              .then(() => {
+                this.loading.identifires = false;
               });
     },
     recordTime(record) {
