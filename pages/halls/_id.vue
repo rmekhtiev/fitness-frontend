@@ -60,92 +60,21 @@
         </v-dialog>
       </v-flex>
     </v-layout>
-    <v-layout row wrap>
-      <v-flex xs12 md4>
-        <v-layout row wrap>
-          <v-flex xs12 sm6>
-            <stats-counter-card
-              title="Клиенты"
-              description="Всего / Без аб-та"
-              :counter="hall.clients_count + ' / 12'"
-              icon="mdi-arrow-up-bold"
-              color="success"
-              :change="hall.clients_count_new"
-              range="С прошлого месяца"
-            >
-            </stats-counter-card>
-          </v-flex>
-
-          <v-flex xs12 sm6>
-            <stats-counter-card
-              title="Клиенты"
-              description="Новые"
-              :counter="hall.clients_count_new"
-              icon="mdi-arrow-up-bold"
-              color="success"
-              :change="hall.clients_count_new"
-              range="С прошлого месяца"
-            >
-            </stats-counter-card>
-          </v-flex>
-
-          <v-flex xs12 sm6>
-            <stats-counter-card
-              title="Абонементы"
-              counter="12"
-              icon="mdi-arrow-up-bold"
-              color="success"
-              :change="12"
-              range="С прошлого месяца"
-            >
-            </stats-counter-card>
-          </v-flex>
-
-          <v-flex xs12 sm6>
-            <stats-counter-card
-              title="Абонементы"
-              counter="12"
-              icon="mdi-arrow-up-bold"
-              color="success"
-              :change="12"
-              range="С прошлого месяца"
-            >
-            </stats-counter-card>
-          </v-flex>
-        </v-layout>
+    <v-layout wrap row>
+      <v-flex xs12>
+        <stats-money-table :items="calculateSum"></stats-money-table>
       </v-flex>
-      <v-flex>
-        <v-flex>
-          <stats-money-table :items="calculateSum"></stats-money-table>
-        </v-flex>
-        <v-flex>
-          <v-card outlined class="pl-4 text-center">
-            <v-flex class="font-weight-bold title">История продаж бара</v-flex>
-            <v-flex xs12 row class="font-weight-medium">
-              <v-flex xs3>Наименование</v-flex>
-              <v-flex xs3>Метод оплаты</v-flex>
-              <v-flex xs2>Количество</v-flex>
-              <v-flex xs2>Цена за ед.</v-flex>
-              <v-flex xs2>Итого</v-flex>
-            </v-flex>
-            <template v-for="item in barPayments">
-              <bar-payment-list-item
-                :bar-payment="item"
-              ></bar-payment-list-item>
-            </template>
-          </v-card>
-        </v-flex>
+      <v-flex xs12>
+        <bar-payments-table :payments="barPayments"></bar-payments-table>
       </v-flex>
     </v-layout>
-    <v-layout> </v-layout>
   </div>
 </template>
 
 <script>
 import _ from "lodash";
-import StatsCounterCard from "../../components/cards/StatsCounterCard";
 import StatsMoneyTable from "../../components/hall/StatsMoneyTable";
-import BarPaymentListItem from "../../components/hall/BarPaymentListItem";
+import BarPaymentsTable from "../../components/hall/barPaymentsTable";
 
 export default {
   head() {
@@ -154,9 +83,8 @@ export default {
     };
   },
   components: {
-    BarPaymentListItem,
-    StatsMoneyTable,
-    StatsCounterCard
+    BarPaymentsTable,
+    StatsMoneyTable
   },
 
   data: () => ({
@@ -177,6 +105,18 @@ export default {
   }),
 
   computed: {
+    barPaymentsFilter() {
+      return {
+        sellable_type: "bar-items",
+        ...this.pureFilter
+      };
+    },
+    trainingPaymentsFilter() {
+      return {
+        sellable_type: "trainings",
+        ...this.pureFilter
+      };
+    },
     pureFilter() {
       return _(this.filter)
         .omitBy(_.isNull)
@@ -187,9 +127,14 @@ export default {
     hall() {
       return this.$store.getters["halls/byId"]({ id: this.$route.params.id });
     },
-    payments() {
+    barPayments() {
       return this.$store.getters["payments/where"]({
-        filter: this.pureFilter
+        filter: this.barPaymentsFilter
+      });
+    },
+    trainingPayments() {
+      return this.$store.getters["payments/where"]({
+        filter: this.trainingPaymentsFilter
       });
     },
     hallsFilter() {
@@ -198,7 +143,7 @@ export default {
       };
     },
     calculateSum() {
-      const payments = this.payments;
+      const payments = this.trainingPayments;
       const result = {
         bar: {
           cash: 0,
@@ -221,7 +166,7 @@ export default {
       };
       for (let i = 0; i < payments.length; i++) {
         const cost = parseFloat(payments[i].cost * payments[i].quantity);
-        if (payments[i].sellable_type === "App\\Models\\BarItem") {
+        if (payments[i].sellable_type === "bar-items") {
           if (payments[i].method === "cash") {
             result.bar.cash += cost;
           }
@@ -233,7 +178,7 @@ export default {
           }
         }
 
-        if (payments[i].sellable_type === "App\\Models\\Trainer") {
+        if (payments[i].sellable_type === "trainings") {
           if (payments[i].method === "cash") {
             result.trainers.cash += cost;
           }
@@ -254,48 +199,6 @@ export default {
       result.total.transfer = result.bar.transfer + result.trainers.transfer;
       result.total.total = result.bar.total + result.trainers.total;
       return result;
-    },
-    barPayments() {
-      const payments = this.payments;
-      const barPayments = _(payments)
-        .filter({
-          sellable_type: "App\\Models\\BarItem"
-        })
-        .value();
-      const barPaymentsByMethod = _(barPayments)
-        .groupBy("method")
-        .value();
-      const transferPayments = _(barPaymentsByMethod.transfer)
-        .groupBy("sellable_id")
-        .map((objs, key) => ({
-          sellable_id: key,
-          cost: objs[0].cost,
-          method: objs[0].method,
-          quantity: _.sumBy(objs, "quantity")
-        }))
-        .value();
-      const cardPayments = _(barPaymentsByMethod.card)
-        .groupBy("sellable_id")
-        .map((objs, key) => ({
-          sellable_id: key,
-          cost: objs[0].cost,
-          method: objs[0].method,
-          quantity: _.sumBy(objs, "quantity")
-        }))
-        .value();
-      const cashPayments = _(barPaymentsByMethod.cash)
-        .groupBy("sellable_id")
-        .map((objs, key) => ({
-          sellable_id: key,
-          cost: objs[0].cost,
-          method: objs[0].method,
-          quantity: _.sumBy(objs, "quantity")
-        }))
-        .value();
-      const result = _.concat(cashPayments, cardPayments, transferPayments);
-      console.log(result);
-
-      return result;
     }
   },
 
@@ -309,37 +212,43 @@ export default {
 
   mounted() {
     this.standartTimeFilter();
-    Promise.all([this.loadPayments(), this.loadBarItems()]);
+    return Promise.all([
+      this.loadBarPayments(),
+      this.loadBarItems(),
+      this.loadTrainingPayments()
+    ]);
   },
 
   methods: {
     saveStartDateFilter() {
       this.$refs.startDialog.save(this.filter.start);
-      this.loadPayments();
+      this.loadBarPayments();
       this.loadBarItems();
     },
     saveEndDateFilter() {
       this.$refs.endDialog.save(this.filter.end);
-      this.loadPayments();
+      this.loadBarPayments();
       this.loadBarItems();
     },
     loadBarItems() {
       const items = this.$store.getters["payments/where"]({
-        filter: this.pureFilter
+        filter: this.barPaymentsFilter
       });
       const barItemsIds = _(items)
-        .filter({
-          sellable_type: "App\\Models\\BarItem"
-        })
         .map(barItem => barItem.sellable_id)
         .value();
       return this.$store.dispatch("bar-items/loadWhere", {
         filter: { bar_item_id: barItemsIds }
       });
     },
-    loadPayments() {
+    loadBarPayments() {
       this.$store.dispatch(this.resource + "/loadWhere", {
-        filter: this.pureFilter
+        filter: this.barPaymentsFilter
+      });
+    },
+    loadTrainingPayments() {
+      this.$store.dispatch(this.resource + "/loadWhere", {
+        filter: this.trainingPaymentsFilter
       });
     },
     standartTimeFilter() {
