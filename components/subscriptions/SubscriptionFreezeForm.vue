@@ -144,6 +144,7 @@ export default {
     },
     defaultForm() {
       return {
+        client_id: this.$route.params.id,
         frozen_start: this.$moment().format("YYYY-MM-DD"),
         frozen_till:this.$moment().format("YYYY-MM-DD"),
         valid_till:this.validTill,

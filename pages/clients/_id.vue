@@ -3,10 +3,22 @@
     <v-layout row wrap>
       <v-flex xs12 sm6 lg4 xl3>
         <client-info-card :client="client" class="mb-2 mx-auto" />
-        <subscription-info-card
-          :client="client"
-          class="mb-2 mx-auto"
-        />
+        <div>
+          <template v-for="item in activeSubscriptions" v-if="client.active_subscriptions.length > 0">
+            <subscription-info-card :client="client" isActive :subscription="item" class="mb-2 mx-auto" />
+          </template>
+          <template v-for="item in inactiveSubscriptions" v-if="client.inactive_subscriptions.length > 0">
+            <subscription-info-card :client="client" :subscription="item" class="mb-2 mx-auto" />
+          </template>
+          <v-card v-if="client.active_subscriptions.length == 0 && client.inactive_subscriptions.length == 0">
+            <v-card-text>
+              <div class="overline">
+                Активные абонементы отстутсвуют
+              </div>
+            </v-card-text>
+          </v-card>
+        </div>
+
       </v-flex>
 
       <v-flex xs12 sm6 lg4 xl3>
@@ -271,6 +283,18 @@ export default {
       }
     },
 
+    activeFilter() {
+      return {
+        id: this.activeIds
+      };
+    },
+
+    inactiveFilter() {
+      return {
+        id: 'b90d6e90-0408-4d6a-b10c-49856e79028f',
+      };
+    },
+
     groupFilter() {
       return {
         id: this.groupsIds
@@ -301,6 +325,22 @@ export default {
                 filter: this.groupFilter,
             });
     },
+
+
+    activeSubscriptions() {
+      return this.client.active_subscriptions
+    },
+
+    kek() {
+      return this.$store.getters['subscriptions/byId']({
+        filter: this.activeFilter,
+      })
+    },
+
+    inactiveSubscriptions() {
+      return this.client.inactive_subscriptions
+    },
+
     records() {
       return this.$store.getters["visit-history-records/where"]({
         filter: this.recordFilter,
@@ -308,9 +348,7 @@ export default {
     },
 
     subscriptions() {
-      return this.$store.getters["subscriptions/where"]({
-        filter: this.subscriptionFilter
-      });
+      return this.$store.getters["subscriptions/all"]
     },
   },
 
@@ -326,7 +364,6 @@ export default {
         id: params.id
       }),
       store.dispatch("halls/loadAll"),
-      store.dispatch("subscriptions/loadAll")
     ])
   },
 
@@ -342,20 +379,20 @@ export default {
 
   methods: {
     openSubscriptionDialog() {
+      console.log(this.kek)
+      console.log(this.activeIds)
       this.$refs.subscriptionDialog.open().then(form => {
         this.$axios.post("subscriptions", form).then(async response => {
           await this.$store.dispatch("subscriptions/loadById", {
             id: response.data.data.id
           })
         })
-
-        this.$store.dispatch("subscriptions/loadWhere", {
-          filter: this.subscriptionFilter
-        })
       })
     },
 
     openLockerClaimDialog() {
+      console.log(this.activeSubscriptions)
+      console.log(this.activeIds)
       this.$refs.lockerClaimDialog.open().then(form => {
         this.$axios.post("locker-claims", form).then(async response => {
           await this.$store.dispatch("locker-claims/loadById", {
@@ -367,6 +404,7 @@ export default {
           filter: this.lockerFilter
         });
       });
+
     },
 
 
@@ -432,6 +470,7 @@ export default {
                 this.loading.subscriptions = false;
               });
     },
+
     loadIdentifiers() {
       this.loading.identifiers = true;
 

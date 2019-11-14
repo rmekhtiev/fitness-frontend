@@ -18,7 +18,7 @@
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="mt-1">
           <div class="pr-4">
-            <div v-if="client.active_subscription">
+            <div v-if="client.active_subscriptions.length > 0">
               <div v-if="client.status === 'frozen'" class="body-2 blue--text">
                 <v-icon middle color="blue">
                   mdi-clock
@@ -39,13 +39,13 @@
               </div>
             </div>
             <div
-              v-else-if="client.inactive_subscription"
+              v-else-if="client.inactive_subscriptions.length > 0"
               class="body-2 orange--text darken-4"
             >
               <v-icon middle color="orange">
                 mdi-clock
               </v-icon>
-              Будет активирован {{inactiveSubscription.issue_date}}
+              Абонемент не активирован
             </div>
             <div
                     v-else-if="client.subscriptions_count > 0"
@@ -91,6 +91,7 @@
 
 <script>
 import client from "../../mixins/client";
+import _ from "lodash";
 
 export default {
   name: "ClientListItem",
@@ -110,10 +111,9 @@ export default {
         id: this.client.primary_hall_id
       });
     },
+
     activeSubscription() {
-      return this.$store.getters["subscriptions/byId"]({
-        id: this.client.active_subscription.id
-      });
+      return this.client.active_subscriptions[this.client.active_subscriptions.length -1]
     },
 
     lastVisitHistoryRecord(){
@@ -140,11 +140,6 @@ export default {
               .format("HH:mm")
     },
 
-    inactiveSubscription() {
-      return this.$store.getters["subscriptions/byId"]({
-        id: this.client.inactive_subscription.id
-      })
-    },
 
     daysTill() {
       const date = this.$moment.utc(this.activeSubscription.valid_till);
@@ -153,9 +148,9 @@ export default {
         "days"
       );
       const now = this.$moment().startOf("day");
-      const sub = this.client.active_subscription;
+      const sub = this.client.active_subscriptions;
       // sub = null;
-      console.log(sub);
+      console.log(this.activeSubscription)
       if (Math.abs(date.diff(now, "days")) === 0) {
         return "Сегодня";
       } else if (Math.abs(date.diff(now, "days")) === 1) {
