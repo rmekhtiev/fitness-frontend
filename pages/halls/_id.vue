@@ -59,13 +59,14 @@
           </v-date-picker>
         </v-dialog>
       </v-flex>
+      <div>{{ bar }}</div>
     </v-layout>
     <v-layout wrap row>
       <v-flex xs12>
-        <stats-money-table :items="calculateSum"></stats-money-table>
+<!--        <stats-money-table :items="calculateSum"></stats-money-table>-->
       </v-flex>
       <v-flex xs12>
-        <bar-payments-table :payments="barPayments"></bar-payments-table>
+        <bar-payments-table :payments="bar"></bar-payments-table>
       </v-flex>
     </v-layout>
   </div>
@@ -127,23 +128,14 @@ export default {
     hall() {
       return this.$store.getters["halls/byId"]({ id: this.$route.params.id });
     },
-    barPayments() {
+    bar() {
       return this.$store.getters["payments/where"]({
         filter: this.barPaymentsFilter
       });
     },
-    trainingPayments() {
-      return this.$store.getters["payments/where"]({
-        filter: this.trainingPaymentsFilter
-      });
-    },
-    hallsFilter() {
-      return {
-        hall_id: this.$route.params.id
-      };
-    },
+
     calculateSum() {
-      const payments = this.trainingPayments;
+      const payments = this.barPayments;
       const result = {
         bar: {
           cash: 0,
@@ -185,7 +177,7 @@ export default {
           if (payments[i].method === "card") {
             result.trainers.card += cost;
           }
-          if (payments[i].method === "transfer") {
+          if (payments[i].method === " transfer ") {
             result.trainers.transfer += cost;
           }
         }
@@ -212,45 +204,104 @@ export default {
 
   mounted() {
     this.standartTimeFilter();
-    return Promise.all([
-      this.loadBarPayments(),
-      this.loadBarItems(),
-      this.loadTrainingPayments()
-    ]);
+    return Promise.all([this.load()]);
   },
 
   methods: {
+    loadSubject(payments, type) {
+      const chunks = _(payments).chunk(10);
+      switch (type) {
+        case "bar-items":
+          return Promise.all(
+            chunks
+              .map(chunk =>
+                Promise.all([
+                  this.$store.dispatch("payments/loadWhere", {
+                    filter: this.barPaymentsFilter
+                  }),
+                  this.$store.store.dispatch("bar-items/loadWhere", {
+                    filter: {
+                      bar_item_id: _(chunk)
+                        .map(payment => payment.sellable_id)
+                        .uniq()
+                        .value()
+                    }
+                  })
+                ])
+              )
+              .value()
+          );
+        default:
+          return Promise.all(
+            chunks
+              .map(chunk =>
+                Promise.all([
+                  this.$store.dispatch("payments/loadWhere", {
+                    filter: this.pureFilter
+                  }),
+                  this.$store.dispatch("bar-items/loadWhere", {
+                    filter: {
+                      bar_item_id: _(chunk)
+                        .map(payment => payment.sellable_id)
+                        .uniq()
+                        .value()
+                    }
+                  })
+                ])
+              )
+              .value()
+          );
+      }
+    },
+
+    load() {
+      this.$store
+        .dispatch("payments/loadPage", {
+          options: {
+            page: -1
+          }
+        })
+        .then(async () => {
+          const payments = this.$store.getters["payments/page"];
+          return await Promise.all(
+            _(payments)
+              .groupBy("sellable_type")
+              .map(
+                async (payments, type) => await this.loadSubject(payments, type)
+              )
+              .value()
+          );
+        });
+    },
     saveStartDateFilter() {
       this.$refs.startDialog.save(this.filter.start);
-      this.loadBarPayments();
-      this.loadBarItems();
+      this.load();
     },
     saveEndDateFilter() {
       this.$refs.endDialog.save(this.filter.end);
-      this.loadBarPayments();
-      this.loadBarItems();
+      this.load();
     },
-    loadBarItems() {
-      const items = this.$store.getters["payments/where"]({
-        filter: this.barPaymentsFilter
-      });
-      const barItemsIds = _(items)
-        .map(barItem => barItem.sellable_id)
-        .value();
-      return this.$store.dispatch("bar-items/loadWhere", {
-        filter: { bar_item_id: barItemsIds }
-      });
-    },
-    loadBarPayments() {
-      this.$store.dispatch(this.resource + "/loadWhere", {
-        filter: this.barPaymentsFilter
-      });
-    },
-    loadTrainingPayments() {
-      this.$store.dispatch(this.resource + "/loadWhere", {
-        filter: this.trainingPaymentsFilter
-      });
-    },
+    // loadBarItems() {
+    //   const items = this.$store.getters["payments/where"]({
+    //     filter: this.barPaymentsFilter
+    //   });
+    //   const barItemsIds = _(items)
+    //     .map(barItem => barItem.sellable_id)
+    //     .value();
+    //   return this.$store.dispatch("bar-items/loadWhere", {
+    //     filter: { bar_item_id: barItemsIds }
+    //   });
+    // },
+    // loadBarPayments() {
+    //   this.$store.dispatch(this.resource + "/loadWhere", {
+    //     filter: this.barPaymentsFilter
+    //   });
+    // },
+    // loadTrainingPayments() {
+    //   this.$store.dispatch(this.resource + "/loadWhere", {
+    //     filter: this.trainingPaymentsFilter
+    //   });
+    // },
     standartTimeFilter() {
       this.filter.start = this.$moment().format("YYYY-MM-DD");
       this.filter.end = this.$moment().format("YYYY-MM-DD");
