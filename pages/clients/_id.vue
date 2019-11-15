@@ -291,7 +291,7 @@ export default {
 
     inactiveFilter() {
       return {
-        id: 'b90d6e90-0408-4d6a-b10c-49856e79028f',
+        id: this.inactiveIds
       };
     },
 
@@ -328,17 +328,16 @@ export default {
 
 
     activeSubscriptions() {
-      return this.client.active_subscriptions
-    },
-
-    kek() {
-      return this.$store.getters['subscriptions/byId']({
+      return this.$store.getters['subscriptions/where']({
         filter: this.activeFilter,
       })
     },
 
+
     inactiveSubscriptions() {
-      return this.client.inactive_subscriptions
+      return this.$store.getters['subscriptions/where']({
+        filter: this.inactiveFilter,
+      })
     },
 
     records() {
@@ -348,7 +347,9 @@ export default {
     },
 
     subscriptions() {
-      return this.$store.getters["subscriptions/all"]
+      return this.$store.getters["subscriptions/where"]({
+        filter: this.subscriptionFilter
+      })
     },
   },
 
@@ -373,14 +374,14 @@ export default {
       this.loadGroups(),
       this.loadRecords(),
       this.loadSubscriptions(),
+      this.loadActiveSubscriptions(),
+      this.loadInactiveSubscriptions(),
       this.loadIdentifiers(),
     ]);
   },
 
   methods: {
     openSubscriptionDialog() {
-      console.log(this.kek)
-      console.log(this.activeIds)
       this.$refs.subscriptionDialog.open().then(form => {
         this.$axios.post("subscriptions", form).then(async response => {
           await this.$store.dispatch("subscriptions/loadById", {
@@ -392,7 +393,7 @@ export default {
 
     openLockerClaimDialog() {
       console.log(this.activeSubscriptions)
-      console.log(this.activeIds)
+      console.log(this.inactiveSubscriptions)
       this.$refs.lockerClaimDialog.open().then(form => {
         this.$axios.post("locker-claims", form).then(async response => {
           await this.$store.dispatch("locker-claims/loadById", {
@@ -436,6 +437,63 @@ export default {
           });
         });
     },
+
+    loadActiveSubscriptions() {
+      this.loading.subscriptions = true;
+
+      return this.$store
+              .dispatch("subscriptions/loadWhere", {
+                filter: this.activeFilter
+              })
+              .then(() => {
+                const activeIds = _(
+                        this.$store.getters["subscriptions/where"]({
+                          filter: this.activeFilter
+                        })
+                )
+                        .map(subscription => subscription.id)
+                        .uniq();
+
+                console.info("Gonna load next lockers: " + activeIds);
+
+                return Promise.all(
+                        activeIds.map(activeId =>
+                                this.$store.dispatch("subscriptions/loadById", { id: activeId })
+                        )
+                ).then(() => {
+                  this.loading.subscriptions = false;
+                });
+              });
+    },
+
+    loadInactiveSubscriptions() {
+      this.loading.subscriptions = true;
+
+      return this.$store
+              .dispatch("subscriptions/loadWhere", {
+                filter: this.inactiveFilter
+              })
+              .then(() => {
+                const inactiveIds = _(
+                        this.$store.getters["subscriptions/where"]({
+                          filter: this.inactiveFilter
+                        })
+                )
+                        .map(subscription => subscription.id)
+                        .uniq();
+
+                console.info("Gonna load next lockers: " + inactiveIds);
+
+                return Promise.all(
+                        inactiveIds.map(inactiveId =>
+                                this.$store.dispatch("subscriptions/loadById", { id: inactiveId })
+                        )
+                ).then(() => {
+                  this.loading.subscriptions = false;
+                });
+              });
+    },
+
 
     loadGroups() {
       this.loading.groups = true;
