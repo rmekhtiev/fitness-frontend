@@ -16,6 +16,7 @@
               label="Начало периода"
               name="start"
               readonly
+              :disabled="isHallAdmin"
               v-on="on"
             />
           </template>
@@ -45,6 +46,7 @@
               label="Окончание периода"
               name="end"
               readonly
+              :disabled="isHallAdmin"
               v-on="on"
             />
           </template>
@@ -75,6 +77,7 @@
 import _ from "lodash";
 import StatsMoneyTable from "../../components/hall/StatsMoneyTable";
 import BarPaymentsTable from "../../components/hall/barPaymentsTable";
+import auth from "../../mixins/auth";
 
 export default {
   head() {
@@ -86,6 +89,8 @@ export default {
     BarPaymentsTable,
     StatsMoneyTable
   },
+
+  mixins: [auth],
 
   data: () => ({
     loading: {
