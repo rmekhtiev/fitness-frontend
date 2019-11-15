@@ -59,12 +59,10 @@
           </v-date-picker>
         </v-dialog>
       </v-flex>
-      <div>{{ barPayments }}</div>
-      <div>{{ barItems }}</div>
     </v-layout>
     <v-layout wrap row>
       <v-flex xs12>
-        <!--        <stats-money-table :items="calculateSum"></stats-money-table>-->
+        <stats-money-table :items="calculateSum"></stats-money-table>
       </v-flex>
       <v-flex xs12>
         <bar-payments-table :payments="barPayments"></bar-payments-table>
@@ -135,6 +133,102 @@ export default {
       return this.$store.getters["payments/where"]({
         filter: this.barPaymentsFilter
       });
+    },
+    calculateSum() {
+      const payments = _.concat(this.barPayments);
+      const result = {
+        bar: {
+          cash: 0,
+          card: 0,
+          transfer: 0,
+          total: 0
+        },
+        trainings: {
+          cash: 0,
+          card: 0,
+          transfer: 0,
+          total: 0
+        },
+        subscriptions: {
+          cash: 0,
+          card: 0,
+          transfer: 0,
+          total: 0
+        },
+        total: {
+          cash: 0,
+          card: 0,
+          transfer: 0,
+          total: 0
+        }
+      };
+      for (let i = 0; i < payments.length; i++) {
+        const cost = parseFloat(payments[i].cost * payments[i].quantity);
+        console.log("cost of iteration" + cost);
+        switch (payments[i].sellable_type) {
+          case "bar-items":
+            switch (payments[i].method) {
+              case "cash":
+                result.bar.cash += cost;
+                break;
+              case "card":
+                result.bar.card += cost;
+                break;
+              case "transfer":
+                result.bar.transfer += cost;
+                break;
+            }
+            break;
+          case "trainings":
+            switch (payments[i].method) {
+              case "cash":
+                result.trainings.cash += cost;
+                break;
+              case "card":
+                result.trainings.card += cost;
+                break;
+              case "transfer":
+                result.trainings.transfer += cost;
+                break;
+            }
+            break;
+          case "subscriptions":
+            switch (payments[i].method) {
+              case "cash":
+                result.subscriptions.cash += cost;
+                break;
+              case "card":
+                result.subscriptions.card += cost;
+                break;
+              case "transfer":
+                result.subscriptions.transfer += cost;
+                break;
+            }
+            break;
+        }
+      }
+      result.bar.total =
+        result.bar.cash + result.bar.card + result.bar.transfer;
+      result.trainings.total =
+        result.trainings.cash +
+        result.trainings.card +
+        result.trainings.transfer;
+      result.subscriptions.total =
+        result.subscriptions.cash +
+        result.subscriptions.card +
+        result.subscriptions.transfer;
+      result.total.cash =
+        result.bar.cash + result.trainings.cash + result.subscriptions.cash;
+      result.total.card =
+        result.bar.card + result.trainings.card + result.subscriptions.card;
+      result.total.transfer =
+        result.bar.transfer +
+        result.trainings.transfer +
+        result.subscriptions.transfer;
+      result.total.total =
+        result.bar.total + result.trainings.total + result.subscriptions.total;
+      console.log(result);
+      return result;
     }
   },
 
@@ -158,7 +252,8 @@ export default {
                 })
               )
                 .map(payment => payment.sellable_id)
-                .uniq().value();
+                .uniq()
+                .value();
 
               console.info("Gonna load next sellable ids: " + barItemsIds);
 
@@ -194,6 +289,7 @@ export default {
           );
         });
     },
+
     saveStartDateFilter() {
       this.$refs.startDialog.save(this.filter.start);
       this.loadPayments();

@@ -2,11 +2,11 @@
   <v-card outlined class="pl-4 text-center">
     <v-flex class="font-weight-bold title">История продаж бара</v-flex>
     <v-flex xs12 row class="font-weight-medium">
-      <v-flex xs3>Наименование</v-flex>
+      <v-flex xs3 class="text-left">Наименование</v-flex>
       <v-flex xs3>Метод оплаты</v-flex>
       <v-flex xs2>Количество</v-flex>
-      <v-flex xs2>Цена за ед.</v-flex>
-      <v-flex xs2>Итого</v-flex>
+      <v-flex xs2 class="text-right">Цена за ед.</v-flex>
+      <v-flex xs2 class="text-right">Итого</v-flex>
     </v-flex>
     <template v-for="item in barPayments">
       <bar-payment-list-item :bar-payment="item"></bar-payment-list-item>
