@@ -64,6 +64,22 @@
         </v-btn>
       </v-date-picker>
     </v-dialog>
+      <v-autocomplete
+              v-model="value.subscriable_type"
+              :items="types"
+              label="Тип абонемента"
+              name="subscriable_type"
+              item-text="text"
+              item-value="value"
+      />
+    <v-autocomplete v-if="value.subscriable_type === 'App\Models\Group'"
+            v-model="value.subscriable_id"
+            :items="groups"
+            label="Группа"
+            name="subscriable_id"
+            item-text="title"
+            item-value="id"
+    />
   </v-form>
 </template>
 
@@ -102,7 +118,12 @@ export default {
     modal: {
       issue_date: false,
       valid_till: false,
-    }
+    },
+    types: [
+      { value: "App\Models\Group", text: "Группа" },
+      { value: "App\Models\Trainers", text: "Тренер" },
+      { value: null, text: "Зал" }
+    ]
   }),
 
    computed: {
@@ -112,9 +133,15 @@ export default {
         issue_date: this.$moment().format("YYYY-MM-DD"),
         valid_till: this.$moment().add(1, "year")
                 .format("YYYY-MM-DD"),
+        subscriable_id: null,
+        subscriable_type: null,
       }
-    }
+    },
+     groups() {
+       return this.$store.getters['groups/all'];
+     },
   },
+
 
   created() {
     const newVal = { ...this.value };

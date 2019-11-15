@@ -8,16 +8,31 @@
       <div v-else class="overline">
         Неактивированный абонемент
       </div>
-    </v-card-text>
 
-    <v-row id="subscription-contents">
-      <v-col>
-        <v-list>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-subtitle class="caption">
-                Информация об абонементе
-              </v-list-item-subtitle>
+
+          <v-list>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-subtitle class="caption">
+                  Тип абонемента
+                </v-list-item-subtitle>
+                <div v-if="this.subscription.subscriable_id == null">
+                    Абонемент в зал
+                </div>
+                <div v-else>
+                    <v-list-item :to="{ name: 'groups-id', params: { id: group.id } }" style="padding: 0">
+                      <v-list-item-content>
+                        Абонемент группу {{ group.title }}
+                      </v-list-item-content>
+                    </v-list-item>
+                </div>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-subtitle class="caption">
+                  Информация об абонементе
+                </v-list-item-subtitle>
                 <div v-if=isActive>
                   <div v-if="this.subscription.frozen_till > this.$moment().format('ll')" class="body-2 blue--text">
                     <div>
@@ -27,10 +42,10 @@
                       Дней заморозки осталось {{diff}}
                     </div>
                   </div>
-                    <div class="body-2">
-                      Действителен
-                      с {{ this.subscription.issue_date }} &mdash; по {{ this.subscription.valid_till }}
-                    </div>
+                  <div class="body-2">
+                    Действителен
+                    с {{ this.subscription.issue_date }} &mdash; по {{ this.subscription.valid_till }}
+                  </div>
                 </div>
                 <div v-else-if=!isActive
                      class="body-2 orange--text darken-4"
@@ -40,19 +55,21 @@
                   </v-icon>
                   Будет активирован {{this.subscription.issue_date}}
                 </div>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-col>
-<!--      <v-col v-if="client.active_subscriptions" class="d-flex justify-center">-->
-<!--        <qrcode-->
-<!--          :value="JSON.stringify({ client_id: client.id })"-->
-<!--          :options="{ width: 200 }"-->
-<!--          height="200"-->
-<!--          width="200"-->
-<!--        />-->
-<!--      </v-col>-->
-    </v-row>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+
+        <!--      <v-col v-if="client.active_subscriptions" class="d-flex justify-center">-->
+        <!--        <qrcode-->
+        <!--          :value="JSON.stringify({ client_id: client.id })"-->
+        <!--          :options="{ width: 200 }"-->
+        <!--          height="200"-->
+        <!--          width="200"-->
+        <!--        />-->
+        <!--      </v-col>-->
+    </v-card-text>
+
+
 
     <v-card-actions>
       <v-spacer />
@@ -137,7 +154,12 @@ export default {
               "days"
       )+1;
       return diff
-    }
+    },
+    group() {
+      return this.$store.getters['groups/byId']({
+        id:this.subscription.subscriable_id
+      });
+    },
   },
 
   methods: {

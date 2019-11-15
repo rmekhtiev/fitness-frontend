@@ -66,7 +66,9 @@ export default {
       issue_date: null,
       valid_till: null,
       frozen_start: null,
-      frozen_till: null
+      frozen_till: null,
+      subscriable_id: null,
+      subscriable_type: null,
     }
   }),
 
@@ -90,9 +92,17 @@ export default {
       })
     },
 
+    loadClient() {
+      return this.$store
+              .dispatch("clients/loadById", {
+                id: this.$route.params.id
+              });
+    },
+
     save() {
       this.resolve(this.form)
       this.dialog = false
+      this.loadClient()
     },
 
     cancel() {

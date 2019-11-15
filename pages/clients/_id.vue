@@ -279,19 +279,21 @@ export default {
 
     subscriptionFilter() {
       return {
-        client_id: this.$route.params.id
+        client_id: this.client.id
       }
     },
 
     activeFilter() {
       return {
-        id: this.activeIds
+        id: this.activeIds,
+        client_id: this.client.id
       };
     },
 
     inactiveFilter() {
       return {
-        id: this.inactiveIds
+        id: this.inactiveIds,
+        client_id: this.client.id
       };
     },
 
@@ -326,7 +328,6 @@ export default {
             });
     },
 
-
     activeSubscriptions() {
       return this.$store.getters['subscriptions/where']({
         filter: this.activeFilter,
@@ -352,6 +353,7 @@ export default {
       })
     },
   },
+
 
   fetch: ({ store, params, $moment }) => {
     // eslint-disable-next-line no-unused-vars
@@ -392,8 +394,6 @@ export default {
     },
 
     openLockerClaimDialog() {
-      console.log(this.activeSubscriptions)
-      console.log(this.inactiveSubscriptions)
       this.$refs.lockerClaimDialog.open().then(form => {
         this.$axios.post("locker-claims", form).then(async response => {
           await this.$store.dispatch("locker-claims/loadById", {
@@ -407,7 +407,6 @@ export default {
       });
 
     },
-
 
 
     loadLockerClaims() {
