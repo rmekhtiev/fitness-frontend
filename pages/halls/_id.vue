@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-layout wrap row>
+    <v-layout wrap row class="justify-center">
       <v-flex xs6 md4>
         <v-dialog
           ref="startDialog"
@@ -69,6 +69,17 @@
       <v-flex xs12>
         <bar-payments-table :payments="barPayments"></bar-payments-table>
       </v-flex>
+      <v-flex xs12>
+        <trainings-payments-table
+          :payments="trainingsPayments"
+        ></trainings-payments-table>
+      </v-flex>
+      <v-flex xs12>
+        <subscriptions-payments-table
+          :payments="subscriptionsPayments"
+          >
+        </subscriptions-payments-table>
+      </v-flex>
     </v-layout>
   </div>
 </template>
@@ -78,6 +89,8 @@ import _ from "lodash";
 import StatsMoneyTable from "../../components/hall/StatsMoneyTable";
 import BarPaymentsTable from "../../components/hall/barPaymentsTable";
 import auth from "../../mixins/auth";
+import TrainingsPaymentsTable from "../../components/hall/TrainingsPaymentsTable";
+import SubscriptionsPaymentsTable from "../../components/hall/SubscriptionsPaymentsTable";
 
 export default {
   head() {
@@ -86,6 +99,8 @@ export default {
     };
   },
   components: {
+    SubscriptionsPaymentsTable,
+    TrainingsPaymentsTable,
     BarPaymentsTable,
     StatsMoneyTable
   },
@@ -116,18 +131,6 @@ export default {
         .omitBy(_.isUndefined)
         .value();
     },
-    barItemsFilter() {
-      const items = this.$store.getters["payments/where"]({
-        filter: this.barPaymentsFilter
-      });
-      const barItemsIds = _(items)
-        .map(payment => payment.sellable_id)
-        .uniq()
-        .value();
-      return {
-        bar_item_id: barItemsIds
-      };
-    },
     barPaymentsFilter() {
       return {
         sellable_type: "bar-items",
@@ -139,8 +142,34 @@ export default {
         filter: this.barPaymentsFilter
       });
     },
+    trainingsPaymentsFilter() {
+      return {
+        sellable_type: "trainings",
+        ...this.pureFilter
+      };
+    },
+    trainingsPayments() {
+      return this.$store.getters["payments/where"]({
+        filter: this.trainingsPaymentsFilter
+      });
+    },
+    subscriptionsPaymentsFilter() {
+      return {
+        sellable_type: "subscriptions",
+        ...this.pureFilter
+      };
+    },
+    subscriptionsPayments() {
+      return this.$store.getters["payments/where"]({
+        filter: this.subscriptionsPaymentsFilter
+      });
+    },
     calculateSum() {
-      const payments = _.concat(this.barPayments);
+      const payments = _.concat(
+        this.barPayments,
+        this.trainingsPayments,
+        this.subscriptionsPayments
+      );
       const result = {
         bar: {
           cash: 0,
@@ -270,8 +299,56 @@ export default {
                 })
               ]);
             });
-        default:
-          return 0;
+        case "trainings":
+          return this.$store
+            .dispatch("payments/loadWhere", {
+              filter: this.trainingsPaymentsFilter
+            })
+            .then(() => {
+              const trainingsIds = _(
+                this.$store.getters["payments/where"]({
+                  filter: this.trainingsPaymentsFilter
+                })
+              )
+                .map(payment => payment.sellable_id)
+                .uniq()
+                .value();
+
+              console.info("Gonna load next sellable ids: " + trainingsIds);
+
+              // return Promise.all([
+              //   this.$store.dispatch("trainings/loadWhere", {
+              //     filter: {
+              //       training_id: trainingsIds
+              //     }
+              //   })
+              // ]);
+            });
+        case "subscriptions":
+          return this.$store
+            .dispatch("payments/loadWhere", {
+              filter: this.subscriptionsPaymentsFilter
+            })
+            .then(() => {
+              const subscriptionsIds = _(
+                this.$store.getters["payments/where"]({
+                  filter: this.subscriptionsPaymentsFilter
+                })
+              )
+                .map(payment => payment.sellable_id)
+                .uniq()
+                .value();
+
+              console.info("Gonna load next sellable ids: " + subscriptionsIds);
+
+              // return Promise.all([
+              //   this.$store.dispatch("subscriptions/loadWhere", {
+              //     filter: {
+              //       subscription_id: subscriptionsIds
+              //     }
+              //   })
+              // ]);
+            });
       }
     },
 
