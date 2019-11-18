@@ -72,7 +72,7 @@
               item-text="text"
               item-value="value"
       />
-    <v-autocomplete v-if="value.subscriable_type === 'App\Models\Group'"
+    <v-autocomplete v-if="value.subscriable_type === 'groups'"
             v-model="value.subscriable_id"
             :items="groups"
             label="Группа"
@@ -127,7 +127,7 @@ export default {
     },
 
     types: [
-      { value: "App\Models\Group", text: "Группа" },
+      { value: "groups", text: "Группа" },
       // { value: "App\Models\Trainers", text: "Тренер" },
       { value: null, text: "Зал" }
     ]
