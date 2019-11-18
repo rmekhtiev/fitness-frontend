@@ -80,6 +80,12 @@
             item-text="title"
             item-value="id"
     />
+      <v-text-field
+              v-model="value.cost"
+              min="1"
+              type="number"
+              label="Цена"
+      />
   </v-form>
 </template>
 
@@ -119,6 +125,7 @@ export default {
       issue_date: false,
       valid_till: false,
     },
+
     types: [
       { value: "App\Models\Group", text: "Группа" },
       { value: "App\Models\Trainers", text: "Тренер" },
@@ -131,10 +138,11 @@ export default {
       return {
         client_id: this.$route.params.id,
         issue_date: this.$moment().format("YYYY-MM-DD"),
-        valid_till: this.$moment().add(1, "year")
+        valid_till: this.$moment().add(30, "day")
                 .format("YYYY-MM-DD"),
         subscriable_id: null,
         subscriable_type: null,
+        cost: null,
       }
     },
      groups() {

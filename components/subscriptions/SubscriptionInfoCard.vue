@@ -38,7 +38,7 @@
                     <div>
                       Заморожен с {{ this.subscription.frozen_start }} - по {{ this.subscription.frozen_till }}
                     </div>
-                    <div>
+                    <div v-if="this.subscription.frozen_start <= this.$moment()">
                       Дней заморозки осталось {{diff}}
                     </div>
                   </div>
@@ -73,14 +73,17 @@
 
     <v-card-actions>
       <v-spacer />
+
+
       <v-btn
-              v-if="this.subscription.frozen_till < this.$moment().format('ll') || this.subscription.frozen_till == null"
+              v-if="this.subscription.frozen_till < this.$moment().format('ll') || this.subscription.frozen_till == null && this.subscription.sold == true"
               color="primary"
               text
               small
               @click="freezeSubscription()"
       >
-        <v-icon>mdi-snowflake</v-icon>
+        <v-icon left>mdi-snowflake</v-icon>
+        Заморозить
       </v-btn>
       <v-btn
               v-if="this.subscription.frozen_till > this.$moment().format('ll')"
@@ -90,13 +93,20 @@
       >
         Отменить заморозку
       </v-btn>
-      <v-btn
+      <v-btn v-if="this.subscription.sold == true"
               color="primary"
               text
               small
               @click="updateSubscription()"
       >
         <v-icon>mdi-pencil</v-icon>
+      </v-btn>
+      <v-btn v-if="this.subscription.sold == false"
+              color="red"
+              text
+              @click="sellItem()"
+      >
+      Оформить продажу
       </v-btn>
 
     </v-card-actions>
@@ -111,6 +121,12 @@
                          title="Заморозка абонемента"
                          :subscription="subscription"
     />
+    <subscription-sell-dialog
+            ref="sellDialog"
+            :subscription="subscription"
+            :title="'Продажа'"
+    />
+    <confirm ref="deleteFreeze" />
   </v-card>
 </template>
 
@@ -118,6 +134,7 @@
 import VueQrcode from "@chenfengyuan/vue-qrcode";
 import SubscriptionDialog from "./SubscriptionDialog";
 import SubscriptionFreezeDialog from "./SubscriptionFreezeDialog";
+import SubscriptionSellDialog from "./SubscriptionSellDialog";
 import Confirm from "../Confirm";
 
 export default {
@@ -126,6 +143,7 @@ export default {
   components: {
     SubscriptionDialog,
     SubscriptionFreezeDialog,
+    SubscriptionSellDialog,
     qrcode: VueQrcode,
     Confirm,
   },
@@ -177,6 +195,21 @@ export default {
       });
     },
 
+    sellItem() {
+      this.$refs.sellDialog.open().then(form => {
+        this.$axios
+                .$post("subscriptions/" + this.subscription.id + "/sell", form)
+                .then(() => {
+                  this.$store.dispatch("subscriptions/loadById", {
+                    id: this.subscription.id
+                  });
+
+                  this.$emit("update");
+                });
+      });
+    },
+
+
     freezeSubscription() {
       this.$refs.subscriptionFreezeDialog.open().then(form => {
         this.$axios
@@ -197,18 +230,24 @@ export default {
               "days"
       ) + 1;
       let validTill = this.$moment(this.subscription.valid_till).add(-diff, "day").format("YYYY-MM-DD")
-      this.$axios.patch("subscriptions/" + this.subscription.id, {
-        frozen_start: null,
-        frozen_till: null,
-        valid_till: validTill,
-      }).then(async response => {
-        await this.$store.dispatch("subscriptions/loadById", {
-          id: response.data.data.id,
-        });
-      });
-      this.$emit("update");
-
-    }
+      this.$refs.deleteFreeze.open("Отменить заморозку", "Вы уверены? Это действие невозможно отменить", {
+                color: "red"
+              })
+              .then(confirm => {
+                if (confirm) {
+                  this.$axios.patch("subscriptions/" + this.subscription.id, {
+                    frozen_start: null,
+                    frozen_till: null,
+                    valid_till: validTill,
+                  }).then(async response => {
+                    await this.$store.dispatch("subscriptions/loadById", {
+                      id: response.data.data.id,
+                    });
+                  });
+                  this.$emit("update");
+                }
+              });
+    },
   }
 };
 </script>

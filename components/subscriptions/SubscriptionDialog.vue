@@ -67,6 +67,8 @@ export default {
       valid_till: null,
       frozen_start: null,
       frozen_till: null,
+      cost: null,
+      payment_method: null,
       subscriable_id: null,
       subscriable_type: null,
     }
@@ -102,7 +104,6 @@ export default {
     save() {
       this.resolve(this.form)
       this.dialog = false
-      this.loadClient()
     },
 
     cancel() {

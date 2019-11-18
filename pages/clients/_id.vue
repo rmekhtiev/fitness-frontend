@@ -388,6 +388,12 @@ export default {
         this.$axios.post("subscriptions", form).then(async response => {
           await this.$store.dispatch("subscriptions/loadById", {
             id: response.data.data.id
+          }),
+          this.$store.dispatch("clients/loadById", {
+            id: this.$route.params.id
+          }).then(()=> {
+            this.loadActiveSubscriptions()
+            this.loadInactiveSubscriptions()
           })
         })
       })
