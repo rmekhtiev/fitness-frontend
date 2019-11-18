@@ -132,10 +132,7 @@ export default {
           await this.$store.dispatch("bar-items/loadById", {
             id: response.data.data.id
           });
-          this.$router.push({
-            name: "bar-items",
-            params: { id: response.data.data.id }
-          });
+          this.loadItems();
         });
       });
     }
