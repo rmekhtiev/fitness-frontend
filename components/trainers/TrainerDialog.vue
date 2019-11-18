@@ -40,6 +40,11 @@ export default {
       default: ""
     },
 
+    employees: {
+      type: Array,
+      default: () => []
+    },
+
     trainer: {
       type: Object,
       required: false,
@@ -67,9 +72,6 @@ export default {
     halls() {
       return this.$store.getters["halls/all"];
     },
-    employees() {
-      return this.$store.getters["employees/all"];
-    }
   },
 
   created() {
