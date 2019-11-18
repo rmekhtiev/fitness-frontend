@@ -6,6 +6,7 @@
     <v-text-field v-model="value.middle_name" label="Отчество" />
     <v-autocomplete
       v-model="value.hall_id"
+      :disabled="isHallAdmin"
       :items="halls"
       label="Зал"
       item-text="title"
