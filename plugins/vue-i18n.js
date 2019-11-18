@@ -48,6 +48,11 @@ export default ({ app }) => {
           repeat: {
             weekly: "Еженедельно"
           }
+        },
+        methods: {
+          cash: "Наличные",
+          card: "По карте",
+          transfer: "Переводом"
         }
       }
     }

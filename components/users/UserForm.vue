@@ -1,6 +1,13 @@
 <template>
   <v-form>
-    <v-text-field v-model="value.name" label="ФИО" />
+    <v-autocomplete
+      v-model="value.name"
+      :items="employees"
+      label="ФИО"
+      item-text="full_name"
+      item-value="id"
+    >
+    </v-autocomplete>
     <v-text-field v-model="value.email" label="E-mail" />
     <v-select
       v-model="value.primary_role_id"
@@ -73,6 +80,11 @@ export default {
 
     roles: {
       type: Array,
+      default: () => []
+    },
+    employees: {
+      type: Array,
+      required: false,
       default: () => []
     },
 

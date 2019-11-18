@@ -20,6 +20,15 @@ export default {
 
     groupsIds() {
       return this.client ? this.client.groups.map(group => group.id) : [];
+    },
+
+    activeIds() {
+      return this.client ? this.client.active_subscriptions.map(subscription => subscription.id) : [];
+    },
+
+    inactiveIds() {
+      return this.client ? this.client.inactive_subscriptions.map(subscription => subscription.id) : [];
     }
+
   }
 };

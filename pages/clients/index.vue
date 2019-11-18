@@ -1,7 +1,7 @@
 <template>
   <div id="clients">
     <v-layout id="filters">
-      <v-flex md3 class="hidden-sm-and-down">
+      <v-flex md3>
         <v-text-field
           v-model="filter.search"
           prepend-inner-icon="search"
@@ -13,7 +13,7 @@
         />
       </v-flex>
 
-      <v-flex md3 class="hidden-sm-and-down">
+      <v-flex md3>
         <v-select
                 v-model="filter.status"
                 :items="statuses"

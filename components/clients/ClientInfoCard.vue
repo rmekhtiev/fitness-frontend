@@ -107,6 +107,16 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+      <v-card-actions v-if="client.active_subscription">
+        <v-spacer />
+        <v-btn
+                text
+               color="primary"
+               @click="addRecord()"
+        >
+          Зафиксировать посещение
+        </v-btn>
+      </v-card-actions>
     </v-card>
 
     <client-dialog
@@ -182,7 +192,20 @@ export default {
         .replace(/-/g, "")
         .replace("8", "7")
         .replace("+", "");
-    }
+    },
+
+    addRecord() {
+      this.$axios.post("visit-history-records", {
+        datetime:this.$moment(),
+        client_id:this.client.id,
+        hall_id:this.client.primary_hall_id
+      }).then(async response => {
+        await this.$store.dispatch("visit-history-records/loadById", {
+          id: response.data.data.id,
+        });
+      }),
+              this.$emit("create")
+    },
   }
 };
 </script>

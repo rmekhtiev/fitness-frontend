@@ -13,22 +13,19 @@
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
+
       <v-card-text>
-        <trainer-form v-model="form" :is-edit="isEdit" :employees="employees" />
+        <subscription-form :subscription="subscription" v-model="form" :is-edit="isEdit" />
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import TrainerForm from "./TrainerForm";
-
+import SubscriptionForm from "./SubscriptionForm"
 export default {
-  name: "TrainerDialog",
-
-  components: {
-    TrainerForm
-  },
+  name: "SubscriptionDialog",
+  components: { SubscriptionForm },
   props: {
     fullscreen: {
       type: Boolean,
@@ -40,12 +37,13 @@ export default {
       default: ""
     },
 
-    employees: {
-      type: Array,
-      default: () => []
+    client: {
+      type: Object,
+      required: false,
+      default: () => ({})
     },
 
-    trainer: {
+    subscription: {
       type: Object,
       required: false,
       default: () => ({})
@@ -56,6 +54,7 @@ export default {
       default: false
     }
   },
+
   data: () => ({
     dialog: false,
 
@@ -63,45 +62,55 @@ export default {
     reject: null,
 
     form: {
-      phone_number: null,
-      associated_employee_id: null
+      client_id: null,
+      issue_date: null,
+      valid_till: null,
+      frozen_start: null,
+      frozen_till: null,
+      cost: null,
+      payment_method: null,
+      subscriable_id: null,
+      subscriable_type: null,
     }
   }),
 
-  computed: {
-    halls() {
-      return this.$store.getters["halls/all"];
-    },
-  },
-
   created() {
-    console.log(this.trainer);
+    if (this.client) {
+      this.form.client_id = this.client.id
+    }
 
-    if (this.trainer) {
-      Object.assign(this.form, this.trainer);
+    if (this.subscription) {
+      Object.assign(this.form, this.subscription)
     }
   },
 
   methods: {
     open() {
-      this.dialog = true;
+      this.dialog = true
 
       return new Promise((resolve, reject) => {
-        this.resolve = resolve;
-        this.reject = reject;
-      });
+        this.resolve = resolve
+        this.reject = reject
+      })
+    },
+
+    loadClient() {
+      return this.$store
+              .dispatch("clients/loadById", {
+                id: this.$route.params.id
+              });
     },
 
     save() {
-      this.resolve(this.form);
-      this.dialog = false;
+      this.resolve(this.form)
+      this.dialog = false
     },
 
     cancel() {
-      this.dialog = false;
-    }
+      this.dialog = false
+    },
   }
-};
+}
 </script>
 
 <style scoped></style>
