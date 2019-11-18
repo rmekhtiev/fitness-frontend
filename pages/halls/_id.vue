@@ -91,6 +91,8 @@ import BarPaymentsTable from "../../components/hall/barPaymentsTable";
 import auth from "../../mixins/auth";
 import TrainingsPaymentsTable from "../../components/hall/TrainingsPaymentsTable";
 import SubscriptionsPaymentsTable from "../../components/hall/SubscriptionsPaymentsTable";
+import selectedHallAware from "../../mixins/selected-hall-aware";
+
 
 export default {
   head() {
@@ -105,7 +107,7 @@ export default {
     StatsMoneyTable
   },
 
-  mixins: [auth],
+  mixins: [auth, selectedHallAware],
 
   data: () => ({
     loading: {
@@ -120,13 +122,16 @@ export default {
 
     filter: {
       start: String,
-      end: String
+      end: String,
     }
   }),
 
   computed: {
     pureFilter() {
-      return _(this.filter)
+      return _({
+        hall_id: this.$route.params.id,
+        ...this.filter
+      })
         .omitBy(_.isNull)
         .omitBy(_.isUndefined)
         .value();
@@ -134,7 +139,7 @@ export default {
     barPaymentsFilter() {
       return {
         sellable_type: "bar-items",
-        ...this.pureFilter
+        ...this.pureFilter,
       };
     },
     barPayments() {
