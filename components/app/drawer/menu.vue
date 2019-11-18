@@ -89,6 +89,29 @@
         </v-list-item>
       </v-list>
     </template>
+    <template v-if="isHallAdmin">
+      <v-divider />
+
+      <v-list dense nav subheader>
+        <v-subheader>Статистика</v-subheader>
+
+        <v-list-item
+          :key="hall.title"
+          link
+          nuxt
+          :to="{name: 'halls-id', params:{id: hall.id}}"
+          exact
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-domain</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ hall.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </template>
   </div>
 </template>
 
@@ -152,7 +175,12 @@ export default {
         to: { name: "users" }
       }
     ]
-  })
+  }),
+  computed: {
+    hall() {
+      return this.$store.getters.selectedHall;
+    }
+  }
 };
 </script>
 
