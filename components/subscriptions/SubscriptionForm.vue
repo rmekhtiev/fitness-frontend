@@ -128,7 +128,7 @@ export default {
 
     types: [
       { value: "App\Models\Group", text: "Группа" },
-      { value: "App\Models\Trainers", text: "Тренер" },
+      // { value: "App\Models\Trainers", text: "Тренер" },
       { value: null, text: "Зал" }
     ]
   }),
