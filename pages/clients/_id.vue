@@ -3,11 +3,22 @@
     <v-layout row wrap>
       <v-flex xs12 sm6 lg4 xl3>
         <client-info-card :client="client" class="mb-2 mx-auto" />
-        <subscription-info-card
-          :subscription="subscription"
-          :client="client"
-          class="mb-2 mx-auto"
-        />
+        <div>
+          <template v-for="item in activeSubscriptions" v-if="client.active_subscriptions.length > 0">
+            <subscription-info-card :client="client" isActive :subscription="item" class="mb-2 mx-auto" />
+          </template>
+          <template v-for="item in inactiveSubscriptions" v-if="client.inactive_subscriptions.length > 0">
+            <subscription-info-card :client="client" :subscription="item" class="mb-2 mx-auto" />
+          </template>
+          <v-card v-if="client.active_subscriptions.length == 0 && client.inactive_subscriptions.length == 0">
+            <v-card-text>
+              <div class="overline">
+                Активные абонементы отстутсвуют
+              </div>
+            </v-card-text>
+          </v-card>
+        </div>
+
       </v-flex>
 
       <v-flex xs12 sm6 lg4 xl3>
@@ -100,6 +111,34 @@
         <v-card class="mb-2 mx-auto">
           <v-card-text>
             <div class="overline">
+              Абонементы
+            </div>
+          </v-card-text>
+
+          <v-list>
+            <v-card-text v-if="!subscriptions" class="text-center">
+              <v-icon style="font-size: 4rem">mdi-inbox</v-icon>
+              <br>
+              Пусто
+            </v-card-text>
+            <v-list dense v-else v-for="item in subscriptions">
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon>mdi-account-badge-horizontal-outline</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-subtitle>
+                    с {{ item.issue_date }} &mdash; по {{ item.valid_till }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+
+            </v-list>
+          </v-list>
+        </v-card>
+        <v-card class="mb-2 mx-auto">
+          <v-card-text>
+            <div class="overline">
               История посещений
 
             </div>
@@ -160,12 +199,12 @@
             dark
             small
             color="red"
-            @click.native="openSubscriptionCreateDialog"
+            @click.native="openSubscriptionDialog"
           >
             <v-icon>mdi-locker</v-icon>
           </v-btn>
         </template>
-        <span>Абонимент</span>
+        <span>Абонемент</span>
       </v-tooltip>
     </v-speed-dial>
 
@@ -174,9 +213,9 @@
       title="Новая бронь шкафчика"
       :client="client"
     />
-    <subscription-create-dialog
-      ref="subscriptionCreateDialog"
-      :title="'Создать абонимент для ' + client.name"
+    <subscription-dialog
+      ref="subscriptionDialog"
+      :title="'Создать абонемент для ' + client.name"
       :client="client"
     />
   </div>
@@ -194,7 +233,8 @@ import SubscriptionInfoCard from "../../components/subscriptions/SubscriptionInf
 
 import LockerClaimListItem from "../../components/locker-claims/LockerClaimListItem"
 import LockerClaimDialog from "../../components/locker-claims/LockerClaimDialog"
-import SubscriptionCreateDialog from "../../components/subscriptions/SubscriptionCreateDialog"
+import SubscriptionDialog from "../../components/subscriptions/SubscriptionDialog"
+
 
 export default {
   head() {
@@ -204,11 +244,11 @@ export default {
   },
 
   components: {
-    SubscriptionCreateDialog,
+    SubscriptionDialog,
     ClientInfoCard,
     SubscriptionInfoCard,
     LockerClaimListItem,
-    LockerClaimDialog
+    LockerClaimDialog,
   },
 
   mixins: [client, fabWithTooltips],
@@ -218,17 +258,11 @@ export default {
       lockerClaim: false
     },
 
-    subscription: {
-      // todo: make computed from vuex
-      id: "0defe181-4b8c-4273-85cf-1454e414a7fa",
-      issue_date: "2019-09-08",
-      valid_till: "2019-09-22"
-    },
-
     loading: {
       lockers: true,
       groups: true,
       records: true,
+      subscriptions: true,
     }
   }),
 
@@ -246,8 +280,22 @@ export default {
 
     subscriptionFilter() {
       return {
-        client_id: this.$route.params.id
+        client_id: this.client.id
       }
+    },
+
+    activeFilter() {
+      return {
+        id: this.activeIds,
+        client_id: this.client.id
+      };
+    },
+
+    inactiveFilter() {
+      return {
+        id: this.inactiveIds,
+        client_id: this.client.id
+      };
     },
 
     groupFilter() {
@@ -261,25 +309,52 @@ export default {
       };
     },
 
+    identifierFilter() {
+      return {
+        client_id: this.client.id,
+      };
+    },
+
     lockerClaims() {
       return this.$store.getters["locker-claims/where"]({
         filter: this.lockerFilter
       });
     },
 
-            groups() {
-                return this.groupsIds.length === 0
-                    ? []
-                    : this.$store.getters['groups/where']({
-                        filter: this.groupFilter,
-                    });
+    groups() {
+        return this.groupsIds.length === 0
+            ? []
+            : this.$store.getters['groups/where']({
+                filter: this.groupFilter,
+            });
     },
+
+    activeSubscriptions() {
+      return this.$store.getters['subscriptions/where']({
+        filter: this.activeFilter,
+      })
+    },
+
+
+    inactiveSubscriptions() {
+      return this.$store.getters['subscriptions/where']({
+        filter: this.inactiveFilter,
+      })
+    },
+
     records() {
       return this.$store.getters["visit-history-records/where"]({
-        filter: this.recordFilter
+        filter: this.recordFilter,
       });
     },
+
+    subscriptions() {
+      return this.$store.getters["subscriptions/where"]({
+        filter: this.subscriptionFilter
+      })
+    },
   },
+
 
   fetch: ({ store, params, $moment }) => {
     // eslint-disable-next-line no-unused-vars
@@ -293,7 +368,6 @@ export default {
         id: params.id
       }),
       store.dispatch("halls/loadAll"),
-      store.dispatch("subscriptions/loadAll")
     ])
   },
 
@@ -302,6 +376,10 @@ export default {
       this.loadLockerClaims(),
       this.loadGroups(),
       this.loadRecords(),
+      this.loadSubscriptions(),
+      this.loadActiveSubscriptions(),
+      this.loadInactiveSubscriptions(),
+      this.loadIdentifiers(),
     ]);
   },
 
@@ -314,16 +392,18 @@ export default {
   },
 
   methods: {
-    openSubscriptionCreateDialog() {
-      this.$refs.subscriptionCreateDialog.open().then(form => {
+    openSubscriptionDialog() {
+      this.$refs.subscriptionDialog.open().then(form => {
         this.$axios.post("subscriptions", form).then(async response => {
           await this.$store.dispatch("subscriptions/loadById", {
             id: response.data.data.id
+          }),
+          this.$store.dispatch("clients/loadById", {
+            id: this.$route.params.id
+          }).then(()=> {
+            this.loadActiveSubscriptions()
+            this.loadInactiveSubscriptions()
           })
-        })
-
-        this.$store.dispatch("subscriptions/loadWhere", {
-          filter: this.subscriptionFilter
         })
       })
     },
@@ -340,7 +420,9 @@ export default {
           filter: this.lockerFilter
         });
       });
+
     },
+
 
     loadLockerClaims() {
       this.loading.lockers = true;
@@ -370,6 +452,63 @@ export default {
         });
     },
 
+    loadActiveSubscriptions() {
+      this.loading.subscriptions = true;
+
+      return this.$store
+              .dispatch("subscriptions/loadWhere", {
+                filter: this.activeFilter
+              })
+              .then(() => {
+                const activeIds = _(
+                        this.$store.getters["subscriptions/where"]({
+                          filter: this.activeFilter
+                        })
+                )
+                        .map(subscription => subscription.id)
+                        .uniq();
+
+                console.info("Gonna load next lockers: " + activeIds);
+
+                return Promise.all(
+                        activeIds.map(activeId =>
+                                this.$store.dispatch("subscriptions/loadById", { id: activeId })
+                        )
+                ).then(() => {
+                  this.loading.subscriptions = false;
+                });
+              });
+    },
+
+    loadInactiveSubscriptions() {
+      this.loading.subscriptions = true;
+
+      return this.$store
+              .dispatch("subscriptions/loadWhere", {
+                filter: this.inactiveFilter
+              })
+              .then(() => {
+                const inactiveIds = _(
+                        this.$store.getters["subscriptions/where"]({
+                          filter: this.inactiveFilter
+                        })
+                )
+                        .map(subscription => subscription.id)
+                        .uniq();
+
+                console.info("Gonna load next lockers: " + inactiveIds);
+
+                return Promise.all(
+                        inactiveIds.map(inactiveId =>
+                                this.$store.dispatch("subscriptions/loadById", { id: inactiveId })
+                        )
+                ).then(() => {
+                  this.loading.subscriptions = false;
+                });
+              });
+    },
+
+
     loadGroups() {
       this.loading.groups = true;
 
@@ -390,6 +529,29 @@ export default {
               })
               .then(() => {
                 this.loading.records = false;
+              });
+    },
+    loadSubscriptions() {
+      this.loading.subscriptions = true;
+
+      return this.$store
+              .dispatch("subscriptions/loadWhere", {
+                filter: this.subscriptionFilter
+              })
+              .then(() => {
+                this.loading.subscriptions = false;
+              });
+    },
+
+    loadIdentifiers() {
+      this.loading.identifiers = true;
+
+      return this.$store
+              .dispatch("identifiers/loadWhere", {
+                filter: this.identifierFilter
+              })
+              .then(() => {
+                this.loading.identifires = false;
               });
     },
     recordTime(record) {
