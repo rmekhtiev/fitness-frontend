@@ -26,12 +26,12 @@ export default {
 
     if (this.isOwner) {
       this.$store.dispatch("halls/loadAll");
-    } else if (this.isHallAdmin && this.me.associated_employee) {
+    } else if (this.isHallAdmin && this.me.employee_id) {
       this.$store
-        .dispatch("employees/loadById", { id: this.me.associated_employee.id })
+        .dispatch("employees/loadById", { id: this.me.employee_id })
         .then(() => {
           const employee = this.$store.getters["employees/byId"]({
-            id: this.me.associated_employee.id
+            id: this.me.employee_id
           });
 
           this.$store
