@@ -15,7 +15,7 @@
       </v-toolbar>
 
       <v-card-text>
-        <user-form v-model="form" :roles="roles" :is-edit="isEdit" />
+        <user-form v-model="form" :roles="roles" :employees="employees" :is-edit="isEdit" />
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -42,6 +42,11 @@ export default {
       type: Object,
       required: false,
       default: () => ({})
+    },
+    employees: {
+      type: Array,
+      required: false,
+      default: () => []
     },
 
     isEdit: {

@@ -1,6 +1,6 @@
 <template>
   <v-form>
-    <v-text-field v-model="value.name" label="ФИО" />
+    <v-text-field v-model="value.name" disabled label="ФИО" />
     <v-text-field v-model="value.email" label="E-mail" />
     <v-select
       v-model="value.primary_role_id"

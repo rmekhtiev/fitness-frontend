@@ -61,7 +61,7 @@
     >
       <v-icon>mdi-plus</v-icon>
     </v-btn>
-    <user-dialog ref="userDialog" title="Создать пользователя" />
+    <user-dialog ref="userDialog" :employees="freeEmployees" title="Создать пользователя" />
   </div>
 </template>
 
@@ -75,13 +75,26 @@ export default {
   components: { UserDialog, UserListItem },
   mixins: [serverSidePaginated, selectedHallAware],
   data: () => ({
-    resource: "users"
+    resource: "users",
+    userFilter: {
+      user: false
+    }
   }),
+  computed: {
+    freeEmployees() {
+      return this.$store.getters["employees/where"]({
+        filter: this.userFilter
+      });
+    }
+  },
   fetch({ store }) {
     return Promise.all([
       store.dispatch("users/loadAll"),
       store.dispatch("roles/loadAll")
     ]);
+  },
+  mounted() {
+    this.loadFreeEmployees();
   },
   methods: {
     openUserDialog() {
@@ -95,6 +108,11 @@ export default {
             params: { id: response.data.data.id }
           });
         });
+      });
+    },
+    loadFreeEmployees() {
+      return this.$store.dispatch("employees/loadWhere", {
+        filter: this.userFilter
       });
     }
   }
