@@ -87,7 +87,7 @@
       <v-icon>mdi-plus</v-icon>
     </v-btn>
 
-    <trainer-dialog ref="trainerDialog" title="Создать тренера" />
+    <trainer-dialog ref="trainerDialog" :employees="freeEmployees" title="Создать тренера" />
   </div>
 </template>
 
@@ -115,7 +115,10 @@ export default {
   mixins: [serverSidePaginated, selectedHallAware],
 
   data: () => ({
-    resource: "trainers"
+    resource: "trainers",
+    trainerFilter: {
+      trainer: false
+    }
   }),
 
   computed: {
@@ -127,6 +130,11 @@ export default {
         .omitBy(_.isNull)
         .omitBy(_.isUndefined)
         .value();
+    },
+    freeEmployees() {
+      return this.$store.getters["employees/where"]({
+        filter: this.trainerFilter
+      });
     }
   },
 
@@ -135,6 +143,9 @@ export default {
       store.dispatch("trainers/loadAll"),
       store.dispatch("halls/loadAll")
     ]);
+  },
+  mounted() {
+    this.loadFreeEmployees();
   },
 
   methods: {
@@ -149,6 +160,11 @@ export default {
             params: { id: response.data.data.id }
           });
         });
+      });
+    },
+    loadFreeEmployees() {
+      return this.$store.dispatch("employees/loadWhere", {
+        filter: this.trainerFilter
       });
     },
 
