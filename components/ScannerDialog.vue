@@ -58,15 +58,26 @@ export default {
 
     resolve: null,
     reject: null,
-
+    identifier_id: null,
     client_id: null
   }),
 
   computed: {
     client() {
-      return this.$store.getters["clients/byId"]({ id: this.client_id });
+      return this.$store.getters["clients/byId"]({ id: this.identifier.client_id });
+    },
+
+    identifier() {
+      return this.$store.getters["identifiers/where"]({id: this.content})
     }
   },
+
+
+  // async mounted() {
+  //   await Promise.all([
+  //     this.loadClients(),
+  //   ]);
+  // },
 
   methods: {
     async onInit(promise) {
@@ -88,24 +99,26 @@ export default {
           // eslint-disable-next-line no-unused-vars
           location // QR code coordinates
         } = await promise;
+         //const parsed = JSON.parse(content);
 
-        console.log(content);
-
-        const parsed = JSON.parse(content);
-
-        if (parsed.client_id) {
-          this.loadClient(parsed.client_id);
-          this.client_id = parsed.client_id;
+        if (content) {
+          console.log('opa')
+          console.log(content)
+          this.loadIdentifier(content)
         } else {
           this.$toast.error("Неизвестный формат");
         }
       } catch (error) {
-        this.$toast.error("Неизвестный формат");
+        this.$toast.error(error);
       }
     },
 
-    loadClient(client_id) {
-      this.$store.dispatch("clients/loadById", { id: client_id });
+    loadClient() {
+      this.$store.dispatch("clients/loadById", { filter: {id: 'kek'}})
+    },
+
+    loadIdentifier(content) {
+      this.$store.dispatch("identifiers/loadWhere", { filter: {identifier: content}});
     },
 
     open() {
