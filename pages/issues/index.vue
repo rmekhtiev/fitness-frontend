@@ -201,7 +201,7 @@ export default {
             id: response.data.data.id
           });
           this.$router.push({
-            name: "issues",
+            name: "issues-id",
             params: { id: response.data.data.id }
           });
         });
