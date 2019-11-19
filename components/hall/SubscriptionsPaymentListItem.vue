@@ -1,9 +1,9 @@
 <template>
   <div>
     <v-flex xs12 row>
-      <v-flex v-if="subscription && client" xs3 class="text-left"
-        >{{ client.first_name }} {{ client.last_name }}</v-flex
-      >
+      <v-flex v-if="subscription && client" xs3 class="text-left">{{
+        client.full_name
+      }}</v-flex>
       <v-flex v-if="subscription" xs3 class="text-left"
         >{{ formatDate(subscription.issue_date) }}/{{
           formatDate(subscription.valid_till)

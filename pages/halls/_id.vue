@@ -146,7 +146,7 @@ export default {
     },
     trainingsPaymentsFilter() {
       return {
-        sellable_type: "trainings",
+        sellable_type: "training-sessions",
         ...this.pureFilter
       };
     },
@@ -215,7 +215,7 @@ export default {
                 break;
             }
             break;
-          case "trainings":
+          case "training-sessions":
             switch (payments[i].method) {
               case "cash":
                 result.trainings.cash += cost;
@@ -301,31 +301,57 @@ export default {
                 })
               ]);
             });
-        case "trainings":
-          return this.$store
-            .dispatch("payments/loadWhere", {
-              filter: this.trainingsPaymentsFilter
-            })
-            .then(() => {
-              const trainingsIds = _(
-                this.$store.getters["payments/where"]({
-                  filter: this.trainingsPaymentsFilter
-                })
-              )
-                .map(payment => payment.sellable_id)
-                .uniq()
-                .value();
-
-              console.info("Gonna load next sellable ids: " + trainingsIds);
-
-              // return Promise.all([
-              //   this.$store.dispatch("trainings/loadWhere", {
-              //     filter: {
-              //       training_id: trainingsIds
-              //     }
-              //   })
-              // ]);
-            });
+        // case "training-sessions":
+        //   return this.$store
+        //     .dispatch("payments/loadWhere", {
+        //       filter: this.trainingsPaymentsFilter
+        //     })
+        //     .then(() => {
+        //       const trainingsIds = _(
+        //         this.$store.getters["payments/where"]({
+        //           filter: this.trainingsPaymentsFilter
+        //         })
+        //       )
+        //         .map(payment => payment.sellable_id)
+        //         .uniq()
+        //         .value();
+        //
+        //       return Promise.all([
+        //         this.$store.dispatch("training-sessions/loadWhere", {
+        //           filter: {
+        //             training_session_id: trainingsIds
+        //           }
+        //         })
+        //       ]).then(() => {
+        //         const trainings = this.$store.getters[
+        //           "training-sessions/where"
+        //         ]({
+        //           filter: {
+        //             training_session_id: trainingsIds
+        //           }
+        //         });
+        //         const clientsIds = _(trainings)
+        //           .map(training => training.client_id)
+        //           .uniq()
+        //           .value();
+        //         const trainersIds = _(trainings)
+        //           .map(training => training.trainer_id)
+        //           .uniq()
+        //           .value();
+        //         return Promise.all([
+        //           this.$store.dispatch("clients/loadWhere", {
+        //             filter: {
+        //               client_id: clientsIds
+        //             }
+        //           }),
+        //           this.$store.dispatch("trainers/loadWhere", {
+        //             filter: {
+        //               trainer_id: trainersIds
+        //             }
+        //           })
+        //         ]);
+        //       });
+        //     });
         case "subscriptions":
           return this.$store
             .dispatch("payments/loadWhere", {
