@@ -75,9 +75,7 @@
         ></trainings-payments-table>
       </v-flex>
       <v-flex xs12>
-        <subscriptions-payments-table
-          :payments="subscriptionsPayments"
-          >
+        <subscriptions-payments-table :payments="subscriptionsPayments">
         </subscriptions-payments-table>
       </v-flex>
     </v-layout>
@@ -92,7 +90,6 @@ import auth from "../../mixins/auth";
 import TrainingsPaymentsTable from "../../components/hall/TrainingsPaymentsTable";
 import SubscriptionsPaymentsTable from "../../components/hall/SubscriptionsPaymentsTable";
 import selectedHallAware from "../../mixins/selected-hall-aware";
-
 
 export default {
   head() {
@@ -122,7 +119,7 @@ export default {
 
     filter: {
       start: String,
-      end: String,
+      end: String
     }
   }),
 
@@ -139,7 +136,7 @@ export default {
     barPaymentsFilter() {
       return {
         sellable_type: "bar-items",
-        ...this.pureFilter,
+        ...this.pureFilter
       };
     },
     barPayments() {
@@ -346,13 +343,43 @@ export default {
 
               console.info("Gonna load next sellable ids: " + subscriptionsIds);
 
-              // return Promise.all([
-              //   this.$store.dispatch("subscriptions/loadWhere", {
-              //     filter: {
-              //       subscription_id: subscriptionsIds
-              //     }
-              //   })
-              // ]);
+              return Promise.all([
+                this.$store.dispatch("subscriptions/loadWhere", {
+                  filter: {
+                    subscription_id: subscriptionsIds
+                  }
+                })
+              ]).then(() => {
+                const subscriptions = this.$store.getters[
+                  "subscriptions/where"
+                ]({
+                  filter: {
+                    subscription_id: subscriptionsIds
+                  }
+                });
+                const clientsIds = _(subscriptions)
+                  .map(subscription => subscription.client_id)
+                  .uniq()
+                  .value();
+                const groupsIds = _(subscriptions)
+                  .filter({ subscriable_type: "groups" })
+                  .map(subscription => subscription.subscriable_id)
+                  .uniq()
+                  .value();
+                console.info("Gonna load next sellable ids: " + clientsIds);
+                return Promise.all([
+                  this.$store.dispatch("clients/loadWhere", {
+                    filter: {
+                      client_id: clientsIds
+                    }
+                  }),
+                  this.$store.dispatch("groups/loadWhere", {
+                    filter: {
+                      group_id: groupsIds
+                    }
+                  })
+                ]);
+              });
             });
       }
     },
