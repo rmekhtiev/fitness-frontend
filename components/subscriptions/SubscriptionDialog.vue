@@ -104,6 +104,13 @@ export default {
     save() {
       this.resolve(this.form)
       this.dialog = false
+      if (this.form.subscriable_type == 'groups') {
+        this.addClientToGroup()
+      }
+    },
+
+    addClientToGroup() {
+      this.$axios.put("/groups/" + this.form.subscriable_id + "/clients/" + this.client.id)
     },
 
     cancel() {
