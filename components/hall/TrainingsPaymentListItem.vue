@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-flex xs12 row>
-      <!--      <v-flex xs2 class="text-left" v-if="training && trainer">{{ trainer.full_name}}</v-flex>-->
-      <!--      <v-flex xs2 class="text-left" v-if="training && client">{{ client.full_name }}</v-flex>-->
+            <v-flex xs2 class="text-left" v-if="training && trainer">{{ trainer.full_name}}</v-flex>
+            <v-flex xs2 class="text-left" v-if="training && client">{{ client.full_name }}</v-flex>
       <v-flex xs2 class="text-left">{{
         $t("methods." + trainingsPayment.method)
       }}</v-flex>
@@ -28,21 +28,21 @@ export default {
     }
   },
   computed: {
-    // training() {
-    //   return this.$store.getters["training-sessions/byId"]({
-    //     id: this.trainingsPayment.sellable_id
-    //   });
-    // },
-    // trainer(){
-    //   return this.$store.getters["trainers/byId"]({
-    //     id: this.training.trainer_id
-    //   });
-    // }
-    // client(){
-    //   return this.$store.getters["clients/byId"]({
-    //     id: this.training.client_id
-    //   });
-    // }
+    training() {
+      return this.$store.getters["training-sessions/byId"]({
+        id: this.trainingsPayment.sellable_id
+      });
+    },
+    trainer(){
+      return this.$store.getters["trainers/byId"]({
+        id: this.training.trainer_id
+      });
+    },
+    client(){
+      return this.$store.getters["clients/byId"]({
+        id: this.training.client_id
+      });
+    }
   },
   methods: {
     calculateTotal(cost, quantity) {
