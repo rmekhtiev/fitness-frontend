@@ -112,6 +112,8 @@
             />
           </v-card-text>
         </v-card>
+      </v-flex>
+      <v-flex xs12 sm6 lg4 xl3>
         <v-card class="mb-2 mx-auto">
           <v-card-text>
             <div class="overline">
