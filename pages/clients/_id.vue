@@ -152,14 +152,18 @@
                   </template>
 
                   <v-list dense flat>
-                    <v-list-item>
-                      <v-list-item-icon>
-                        <v-icon>mdi-cash-usd-outline</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-content class="pr-6">
-                        <v-list-item-title>Оформить продажу</v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
+                    <template
+                      v-if="!session.sold"
+                      @click="sellTrainingSession(session)">
+                      <v-list-item v-for="method in ['cash', 'transfer', 'card']" @click="sellTrainingSession(session, method)">
+                        <v-list-item-icon>
+                          <v-icon>mdi-cash-usd-outline</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content class="pr-6">
+                          <v-list-item-title>Оформить продажу: {{ $t('methods.' + method) }}</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </template>
                   </v-list>
                 </v-menu>
               </v-list-item-action>
@@ -686,6 +690,14 @@ export default {
         .then(() => {
           this.loading.subscriptions = false;
         });
+    },
+
+    sellTrainingSession(session, method = "cash") {
+      return this.$axios
+        .post("training-sessions/" + session.id + "/sell", {
+          payment_method: method
+        })
+        .then(() => this.loadTrainingSessions());
     },
 
     loadIdentifiers() {
