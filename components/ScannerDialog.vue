@@ -76,16 +76,6 @@ export default {
       }
     },
 
-    async onInit(promise) {
-      try {
-        await promise;
-
-        // successfully initialized
-      } catch (error) {
-        this.$toast.error(error);
-      }
-    },
-
     async onDetect(promise) {
       try {
         const {

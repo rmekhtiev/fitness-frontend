@@ -15,25 +15,20 @@
       </v-toolbar>
 
       <v-card-text>
-        <v-form>
-          <v-select
-            v-model="form.payment_method"
-            :items="paymentMethods"
-            label="Способ оплаты"
-          />
-        </v-form>
-
-        <div>К оплате:</div>
-        <p class="display-1 text--primary">{{ finalPrice }} &#8381;</p>
+        <qrcode-stream v-if="dialog" @init="onInit" @detect="onDetect" />
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
+import { QrcodeStream } from "vue-qrcode-reader";
 export default {
   name: "SubscriptionSellDialog",
 
+  components: {
+    "qrcode-stream": QrcodeStream
+  },
   props: {
     fullscreen: {
       type: Boolean,
@@ -45,7 +40,7 @@ export default {
       default: ""
     },
 
-    subscription: {
+    client: {
       type: Object,
       required: false,
       default: () => ({})
@@ -65,21 +60,51 @@ export default {
     ],
 
     form: {
-      quantity: 1,
-      price: 1,
-      payment_method: 1
+      client_id: null,
+      identifier: null
     }
   }),
-
-  computed: {
-    finalPrice() {
-      return this.subscription.cost;
-    }
-  },
 
   created() {},
 
   methods: {
+    async onInit(promise) {
+      try {
+        await promise;
+
+        // successfully initialized
+      } catch (error) {
+        this.$toast.error(error);
+      }
+    },
+
+    async onDetect(promise) {
+      try {
+        const {
+          // eslint-disable-next-line no-unused-vars
+          imageData, // raw image data of image/frame
+          content, // decoded String
+          // eslint-disable-next-line no-unused-vars
+          location // QR code coordinates
+        } = await promise;
+
+        console.log(content);
+
+        // const parsed = JSON.parse(content);
+
+        if (content) {
+          this.text = content;
+          this.form.client_id = this.$route.params.id;
+          this.form.identifier = this.text;
+          this.$toast.success("Success");
+        } else {
+          this.$toast.error("Неизвестный формат");
+        }
+      } catch (error) {
+        this.$toast.error(error);
+      }
+    },
+
     open() {
       this.dialog = true;
 
