@@ -17,30 +17,20 @@
       <v-card-text>
         <qrcode-stream v-if="dialog" @init="onInit" @detect="onDetect" />
       </v-card-text>
-
-      <template v-if="client_id">
-        <client-info-card v-if="client" :client="client" link class="mx-4" />
-
-        <v-card-text v-else>
-          Клиент не найден
-        </v-card-text>
-      </template>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
 import { QrcodeStream } from "vue-qrcode-reader";
+import _ from "lodash";
 
 import client from "../mixins/client";
-
-import ClientInfoCard from "./clients/ClientInfoCard";
 
 export default {
   name: "LockerClaimDialog",
 
   components: {
-    ClientInfoCard,
     "qrcode-stream": QrcodeStream
   },
 
@@ -59,27 +49,33 @@ export default {
     resolve: null,
     reject: null,
     identifier_id: null,
-    client_id: null
+    client_id: null,
+    text: null
   }),
 
   computed: {
-    client() {
-      return this.$store.getters["clients/byId"]({ id: this.identifier.client_id });
+    identifiers() {
+      return this.$store.getters["identifiers/where"]({
+        filter: { identifier: this.text }
+      });
     },
 
-    identifier() {
-      return this.$store.getters["identifiers/where"]({id: this.content})
+    clientId() {
+      return _(this.identifiers).last().client_id;
     }
   },
 
-
-  // async mounted() {
-  //   await Promise.all([
-  //     this.loadClients(),
-  //   ]);
-  // },
-
   methods: {
+    async onInit(promise) {
+      try {
+        await promise;
+
+        // successfully initialized
+      } catch (error) {
+        this.$toast.error(error);
+      }
+    },
+
     async onInit(promise) {
       try {
         await promise;
@@ -99,12 +95,21 @@ export default {
           // eslint-disable-next-line no-unused-vars
           location // QR code coordinates
         } = await promise;
-         //const parsed = JSON.parse(content);
+
+        console.log(content);
+
+        // const parsed = JSON.parse(content);
 
         if (content) {
-          console.log('opa')
-          console.log(content)
-          this.loadIdentifier(content)
+          this.text = content;
+          this.loadIdentifier(content);
+          this.text = content;
+          console.log(this.clientId);
+          this.$router.push({
+            name: "clients-id",
+            params: { id: this.clientId }
+          });
+          this.close();
         } else {
           this.$toast.error("Неизвестный формат");
         }
@@ -113,12 +118,12 @@ export default {
       }
     },
 
-    loadClient() {
-      this.$store.dispatch("clients/loadById", { filter: {id: 'kek'}})
-    },
-
     loadIdentifier(content) {
-      this.$store.dispatch("identifiers/loadWhere", { filter: {identifier: content}});
+      this.$store.dispatch("identifiers/loadWhere", {
+        filter: {
+          identifier: content
+        }
+      });
     },
 
     open() {
