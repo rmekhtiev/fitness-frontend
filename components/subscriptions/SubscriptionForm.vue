@@ -71,6 +71,7 @@
               name="subscriable_type"
               item-text="text"
               item-value="value"
+              :disabled="isEdit"
       />
     <v-autocomplete v-if="value.subscriable_type === 'groups'"
             v-model="value.subscriable_id"
@@ -80,11 +81,21 @@
             item-text="title"
             item-value="id"
     />
+    <v-alert v-if="group && group.clients_count >= group.max_members"
+      border="right"
+      colored-border
+      type="error"
+      elevation="2"
+    >
+              Внимание, группа заполнена
+    </v-alert>
+
       <v-text-field
               v-model="value.cost"
               min="1"
               type="number"
               label="Цена"
+              :disabled="subscription.sold"
       />
   </v-form>
 </template>
@@ -94,6 +105,7 @@ import _ from "lodash"
 
 import auth from "../../mixins/auth"
 import { QrcodeStream } from "vue-qrcode-reader";
+import group from '../../mixins/group';
 
 export default {
   name: "SubscriptionForm",
@@ -119,6 +131,12 @@ export default {
       required: false,
       default: () => ({})
     },
+
+      client: {
+          type: Object,
+          required: false,
+          default: () => ({})
+      },
   },
   data: () => ({
     modal: {
@@ -133,6 +151,7 @@ export default {
     ]
   }),
 
+
    computed: {
     defaultForm() {
       return {
@@ -142,12 +161,17 @@ export default {
                 .format("YYYY-MM-DD"),
         subscriable_id: null,
         subscriable_type: null,
-        cost: null,
+        cost: 2000,
       }
     },
-     groups() {
-       return this.$store.getters['groups/all'];
-     },
+     
+    groups() {
+      return this.$store.getters['groups/where']({ filter:{hall_id: this.client.primary_hall_id}});
+    },
+
+    group() {
+      return this.$store.getters["groups/byId"]({ id: this.value.subscriable_id });
+    }
   },
 
 
@@ -164,13 +188,20 @@ export default {
   },
 
   methods: {
+    
     open() {
       this.dialog = true;
     },
 
     close() {
       this.dialog = false;
-    }
+    },
+
+      selectedHallFilter(item) {
+          return this.selectedHallId === null
+              ? true
+              : item.primary_hall_id === this.selectedHallId;
+      }
   }
 }
 </script>

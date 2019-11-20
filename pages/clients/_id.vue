@@ -115,7 +115,7 @@
         <v-card class="mb-2 mx-auto">
           <v-card-text>
             <div class="overline">
-              Абонементы
+              История абонементов
             </div>
           </v-card-text>
 
@@ -132,7 +132,7 @@
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-subtitle>
-                    с {{ item.issue_date }} &mdash; по {{ item.valid_till }}
+                    с {{ $moment.utc(item.issue_date).format('DD-MM-YYYY') }} &mdash; по {{ $moment.utc(item.valid_till).format('DD-MM-YYYY') }}
                   </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
@@ -392,7 +392,8 @@ export default {
       this.loadSubscriptions(),
       this.loadActiveSubscriptions(),
       this.loadInactiveSubscriptions(),
-      this.loadIdentifiers()
+      this.loadIdentifiers(),
+      this.loadFilteredGroups(),
     ]);
   },
 
@@ -500,6 +501,13 @@ export default {
             this.loading.subscriptions = false;
           });
         });
+    },
+    loadFilteredGroups() {
+      return this.$store.dispatch("groups/loadWhere", {
+        filter: {
+          hall_id: this.client.primary_hall_id
+        }
+      });
     },
 
     loadInactiveSubscriptions() {
