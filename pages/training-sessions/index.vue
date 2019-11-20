@@ -70,7 +70,8 @@ export default {
     headers: [
       { text: "Клиент", sortable: false, value: "client_id" },
       { text: "Тренер", sortable: false, value: "trainer_id" },
-      { text: "Кол-во занятий", sortable: true, value: "count" }
+      { text: "Кол-во занятий", sortable: true, value: "count" },
+      { text: "Цена", sortable: true, value: "cost" }
     ]
   }),
 
