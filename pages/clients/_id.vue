@@ -208,13 +208,7 @@
       </v-tooltip>
       <v-tooltip left :value="tooltips">
         <template v-slot:activator="{ on }">
-          <v-btn
-                  fab
-                  dark
-                  small
-                  color="blue"
-                  @click.native="addIdentifier"
-          >
+          <v-btn fab dark small color="blue" @click.native="addIdentifier">
             <v-icon>mdi-qrcode</v-icon>
           </v-btn>
         </template>
