@@ -17,30 +17,20 @@
       <v-card-text>
         <qrcode-stream v-if="dialog" @init="onInit" @detect="onDetect" />
       </v-card-text>
-
-      <template v-if="client_id">
-        <client-info-card v-if="client" :client="client" link class="mx-4" />
-
-        <v-card-text v-else>
-          Клиент не найден
-        </v-card-text>
-      </template>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
 import { QrcodeStream } from "vue-qrcode-reader";
+import _ from "lodash";
 
 import client from "../mixins/client";
-
-import ClientInfoCard from "./clients/ClientInfoCard";
 
 export default {
   name: "LockerClaimDialog",
 
   components: {
-    ClientInfoCard,
     "qrcode-stream": QrcodeStream
   },
 
@@ -58,13 +48,20 @@ export default {
 
     resolve: null,
     reject: null,
-
-    client_id: null
+    identifier_id: null,
+    client_id: null,
+    text: null
   }),
 
   computed: {
-    client() {
-      return this.$store.getters["clients/byId"]({ id: this.client_id });
+    identifiers() {
+      return this.$store.getters["identifiers/where"]({
+        filter: { identifier: this.text }
+      });
+    },
+
+    clientId() {
+      return _(this.identifiers).last().client_id;
     }
   },
 
@@ -91,21 +88,32 @@ export default {
 
         console.log(content);
 
-        const parsed = JSON.parse(content);
+        // const parsed = JSON.parse(content);
 
-        if (parsed.client_id) {
-          this.loadClient(parsed.client_id);
-          this.client_id = parsed.client_id;
+        if (content) {
+          this.text = content;
+          this.loadIdentifier(content);
+          this.text = content;
+          console.log(this.clientId);
+          this.$router.push({
+            name: "clients-id",
+            params: { id: this.clientId }
+          });
+          this.close();
         } else {
           this.$toast.error("Неизвестный формат");
         }
       } catch (error) {
-        this.$toast.error("Неизвестный формат");
+        this.$toast.error(error);
       }
     },
 
-    loadClient(client_id) {
-      this.$store.dispatch("clients/loadById", { id: client_id });
+    loadIdentifier(content) {
+      this.$store.dispatch("identifiers/loadWhere", {
+        filter: {
+          identifier: content
+        }
+      });
     },
 
     open() {

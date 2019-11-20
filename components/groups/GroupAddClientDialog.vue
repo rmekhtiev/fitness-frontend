@@ -81,6 +81,7 @@ export default {
     pureFilter() {
       return _({
         primary_hall_id: this.selectedHallId,
+        subscriable: this.group.id,
         ...this.filter
       })
         .omitBy(_.isNull)
@@ -99,7 +100,7 @@ export default {
         .filter(this.selectedHallFilter)
         .filter(
           item => !this.groupClients.map(client => client.id).includes(item.id)
-        );
+        )
     }
   },
 

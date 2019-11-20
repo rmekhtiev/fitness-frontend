@@ -1,16 +1,36 @@
 <template>
-  <div v-if="client" id="client">
+  <div id="client" v-if="client">
     <v-layout row wrap>
       <v-flex xs12 sm6 lg4 xl3>
         <client-info-card :client="client" class="mb-2 mx-auto" />
         <div>
-          <template v-for="item in activeSubscriptions" v-if="client.active_subscriptions.length > 0">
-            <subscription-info-card :client="client" isActive :subscription="item" class="mb-2 mx-auto" />
+          <template
+            v-for="item in activeSubscriptions"
+            v-if="client.active_subscriptions.length > 0"
+          >
+            <subscription-info-card
+              :client="client"
+              :subscription="item"
+              is-active
+              class="mb-2 mx-auto"
+            />
           </template>
-          <template v-for="item in inactiveSubscriptions" v-if="client.inactive_subscriptions.length > 0">
-            <subscription-info-card :client="client" :subscription="item" class="mb-2 mx-auto" />
+          <template
+            v-for="item in inactiveSubscriptions"
+            v-if="client.inactive_subscriptions.length > 0"
+          >
+            <subscription-info-card
+              :client="client"
+              :subscription="item"
+              class="mb-2 mx-auto"
+            />
           </template>
-          <v-card v-if="client.active_subscriptions.length == 0 && client.inactive_subscriptions.length == 0">
+          <v-card
+            v-if="
+              client.active_subscriptions.length == 0 &&
+                client.inactive_subscriptions.length == 0
+            "
+          >
             <v-card-text>
               <div class="overline">
                 Активные абонементы отстутсвуют
@@ -18,7 +38,6 @@
             </v-card-text>
           </v-card>
         </div>
-
       </v-flex>
 
       <v-flex xs12 sm6 lg4 xl3>
@@ -29,23 +48,15 @@
             </div>
           </v-card-text>
 
-          <template
-            v-if="!loading.lockers">
-
-            <v-card-text
-              v-if="lockerClaims.length === 0"
-              class="text-center">
+          <template v-if="!loading.lockers">
+            <v-card-text v-if="lockerClaims.length === 0" class="text-center">
               <v-icon style="font-size: 4rem">mdi-inbox</v-icon>
-              <br>
+              <br />
               Пусто
             </v-card-text>
 
-            <template
-              v-else
-              v-for="(claim, index) in lockerClaims">
-              <locker-claim-list-item
-                :key="'claim' + index"
-                :claim="claim">
+            <template v-for="(claim, index) in lockerClaims" v-else>
+              <locker-claim-list-item :key="'claim' + index" :claim="claim">
               </locker-claim-list-item>
 
               <v-divider
@@ -54,9 +65,7 @@
               />
             </template>
           </template>
-          <v-card-text
-            v-else
-            class="text-center">
+          <v-card-text v-else class="text-center">
             <v-progress-linear
               height="16"
               rounded
@@ -72,18 +81,13 @@
             </div>
           </v-card-text>
 
-          <v-list
-            v-if="!loading.groups">
-            <v-card-text
-              v-if="groupsIds.length === 0"
-              class="text-center">
+          <v-list v-if="!loading.groups">
+            <v-card-text v-if="groupsIds.length === 0" class="text-center">
               <v-icon style="font-size: 4rem">mdi-inbox</v-icon>
-              <br>
+              <br />
               Пусто
             </v-card-text>
-            <template
-              v-else
-              v-for="(group, index) in groups">
+            <template v-for="(group, index) in groups" v-else>
               <v-list-item
                 :key="'group-' + index"
                 :to="{ name: 'groups-id', params: { id: group.id } }"
@@ -108,31 +112,93 @@
             />
           </v-card-text>
         </v-card>
+
         <v-card class="mb-2 mx-auto">
           <v-card-text>
             <div class="overline">
-              Абонементы
+              Индивидуальные тренировки
+            </div>
+          </v-card-text>
+
+          <v-list>
+            <v-list-item v-for="session in trainingSessions" two-line>
+              <v-list-item-content>
+                <v-list-item-title>
+                  <router-link
+                    :to="{
+                      name: 'trainers-id',
+                      params: { id: session.trainer_id }
+                    }"
+                  >
+                    {{
+                      $store.getters["trainers/byId"]({
+                        id: session.trainer_id
+                      })
+                        ? $store.getters["trainers/byId"]({
+                            id: session.trainer_id
+                          }).name
+                        : "Неизвестно"
+                    }}
+                  </router-link>
+                </v-list-item-title>
+                <v-list-item-subtitle>{{ session.count }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-menu bottom left>
+                  <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" icon>
+                      <v-icon>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                  </template>
+
+                  <v-list dense flat>
+                    <template
+                      v-if="!session.sold"
+                      @click="sellTrainingSession(session)">
+                      <v-list-item v-for="method in ['cash', 'transfer', 'card']" @click="sellTrainingSession(session, method)">
+                        <v-list-item-icon>
+                          <v-icon>mdi-cash-usd-outline</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content class="pr-6">
+                          <v-list-item-title>Оформить продажу: {{ $t('methods.' + method) }}</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </template>
+                  </v-list>
+                </v-menu>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-flex>
+      <v-flex xs12 sm6 lg4 xl3>
+        <v-card class="mb-2 mx-auto">
+          <v-card-text>
+            <div class="overline">
+              История абонементов
             </div>
           </v-card-text>
 
           <v-list>
             <v-card-text v-if="!subscriptions" class="text-center">
               <v-icon style="font-size: 4rem">mdi-inbox</v-icon>
-              <br>
+              <br />
               Пусто
             </v-card-text>
-            <v-list dense v-else v-for="item in subscriptions">
+            <v-list v-for="item in subscriptions" v-else dense>
               <v-list-item>
                 <v-list-item-icon>
                   <v-icon>mdi-account-badge-horizontal-outline</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-subtitle>
-                    с {{ item.issue_date }} &mdash; по {{ item.valid_till }}
+                    с
+                    {{ $moment.utc(item.issue_date).format("DD-MM-YYYY") }}
+                    &mdash; по
+                    {{ $moment.utc(item.valid_till).format("DD-MM-YYYY") }}
                   </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
-
             </v-list>
           </v-list>
         </v-card>
@@ -140,26 +206,23 @@
           <v-card-text>
             <div class="overline">
               История посещений
-
             </div>
           </v-card-text>
 
           <v-timeline dense>
             <v-list v-if="!loading.records">
               <template v-for="(record, index) in records">
-                <v-timeline-item
-                        small
-                >
+                <v-timeline-item small>
                   {{ recordTime(record) }}
                 </v-timeline-item>
               </template>
             </v-list>
             <v-card-text v-else class="text-center">
               <v-progress-linear
-                      height="16"
-                      rounded
-                      color="primary"
-                      indeterminate
+                height="16"
+                rounded
+                color="primary"
+                indeterminate
               />
             </v-card-text>
           </v-timeline>
@@ -178,45 +241,76 @@
           </v-icon>
         </v-btn>
       </template>
-      <v-tooltip left :value="tooltips">
+      <v-tooltip :value="tooltips" left>
         <template v-slot:activator="{ on }">
           <v-btn
+            @click.native="openLockerClaimDialog"
             fab
             dark
             small
             color="green"
-            @click.native="openLockerClaimDialog"
           >
             <v-icon>mdi-locker</v-icon>
           </v-btn>
         </template>
         <span>Шкафчик</span>
       </v-tooltip>
-      <v-tooltip left :value="tooltips">
+      <v-tooltip :value="tooltips" left>
         <template v-slot:activator="{ on }">
           <v-btn
+            @click.native="openSubscriptionDialog"
             fab
             dark
             small
             color="red"
-            @click.native="openSubscriptionDialog"
           >
-            <v-icon>mdi-locker</v-icon>
+            <v-icon>mdi-account-badge-horizontal-outline</v-icon>
           </v-btn>
         </template>
         <span>Абонемент</span>
+      </v-tooltip>
+      <v-tooltip :value="tooltips" left>
+        <template v-slot:activator="{ on }">
+          <v-btn @click.native="addIdentifier" fab dark small color="blue">
+            <v-icon>mdi-qrcode</v-icon>
+          </v-btn>
+        </template>
+        <span>Привязать идентификатор</span>
+      </v-tooltip>
+      <v-tooltip :value="tooltips" left>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            @click.native="openTrainingSessionsDialog"
+            fab
+            dark
+            small
+            color="purple"
+          >
+            <v-icon>mdi-account-star</v-icon>
+          </v-btn>
+        </template>
+        <span>Индивид. тренировки</span>
       </v-tooltip>
     </v-speed-dial>
 
     <locker-claim-dialog
       ref="lockerClaimDialog"
-      title="Новая бронь шкафчика"
       :client="client"
+      title="Новая бронь шкафчика"
     />
     <subscription-dialog
       ref="subscriptionDialog"
       :title="'Создать абонемент для ' + client.name"
       :client="client"
+    />
+    <client-identifier-dialog
+      ref="clientIdentifierDialog"
+      :title="'Привязать карточку-идентификатор: ' + client.name"
+      :client="client"
+    />
+    <training-session-dialog
+      ref="trainingSessionDialog"
+      :title="'Создать расписание индивидуальных тренировок: ' + client.name"
     />
   </div>
 </template>
@@ -231,10 +325,11 @@ import ClientInfoCard from "../../components/clients/ClientInfoCard";
 
 import SubscriptionInfoCard from "../../components/subscriptions/SubscriptionInfoCard";
 
-import LockerClaimListItem from "../../components/locker-claims/LockerClaimListItem"
-import LockerClaimDialog from "../../components/locker-claims/LockerClaimDialog"
-import SubscriptionDialog from "../../components/subscriptions/SubscriptionDialog"
-
+import LockerClaimListItem from "../../components/locker-claims/LockerClaimListItem";
+import LockerClaimDialog from "../../components/locker-claims/LockerClaimDialog";
+import SubscriptionDialog from "../../components/subscriptions/SubscriptionDialog";
+import ClientIdentifierDialog from "../../components/clients/ClientIdentifierDialog";
+import TrainingSessionDialog from "../../components/training-sessions/TrainingSessionDialog";
 
 export default {
   head() {
@@ -244,11 +339,13 @@ export default {
   },
 
   components: {
+    TrainingSessionDialog,
+    ClientIdentifierDialog,
     SubscriptionDialog,
     ClientInfoCard,
     SubscriptionInfoCard,
     LockerClaimListItem,
-    LockerClaimDialog,
+    LockerClaimDialog
   },
 
   mixins: [client, fabWithTooltips],
@@ -262,7 +359,7 @@ export default {
       lockers: true,
       groups: true,
       records: true,
-      subscriptions: true,
+      subscriptions: true
     }
   }),
 
@@ -281,7 +378,7 @@ export default {
     subscriptionFilter() {
       return {
         client_id: this.client.id
-      }
+      };
     },
 
     activeFilter() {
@@ -305,13 +402,23 @@ export default {
     },
     recordFilter() {
       return {
-        client_id: this.$route.params.id,
+        client_id: this.$route.params.id
       };
     },
 
     identifierFilter() {
       return {
-        client_id: this.client.id,
+        client_id: this.client.id
+      };
+    },
+
+    trainersFilter() {
+      return {};
+    },
+
+    trainingSessionsFilter() {
+      return {
+        client_id: this.$route.params.id
       };
     },
 
@@ -322,39 +429,49 @@ export default {
     },
 
     groups() {
-        return this.groupsIds.length === 0
-            ? []
-            : this.$store.getters['groups/where']({
-                filter: this.groupFilter,
-            });
+      return this.groupsIds.length === 0
+        ? []
+        : this.$store.getters["groups/where"]({
+            filter: this.groupFilter
+          });
     },
 
     activeSubscriptions() {
-      return this.$store.getters['subscriptions/where']({
-        filter: this.activeFilter,
-      })
+      return this.$store.getters["subscriptions/where"]({
+        filter: this.activeFilter
+      });
     },
 
-
     inactiveSubscriptions() {
-      return this.$store.getters['subscriptions/where']({
-        filter: this.inactiveFilter,
-      })
+      return this.$store.getters["subscriptions/where"]({
+        filter: this.inactiveFilter
+      });
     },
 
     records() {
       return this.$store.getters["visit-history-records/where"]({
-        filter: this.recordFilter,
+        filter: this.recordFilter
       });
     },
 
     subscriptions() {
       return this.$store.getters["subscriptions/where"]({
         filter: this.subscriptionFilter
-      })
+      });
     },
-  },
 
+    trainers() {
+      return this.$store.getters["trainers/where"]({
+        filter: this.trainersFilter
+      });
+    },
+
+    trainingSessions() {
+      return this.$store.getters["training-sessions/where"]({
+        filter: this.trainingSessionsFilter
+      });
+    }
+  },
 
   fetch: ({ store, params, $moment }) => {
     // eslint-disable-next-line no-unused-vars
@@ -367,8 +484,8 @@ export default {
       store.dispatch("clients/loadById", {
         id: params.id
       }),
-      store.dispatch("halls/loadAll"),
-    ])
+      store.dispatch("halls/loadAll")
+    ]);
   },
 
   async mounted() {
@@ -380,6 +497,9 @@ export default {
       this.loadActiveSubscriptions(),
       this.loadInactiveSubscriptions(),
       this.loadIdentifiers(),
+      this.loadFilteredGroups(),
+      this.loadTrainers(),
+      this.loadTrainingSessions()
     ]);
   },
 
@@ -398,14 +518,16 @@ export default {
           await this.$store.dispatch("subscriptions/loadById", {
             id: response.data.data.id
           }),
-          this.$store.dispatch("clients/loadById", {
-            id: this.$route.params.id
-          }).then(()=> {
-            this.loadActiveSubscriptions()
-            this.loadInactiveSubscriptions()
-          })
-        })
-      })
+            this.$store
+              .dispatch("clients/loadById", {
+                id: this.$route.params.id
+              })
+              .then(() => {
+                this.loadActiveSubscriptions();
+                this.loadInactiveSubscriptions();
+              });
+        });
+      });
     },
 
     openLockerClaimDialog() {
@@ -420,9 +542,27 @@ export default {
           filter: this.lockerFilter
         });
       });
-
     },
 
+    addIdentifier() {
+      this.$refs.clientIdentifierDialog.open().then(form => {
+        this.$axios.post("identifiers", form).then(async response => {
+          await this.$store.dispatch("identifiers/loadById", {
+            id: response.data.data.id
+          });
+        });
+      });
+    },
+
+    openTrainingSessionsDialog() {
+      this.$refs.trainingSessionDialog.open().then(form => {
+        form.client_id = this.$route.params.id;
+
+        this.$axios
+          .post("training-sessions", form)
+          .then(() => this.loadTrainingSessions());
+      });
+    },
 
     loadLockerClaims() {
       this.loading.lockers = true;
@@ -456,58 +596,65 @@ export default {
       this.loading.subscriptions = true;
 
       return this.$store
-              .dispatch("subscriptions/loadWhere", {
-                filter: this.activeFilter
-              })
-              .then(() => {
-                const activeIds = _(
-                        this.$store.getters["subscriptions/where"]({
-                          filter: this.activeFilter
-                        })
-                )
-                        .map(subscription => subscription.id)
-                        .uniq();
+        .dispatch("subscriptions/loadWhere", {
+          filter: this.activeFilter
+        })
+        .then(() => {
+          const activeIds = _(
+            this.$store.getters["subscriptions/where"]({
+              filter: this.activeFilter
+            })
+          )
+            .map(subscription => subscription.id)
+            .uniq();
 
-                console.info("Gonna load next lockers: " + activeIds);
+          console.info("Gonna load next lockers: " + activeIds);
 
-                return Promise.all(
-                        activeIds.map(activeId =>
-                                this.$store.dispatch("subscriptions/loadById", { id: activeId })
-                        )
-                ).then(() => {
-                  this.loading.subscriptions = false;
-                });
-              });
+          return Promise.all(
+            activeIds.map(activeId =>
+              this.$store.dispatch("subscriptions/loadById", { id: activeId })
+            )
+          ).then(() => {
+            this.loading.subscriptions = false;
+          });
+        });
+    },
+
+    loadFilteredGroups() {
+      return this.$store.dispatch("groups/loadWhere", {
+        filter: {
+          hall_id: this.client.primary_hall_id
+        }
+      });
     },
 
     loadInactiveSubscriptions() {
       this.loading.subscriptions = true;
 
       return this.$store
-              .dispatch("subscriptions/loadWhere", {
-                filter: this.inactiveFilter
-              })
-              .then(() => {
-                const inactiveIds = _(
-                        this.$store.getters["subscriptions/where"]({
-                          filter: this.inactiveFilter
-                        })
-                )
-                        .map(subscription => subscription.id)
-                        .uniq();
+        .dispatch("subscriptions/loadWhere", {
+          filter: this.inactiveFilter
+        })
+        .then(() => {
+          const inactiveIds = _(
+            this.$store.getters["subscriptions/where"]({
+              filter: this.inactiveFilter
+            })
+          )
+            .map(subscription => subscription.id)
+            .uniq();
 
-                console.info("Gonna load next lockers: " + inactiveIds);
+          console.info("Gonna load next lockers: " + inactiveIds);
 
-                return Promise.all(
-                        inactiveIds.map(inactiveId =>
-                                this.$store.dispatch("subscriptions/loadById", { id: inactiveId })
-                        )
-                ).then(() => {
-                  this.loading.subscriptions = false;
-                });
-              });
+          return Promise.all(
+            inactiveIds.map(inactiveId =>
+              this.$store.dispatch("subscriptions/loadById", { id: inactiveId })
+            )
+          ).then(() => {
+            this.loading.subscriptions = false;
+          });
+        });
     },
-
 
     loadGroups() {
       this.loading.groups = true;
@@ -520,44 +667,84 @@ export default {
           this.loading.groups = false;
         });
     },
+
     loadRecords() {
       this.loading.records = false;
 
       return this.$store
-              .dispatch("visit-history-records/loadWhere", {
-                filter: this.recordFilter
-              })
-              .then(() => {
-                this.loading.records = false;
-              });
+        .dispatch("visit-history-records/loadWhere", {
+          filter: this.recordFilter
+        })
+        .then(() => {
+          this.loading.records = false;
+        });
     },
+
     loadSubscriptions() {
       this.loading.subscriptions = true;
 
       return this.$store
-              .dispatch("subscriptions/loadWhere", {
-                filter: this.subscriptionFilter
-              })
-              .then(() => {
-                this.loading.subscriptions = false;
-              });
+        .dispatch("subscriptions/loadWhere", {
+          filter: this.subscriptionFilter
+        })
+        .then(() => {
+          this.loading.subscriptions = false;
+        });
+    },
+
+    sellTrainingSession(session, method = "cash") {
+      return this.$axios
+        .post("training-sessions/" + session.id + "/sell", {
+          payment_method: method
+        })
+        .then(() => this.loadTrainingSessions());
     },
 
     loadIdentifiers() {
       this.loading.identifiers = true;
 
       return this.$store
-              .dispatch("identifiers/loadWhere", {
-                filter: this.identifierFilter
-              })
-              .then(() => {
-                this.loading.identifires = false;
-              });
+        .dispatch("identifiers/loadWhere", {
+          filter: this.identifierFilter
+        })
+        .then(() => {
+          this.loading.identifires = false;
+        });
     },
+
+    loadTrainers() {
+      this.loading.trainers = true;
+
+      return this.$store
+        .dispatch("trainers/loadWhere", {
+          filter: this.trainersFilter,
+          params: {
+            per_page: "-1"
+          }
+        })
+        .then(() => {
+          this.loading.trainers = false;
+        });
+    },
+
+    loadTrainingSessions() {
+      this.loading.trainingSessions = true;
+
+      return this.$store
+        .dispatch("training-sessions/loadWhere", {
+          filter: this.trainingSessionsFilter
+        })
+        .then(() => {
+          this.loading.trainingSessions = false;
+        });
+    },
+
     recordTime(record) {
-      return this.$moment.utc(record.datetime).format("D MMMM YYYY года в HH:mm");
-  },
-}
+      return this.$moment
+        .utc(record.datetime)
+        .format("D MMMM YYYY года в HH:mm");
+    }
+  }
 };
 </script>
 

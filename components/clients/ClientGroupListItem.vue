@@ -18,13 +18,7 @@
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="mt-1">
           <div class="pr-4">
-            <div v-if="client.active_subscriptions.length > 1" class="body-2 green--text">
-              <v-icon middle color="green">
-                mdi-check
-              </v-icon>
-              Несколько активных абонементов
-            </div>
-            <div v-else-if="client.active_subscriptions.length > 0">
+            <div v-if="activeSubscription">
               <div v-if="client.status === 'frozen'" class="body-2 blue--text">
                 <v-icon middle color="blue">
                   mdi-snowflake
@@ -44,9 +38,8 @@
                 </v-progress-linear>
               </div>
             </div>
-            <div
-              v-else-if="client.inactive_subscriptions.length > 0"
-              class="body-2 orange--text darken-4"
+            <div v-else-if="inactiveSubscription"
+                    class="body-2 orange--text darken-4"
             >
               <v-icon middle color="orange">
                 mdi-clock
@@ -61,12 +54,6 @@
                 mdi-clock
               </v-icon>
               Абонемент просрочен
-            </div>
-            <div v-else class="body-2 red--text">
-              <v-icon middle color="red">
-                error
-              </v-icon>
-              Абонемент отстутсвует
             </div>
           </div>
         </div>
@@ -99,7 +86,7 @@ import client from "../../mixins/client";
 import _ from "lodash";
 
 export default {
-  name: "ClientListItem",
+  name: "ClientGroupListItem",
 
   mixins: [client],
 
@@ -118,11 +105,11 @@ export default {
     },
 
     activeSubscription() {
-      return this.client.active_subscriptions[this.client.active_subscriptions.length -1]
+      return _(this.client.active_subscriptions).filter({subscriable_id:this.$route.params.id}).last();
     },
 
     inactiveSubscription() {
-      return _(this.client.inactive_subscriptions).last();
+      return _(this.client.inactive_subscriptions).filter({subscriable_id:this.$route.params.id}).last();
     },
 
     lastVisitHistoryRecord(){
@@ -157,8 +144,7 @@ export default {
         "days"
       );
       const now = this.$moment().startOf("day");
-      const sub = this.client.active_subscriptions;
-      // sub = null;
+
       console.log(this.activeSubscription)
       if (Math.abs(date.diff(now, "days")) === 0) {
         return "Сегодня";

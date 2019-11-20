@@ -9,6 +9,8 @@
         Неактивированный абонемент
       </div>
 
+    </v-card-text>
+
 
           <v-list>
             <v-list-item>
@@ -20,7 +22,7 @@
                     Абонемент в зал
                 </div>
                 <div v-else>
-                    <v-list-item :to="{ name: 'groups-id', params: { id: group.id } }" style="padding: 0">
+                    <v-list-item v-if="group" :to="{ name: 'groups-id', params: { id: group.id } }" style="padding: 0">
                       <v-list-item-content>
                         Абонемент группу {{ group.title }}
                       </v-list-item-content>
@@ -36,7 +38,7 @@
                 <div v-if=isActive>
                   <div v-if="this.subscription.frozen_till > this.$moment().format('ll')" class="body-2 blue--text">
                     <div>
-                      Заморожен с {{ this.subscription.frozen_start }} - по {{ this.subscription.frozen_till }}
+                      Заморожен с {{ $moment.utc(this.subscription.frozen_start).format('DD-MM-YYYY') }} - по {{ $moment.utc(this.subscription.frozen_till).format('DD-MM-YYYY') }}
                     </div>
                     <div v-if="this.subscription.frozen_start <= this.$moment()">
                       Дней заморозки осталось {{diff}}
@@ -44,7 +46,7 @@
                   </div>
                   <div class="body-2">
                     Действителен
-                    с {{ this.subscription.issue_date }} &mdash; по {{ this.subscription.valid_till }}
+                    с {{ $moment.utc(this.subscription.issue_date).format('DD-MM-YYYY') }} &mdash; по {{ $moment.utc(this.subscription.valid_till).format('DD-MM-YYYY') }}
                   </div>
                 </div>
                 <div v-else-if=!isActive
@@ -53,7 +55,7 @@
                   <v-icon middle color="orange">
                     mdi-clock
                   </v-icon>
-                  Будет активирован {{this.subscription.issue_date}}
+                  Будет активирован {{ $moment.utc(this.subscription.issue_date).format('DD-MM-YYYY') }}
                 </div>
               </v-list-item-content>
             </v-list-item>
@@ -67,7 +69,7 @@
         <!--          width="200"-->
         <!--        />-->
         <!--      </v-col>-->
-    </v-card-text>
+
 
 
 
@@ -93,7 +95,16 @@
       >
         Отменить заморозку
       </v-btn>
-      <v-btn v-if="this.subscription.sold == true"
+
+      <v-btn v-if="this.subscription.sold == false"
+             color="red"
+             text
+             @click="sellItem()"
+      >
+        Оформить продажу
+      </v-btn>
+
+      <v-btn
               color="primary"
               text
               small
@@ -101,19 +112,14 @@
       >
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
-      <v-btn v-if="this.subscription.sold == false"
-              color="red"
-              text
-              @click="sellItem()"
-      >
-      Оформить продажу
-      </v-btn>
+
 
     </v-card-actions>
     <subscription-dialog
             ref="subscriptionDialog"
             title="Правка абонемента"
             :subscription="subscription"
+            :client="client"
             is-edit
     />
     <subscription-freeze-dialog

@@ -15,24 +15,23 @@
       </v-toolbar>
 
       <v-card-text>
-        <v-form>
-          <v-select
-            v-model="form.payment_method"
-            :items="paymentMethods"
-            label="Способ оплаты"
-          />
-        </v-form>
-
-        <div>К оплате:</div>
-        <p class="display-1 text--primary">{{ finalPrice }} &#8381;</p>
+        <training-session-form
+          v-model="form"
+          :trainers="$store.getters['trainers/all']"
+        />
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
+import TrainingSessionForm from "./TrainingSessionForm";
 export default {
-  name: "SubscriptionSellDialog",
+  name: "TrainingSessionDialog",
+
+  components: {
+    TrainingSessionForm
+  },
 
   props: {
     fullscreen: {
@@ -45,10 +44,9 @@ export default {
       default: ""
     },
 
-    subscription: {
-      type: Object,
-      required: false,
-      default: () => ({})
+    trainers: {
+      type: Array,
+      default: () => []
     }
   },
 
@@ -58,26 +56,14 @@ export default {
     resolve: null,
     reject: null,
 
-    paymentMethods: [
-      { value: "cash", text: "Наличные" },
-      { value: "transfer", text: "Перевод на карту" },
-      { value: "card", text: "Оплата картой" }
-    ],
-
-    form: {
-      quantity: 1,
-      price: 1,
-      payment_method: 1
-    }
+    form: {}
   }),
 
-  computed: {
-    finalPrice() {
-      return this.subscription.cost;
+  created() {
+    if (this.group) {
+      Object.assign(this.form, this.group);
     }
   },
-
-  created() {},
 
   methods: {
     open() {

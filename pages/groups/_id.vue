@@ -8,39 +8,6 @@
           @update="loadRelated()"
           @delete="$router.back()"
         />
-
-        <v-card>
-          <v-card-text>
-            <div class="overline">
-              Расписание
-            </div>
-          </v-card-text>
-
-          <v-skeleton-loader
-            :loading="schedules.length === 0"
-            type="list-item-two-line, list-item-two-line"
-          >
-            <v-list two-line>
-              <schedule-mini-list-item
-                v-for="(schedule, index) in schedules"
-                :key="'schedule' + index"
-                :schedule="schedule"
-              />
-            </v-list>
-          </v-skeleton-loader>
-        </v-card>
-      </v-flex>
-
-      <v-flex xs12 sm6 lg8 xl9>
-        <v-card>
-          <v-card-text>
-            <div class="overline">
-              Тренировки
-            </div>
-          </v-card-text>
-
-          <group-event-calendar :group="group" />
-        </v-card>
       </v-flex>
     </v-layout>
 
@@ -56,7 +23,8 @@
           :items="props.items"
         >
           <v-list-item-content class="py-0">
-            <client-list-item :client="itemProps.item" />
+
+            <client-group-list-item :client="itemProps.item" />
           </v-list-item-content>
 
           <v-list-item-action class="my-0">
@@ -100,7 +68,6 @@
       </template>
 
       <v-tooltip
-        v-if="group.clients_count < group.max_members"
         left
         :value="tooltips"
       >
@@ -130,8 +97,8 @@ import Confirm from "../../components/Confirm";
 import GroupEventCalendar from "../../components/groups/GroupEventCalendar";
 import ClientListHeader from "../../components/clients/ClientListHeader";
 import ClientListCard from "../../components/clients/ClientListCard";
-import ClientListItem from "../../components/clients/ClientListItem";
 import ScheduleMiniListItem from "../../components/schedule/ScheduleMiniListItem";
+import ClientGroupListItem from "../../components/clients/ClientGroupListItem";
 
 export default {
   head() {
@@ -142,7 +109,7 @@ export default {
 
   components: {
     ScheduleMiniListItem,
-    ClientListItem,
+    ClientGroupListItem,
     ClientListCard,
     ClientListHeader,
     GroupEventCalendar,
