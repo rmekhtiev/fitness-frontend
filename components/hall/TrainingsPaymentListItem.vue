@@ -6,7 +6,7 @@
       <v-flex xs2 class="text-left">{{
         $t("methods." + trainingsPayment.method)
       }}</v-flex>
-      <v-flex xs2 class="text-left">{{ trainingsPayment.quantity }}</v-flex>
+      <v-flex xs2 class="text-left" v-if="training">{{ training.quantity }}</v-flex>
       <v-flex xs2 class="text-right"
         >{{ trainingsPayment.cost / 2 }}/{{
           trainingsPayment.cost / 2
