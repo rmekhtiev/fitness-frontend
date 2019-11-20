@@ -475,7 +475,11 @@ export default {
     },
 
     openTrainingSessionsDialog() {
-      this.$refs.trainingSessionDialog.open();
+      this.$refs.trainingSessionDialog.open().then(form => {
+        form.client_id = this.$route.params.id;
+
+        this.$axios.post("training-sessions", form);
+      });
     },
 
     loadLockerClaims() {

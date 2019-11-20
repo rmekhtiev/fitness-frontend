@@ -107,8 +107,6 @@ export default {
         .omitBy(_.isUndefined)
         .value();
     }
-
-
   },
 
   fetch({ store, params }) {
@@ -116,9 +114,9 @@ export default {
       store.dispatch("halls/loadAll"),
 
       store.dispatch("clients/loadPage", {
-      options: {
-        page: 1
-      }
+        options: {
+          page: 1
+        }
       })
     ]);
   },
