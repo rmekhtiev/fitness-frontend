@@ -15,7 +15,7 @@
       </v-toolbar>
 
       <v-card-text>
-        <subscription-form :subscription="subscription" v-model="form" :is-edit="isEdit" />
+        <subscription-form :subscription="subscription" :client="client" v-model="form" :is-edit="isEdit" />
       </v-card-text>
     </v-card>
   </v-dialog>

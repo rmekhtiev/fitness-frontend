@@ -379,6 +379,7 @@ export default {
       this.loadActiveSubscriptions(),
       this.loadInactiveSubscriptions(),
       this.loadIdentifiers(),
+      this.loadFilteredGroups(),
     ]);
   },
 
@@ -477,6 +478,13 @@ export default {
                   this.loading.subscriptions = false;
                 });
               });
+    },
+    loadFilteredGroups() {
+      return this.$store.dispatch("groups/loadWhere", {
+        filter: {
+          hall_id: this.client.primary_hall_id
+        }
+      });
     },
 
     loadInactiveSubscriptions() {

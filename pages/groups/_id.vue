@@ -56,7 +56,8 @@
           :items="props.items"
         >
           <v-list-item-content class="py-0">
-            <client-list-item :client="itemProps.item" />
+
+            <client-group-list-item :client="itemProps.item" />
           </v-list-item-content>
 
           <v-list-item-action class="my-0">
@@ -130,8 +131,8 @@ import Confirm from "../../components/Confirm";
 import GroupEventCalendar from "../../components/groups/GroupEventCalendar";
 import ClientListHeader from "../../components/clients/ClientListHeader";
 import ClientListCard from "../../components/clients/ClientListCard";
-import ClientListItem from "../../components/clients/ClientListItem";
 import ScheduleMiniListItem from "../../components/schedule/ScheduleMiniListItem";
+import ClientGroupListItem from "../../components/clients/ClientGroupListItem";
 
 export default {
   head() {
@@ -142,7 +143,7 @@ export default {
 
   components: {
     ScheduleMiniListItem,
-    ClientListItem,
+    ClientGroupListItem,
     ClientListCard,
     ClientListHeader,
     GroupEventCalendar,

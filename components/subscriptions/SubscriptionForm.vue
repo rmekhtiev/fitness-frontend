@@ -71,6 +71,7 @@
               name="subscriable_type"
               item-text="text"
               item-value="value"
+              :disabled="isEdit"
       />
     <v-autocomplete v-if="value.subscriable_type === 'groups'"
             v-model="value.subscriable_id"
@@ -94,6 +95,7 @@
               min="1"
               type="number"
               label="Цена"
+              :disabled="subscription.sold"
       />
   </v-form>
 </template>
@@ -129,6 +131,12 @@ export default {
       required: false,
       default: () => ({})
     },
+
+      client: {
+          type: Object,
+          required: false,
+          default: () => ({})
+      },
   },
   data: () => ({
     modal: {
@@ -142,6 +150,7 @@ export default {
       { value: null, text: "Зал" }
     ]
   }),
+
 
    computed: {
     defaultForm() {
@@ -157,7 +166,7 @@ export default {
     },
      
     groups() {
-      return this.$store.getters['groups/all'];
+      return this.$store.getters['groups/where']({ filter:{hall_id: this.client.primary_hall_id}});
     },
 
     group() {
@@ -187,6 +196,12 @@ export default {
     close() {
       this.dialog = false;
     },
+
+      selectedHallFilter(item) {
+          return this.selectedHallId === null
+              ? true
+              : item.primary_hall_id === this.selectedHallId;
+      }
   }
 }
 </script>

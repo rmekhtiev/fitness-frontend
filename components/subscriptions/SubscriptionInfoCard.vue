@@ -20,7 +20,7 @@
                     Абонемент в зал
                 </div>
                 <div v-else>
-                    <v-list-item :to="{ name: 'groups-id', params: { id: group.id } }" style="padding: 0">
+                    <v-list-item v-if="group" :to="{ name: 'groups-id', params: { id: group.id } }" style="padding: 0">
                       <v-list-item-content>
                         Абонемент группу {{ group.title }}
                       </v-list-item-content>
@@ -117,6 +117,7 @@
             ref="subscriptionDialog"
             title="Правка абонемента"
             :subscription="subscription"
+            :client="client"
             is-edit
     />
     <subscription-freeze-dialog
