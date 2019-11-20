@@ -87,7 +87,7 @@
       type="error"
       elevation="2"
     >
-              Внимание группа заполнена
+              Внимание, группа заполнена
     </v-alert>
 
       <v-text-field
