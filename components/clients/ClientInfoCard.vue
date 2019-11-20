@@ -107,7 +107,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-card-actions v-if="client.active_subscription">
+      <v-card-actions v-if="client.active_subscriptions">
         <v-spacer />
         <v-btn
                 text

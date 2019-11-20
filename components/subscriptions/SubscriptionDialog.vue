@@ -104,9 +104,6 @@ export default {
     save() {
       this.resolve(this.form)
       this.dialog = false
-      if (this.form.subscriable_type == 'groups') {
-        this.addClientToGroup()
-      }
     },
 
     addClientToGroup() {
