@@ -214,6 +214,14 @@
         </template>
         <span>Привязать идентификатор</span>
       </v-tooltip>
+      <v-tooltip left :value="tooltips">
+        <template v-slot:activator="{ on }">
+          <v-btn fab dark small color="purple" @click.native="openTrainingSessionsDialog">
+            <v-icon>mdi-account-star</v-icon>
+          </v-btn>
+        </template>
+        <span>Индивид. тренировки</span>
+      </v-tooltip>
     </v-speed-dial>
 
     <locker-claim-dialog
@@ -230,8 +238,11 @@
       ref="clientIdentifierDialog"
       :title="'Привязать карточку-идентификатор: ' + client.name"
       :client="client"
-    >
-    </client-identifier-dialog>
+    />
+    <training-session-dialog
+      ref="trainingSessionDialog"
+      :title="'Создать расписание индивидуальных тренировок: ' + client.name"
+    />
   </div>
 </template>
 
@@ -249,6 +260,7 @@ import LockerClaimListItem from "../../components/locker-claims/LockerClaimListI
 import LockerClaimDialog from "../../components/locker-claims/LockerClaimDialog";
 import SubscriptionDialog from "../../components/subscriptions/SubscriptionDialog";
 import ClientIdentifierDialog from "../../components/clients/ClientIdentifierDialog";
+import TrainingSessionDialog from "../../components/training-sessions/TrainingSessionDialog";
 
 export default {
   head() {
@@ -258,6 +270,7 @@ export default {
   },
 
   components: {
+    TrainingSessionDialog,
     ClientIdentifierDialog,
     SubscriptionDialog,
     ClientInfoCard,
@@ -330,6 +343,10 @@ export default {
       };
     },
 
+    trainersFilter() {
+      return {};
+    },
+
     lockerClaims() {
       return this.$store.getters["locker-claims/where"]({
         filter: this.lockerFilter
@@ -366,6 +383,15 @@ export default {
       return this.$store.getters["subscriptions/where"]({
         filter: this.subscriptionFilter
       });
+    },
+
+    trainers() {
+      return this.$store.getters["trainers/where"]({
+        filter: this.trainersFilter,
+        params: {
+          per_page: "-1"
+        }
+      });
     }
   },
 
@@ -394,6 +420,7 @@ export default {
       this.loadInactiveSubscriptions(),
       this.loadIdentifiers(),
       this.loadFilteredGroups(),
+      this.loadTrainers()
     ]);
   },
 
@@ -445,6 +472,10 @@ export default {
           });
         });
       });
+    },
+
+    openTrainingSessionsDialog() {
+      this.$refs.trainingSessionDialog.open();
     },
 
     loadLockerClaims() {
@@ -581,6 +612,18 @@ export default {
         })
         .then(() => {
           this.loading.identifires = false;
+        });
+    },
+
+    loadTrainers() {
+      this.loading.trainers = true;
+
+      return this.$store
+        .dispatch("trainers/loadWhere", {
+          filter: this.trainersFilter
+        })
+        .then(() => {
+          this.loading.trainers = false;
         });
     },
 
