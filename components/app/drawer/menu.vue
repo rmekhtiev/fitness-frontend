@@ -136,16 +136,11 @@ export default {
         title: "Клиенты",
         icon: "mdi-account-multiple-outline",
         to: { name: "clients" }
-        // items: [
-        //   { title: "Активные", icon: "mdi-check-all", to: "clients", params: { status: 'active'} },
-        //   { title: "Просроченный абонемент", icon: "mdi-clock", to: "clients", params: { status: 'expired'}},
-        //   { title: "Без абонемента", icon: "mdi-cancel", to: "clients", params: { status: 'no_subscription'}},
-        //   { title: "Заморожен", icon: "mdi-snowflake", to: "clients", params: { status: 'frozen'}},
-        //   {
-        //     title: "Все клиенты",
-        //     icon: "mdi-account-search-outline",
-        //     to: "clients"}
-        // ]
+      },
+      {
+        title: "Индивидуальные занятия",
+        icon: "mdi-account-multiple-outline",
+        to: { name: "training-sessions" }
       },
       {
         title: "Шкафчики",

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="client" id="client">
+  <div id="client" v-if="client">
     <v-layout row wrap>
       <v-flex xs12 sm6 lg4 xl3>
         <client-info-card :client="client" class="mb-2 mx-auto" />
@@ -10,8 +10,8 @@
           >
             <subscription-info-card
               :client="client"
-              is-active
               :subscription="item"
+              is-active
               class="mb-2 mx-auto"
             />
           </template>
@@ -112,6 +112,62 @@
             />
           </v-card-text>
         </v-card>
+
+        <v-card class="mb-2 mx-auto">
+          <v-card-text>
+            <div class="overline">
+              Индивидуальные тренировки
+            </div>
+          </v-card-text>
+
+          <v-list>
+            <v-list-item v-for="session in trainingSessions" two-line>
+              <v-list-item-content>
+                <v-list-item-title>
+                  <router-link
+                    :to="{
+                      name: 'trainers-id',
+                      params: { id: session.trainer_id }
+                    }"
+                  >
+                    {{
+                      $store.getters["trainers/byId"]({
+                        id: session.trainer_id
+                      })
+                        ? $store.getters["trainers/byId"]({
+                            id: session.trainer_id
+                          }).name
+                        : "Неизвестно"
+                    }}
+                  </router-link>
+                </v-list-item-title>
+                <v-list-item-subtitle>{{ session.count }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-menu bottom left>
+                  <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" icon>
+                      <v-icon>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                  </template>
+
+                  <v-list dense flat>
+                    <v-list-item>
+                      <v-list-item-icon>
+                        <v-icon>mdi-cash-usd-outline</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-content class="pr-6">
+                        <v-list-item-title>Оформить продажу</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-flex>
+      <v-flex xs12 sm6 lg4 xl3>
         <v-card class="mb-2 mx-auto">
           <v-card-text>
             <div class="overline">
@@ -132,7 +188,10 @@
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-subtitle>
-                    с {{ $moment.utc(item.issue_date).format('DD-MM-YYYY') }} &mdash; по {{ $moment.utc(item.valid_till).format('DD-MM-YYYY') }}
+                    с
+                    {{ $moment.utc(item.issue_date).format("DD-MM-YYYY") }}
+                    &mdash; по
+                    {{ $moment.utc(item.valid_till).format("DD-MM-YYYY") }}
                   </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
@@ -178,48 +237,62 @@
           </v-icon>
         </v-btn>
       </template>
-      <v-tooltip left :value="tooltips">
+      <v-tooltip :value="tooltips" left>
         <template v-slot:activator="{ on }">
           <v-btn
+            @click.native="openLockerClaimDialog"
             fab
             dark
             small
             color="green"
-            @click.native="openLockerClaimDialog"
           >
             <v-icon>mdi-locker</v-icon>
           </v-btn>
         </template>
         <span>Шкафчик</span>
       </v-tooltip>
-      <v-tooltip left :value="tooltips">
+      <v-tooltip :value="tooltips" left>
         <template v-slot:activator="{ on }">
           <v-btn
+            @click.native="openSubscriptionDialog"
             fab
             dark
             small
             color="red"
-            @click.native="openSubscriptionDialog"
           >
             <v-icon>mdi-account-badge-horizontal-outline</v-icon>
           </v-btn>
         </template>
         <span>Абонемент</span>
       </v-tooltip>
-      <v-tooltip left :value="tooltips">
+      <v-tooltip :value="tooltips" left>
         <template v-slot:activator="{ on }">
-          <v-btn fab dark small color="blue" @click.native="addIdentifier">
+          <v-btn @click.native="addIdentifier" fab dark small color="blue">
             <v-icon>mdi-qrcode</v-icon>
           </v-btn>
         </template>
         <span>Привязать идентификатор</span>
       </v-tooltip>
+      <v-tooltip :value="tooltips" left>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            @click.native="openTrainingSessionsDialog"
+            fab
+            dark
+            small
+            color="purple"
+          >
+            <v-icon>mdi-account-star</v-icon>
+          </v-btn>
+        </template>
+        <span>Индивид. тренировки</span>
+      </v-tooltip>
     </v-speed-dial>
 
     <locker-claim-dialog
       ref="lockerClaimDialog"
-      title="Новая бронь шкафчика"
       :client="client"
+      title="Новая бронь шкафчика"
     />
     <subscription-dialog
       ref="subscriptionDialog"
@@ -230,8 +303,11 @@
       ref="clientIdentifierDialog"
       :title="'Привязать карточку-идентификатор: ' + client.name"
       :client="client"
-    >
-    </client-identifier-dialog>
+    />
+    <training-session-dialog
+      ref="trainingSessionDialog"
+      :title="'Создать расписание индивидуальных тренировок: ' + client.name"
+    />
   </div>
 </template>
 
@@ -249,6 +325,7 @@ import LockerClaimListItem from "../../components/locker-claims/LockerClaimListI
 import LockerClaimDialog from "../../components/locker-claims/LockerClaimDialog";
 import SubscriptionDialog from "../../components/subscriptions/SubscriptionDialog";
 import ClientIdentifierDialog from "../../components/clients/ClientIdentifierDialog";
+import TrainingSessionDialog from "../../components/training-sessions/TrainingSessionDialog";
 
 export default {
   head() {
@@ -258,6 +335,7 @@ export default {
   },
 
   components: {
+    TrainingSessionDialog,
     ClientIdentifierDialog,
     SubscriptionDialog,
     ClientInfoCard,
@@ -330,6 +408,16 @@ export default {
       };
     },
 
+    trainersFilter() {
+      return {};
+    },
+
+    trainingSessionsFilter() {
+      return {
+        client_id: this.$route.params.id
+      };
+    },
+
     lockerClaims() {
       return this.$store.getters["locker-claims/where"]({
         filter: this.lockerFilter
@@ -366,6 +454,18 @@ export default {
       return this.$store.getters["subscriptions/where"]({
         filter: this.subscriptionFilter
       });
+    },
+
+    trainers() {
+      return this.$store.getters["trainers/where"]({
+        filter: this.trainersFilter
+      });
+    },
+
+    trainingSessions() {
+      return this.$store.getters["training-sessions/where"]({
+        filter: this.trainingSessionsFilter
+      });
     }
   },
 
@@ -394,6 +494,8 @@ export default {
       this.loadInactiveSubscriptions(),
       this.loadIdentifiers(),
       this.loadFilteredGroups(),
+      this.loadTrainers(),
+      this.loadTrainingSessions()
     ]);
   },
 
@@ -437,6 +539,7 @@ export default {
         });
       });
     },
+
     addIdentifier() {
       this.$refs.clientIdentifierDialog.open().then(form => {
         this.$axios.post("identifiers", form).then(async response => {
@@ -444,6 +547,16 @@ export default {
             id: response.data.data.id
           });
         });
+      });
+    },
+
+    openTrainingSessionsDialog() {
+      this.$refs.trainingSessionDialog.open().then(form => {
+        form.client_id = this.$route.params.id;
+
+        this.$axios
+          .post("training-sessions", form)
+          .then(() => this.loadTrainingSessions());
       });
     },
 
@@ -502,6 +615,7 @@ export default {
           });
         });
     },
+
     loadFilteredGroups() {
       return this.$store.dispatch("groups/loadWhere", {
         filter: {
@@ -549,6 +663,7 @@ export default {
           this.loading.groups = false;
         });
     },
+
     loadRecords() {
       this.loading.records = false;
 
@@ -560,6 +675,7 @@ export default {
           this.loading.records = false;
         });
     },
+
     loadSubscriptions() {
       this.loading.subscriptions = true;
 
@@ -581,6 +697,33 @@ export default {
         })
         .then(() => {
           this.loading.identifires = false;
+        });
+    },
+
+    loadTrainers() {
+      this.loading.trainers = true;
+
+      return this.$store
+        .dispatch("trainers/loadWhere", {
+          filter: this.trainersFilter,
+          params: {
+            per_page: "-1"
+          }
+        })
+        .then(() => {
+          this.loading.trainers = false;
+        });
+    },
+
+    loadTrainingSessions() {
+      this.loading.trainingSessions = true;
+
+      return this.$store
+        .dispatch("training-sessions/loadWhere", {
+          filter: this.trainingSessionsFilter
+        })
+        .then(() => {
+          this.loading.trainingSessions = false;
         });
     },
 

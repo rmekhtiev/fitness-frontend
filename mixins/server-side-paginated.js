@@ -24,12 +24,24 @@ export default {
         : 0;
     },
 
+    sortString() {
+      let str = "";
+
+      this.iteratorOptions.sortBy &&
+        this.iteratorOptions.sortBy.forEach((name, index) => {
+          str += (this.iteratorOptions.sortDesc[index] ? "-" : "") + name;
+        });
+
+      return str;
+    },
+
     serverPayload() {
       return {
         filter: this.pureFilter,
         options: {
           page: this.iteratorOptions.page,
-          per_page: this.iteratorOptions.itemsPerPage
+          per_page: this.iteratorOptions.itemsPerPage,
+          sort: this.sortString
         }
       };
     }
