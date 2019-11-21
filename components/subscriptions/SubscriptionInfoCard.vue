@@ -36,17 +36,17 @@
                   Информация об абонементе
                 </v-list-item-subtitle>
                 <div v-if=isActive>
-                  <div v-if="this.subscription.frozen_till > this.$moment().format('ll')" class="body-2 blue--text">
+                  <div v-if="this.$moment(subscription.frozen_till).isAfter(this.$moment())" class="body-2 blue--text">
                     <div>
                       Заморожен с {{ $moment.utc(this.subscription.frozen_start).format('DD-MM-YYYY') }} - по {{ $moment.utc(this.subscription.frozen_till).format('DD-MM-YYYY') }}
                     </div>
-                    <div v-if="this.subscription.frozen_start <= this.$moment()">
+                    <div v-if="this.$moment(subscription.frozen_start).isBefore(this.$moment())">
                       Дней заморозки осталось {{diff}}
                     </div>
                   </div>
                   <div class="body-2">
                     Действителен
-                    с {{ $moment.utc(this.subscription.issue_date).format('DD-MM-YYYY') }} &mdash; по {{ $moment.utc(this.subscription.valid_till).format('DD-MM-YYYY') }}
+                    с {{ $moment(this.subscription.issue_date).format('DD-MM-YYYY') }} &mdash; по {{ $moment.utc(this.subscription.valid_till).format('DD-MM-YYYY') }}
                   </div>
                 </div>
                 <div v-else-if=!isActive
@@ -78,7 +78,7 @@
 
 
       <v-btn
-              v-if="this.subscription.frozen_till < this.$moment().format('ll') || this.subscription.frozen_till == null && this.subscription.sold == true"
+              v-if="this.$moment(subscription.frozen_till).isBefore(this.$moment()) || this.subscription.frozen_till == null && this.subscription.sold == true"
               color="primary"
               text
               small
@@ -88,7 +88,7 @@
         Заморозить
       </v-btn>
       <v-btn
-              v-if="this.subscription.frozen_till > this.$moment().format('ll')"
+              v-if="this.$moment(subscription.frozen_till).isAfter(this.$moment())"
               color="red"
               text
               @click="deleteFreeze()"
