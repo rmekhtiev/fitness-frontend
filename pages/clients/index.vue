@@ -24,6 +24,23 @@
                 @input="loadFiltered"
         />
       </v-flex>
+
+      <v-flex md3>
+        <v-select
+                v-model="filter.primary_hall_id"
+                :items="halls"
+                item-text="title"
+                item-value="id"
+                label="Зал"
+                single-line
+                filled
+                clearable
+                multiple
+                @input="loadFiltered"
+        />
+      </v-flex>
+
+
     </v-layout>
 
     <v-data-iterator
@@ -98,9 +115,13 @@ export default {
   }),
 
   computed: {
+
+    halls() {
+      return this.$store.getters['halls/all'];
+    },
+
     pureFilter() {
       return _({
-        primary_hall_id: this.selectedHallId,
         ...this.filter
       })
         .omitBy(_.isNull)
