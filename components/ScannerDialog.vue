@@ -5,7 +5,7 @@
         <v-btn icon dark @click="close()">
           <v-icon>mdi-close</v-icon>
         </v-btn>
-        <v-toolbar-title>Сканер</v-toolbar-title>
+        <v-toolbar-title>Сканер QR</v-toolbar-title>
         <div class="flex-grow-1" />
         <v-toolbar-items>
           <v-btn dark text @click="close()">
@@ -25,7 +25,6 @@
 import { QrcodeStream } from "vue-qrcode-reader";
 import _ from "lodash";
 
-import selectedHallAware from "../mixins/selected-hall-aware";
 import client from "../mixins/client";
 
 export default {
@@ -35,7 +34,7 @@ export default {
     "qrcode-stream": QrcodeStream
   },
 
-  mixins: [client, selectedHallAware],
+  mixins: [client],
 
   props: {
     fullscreen: {
@@ -106,7 +105,7 @@ export default {
           this.$toast.error("Неизвестный формат");
         }
       } catch (error) {
-        this.$toast.error(error);
+        this.$toast.error('Клиент не найден. Попробуйте еще раз.');
       }
     },
 
@@ -122,7 +121,6 @@ export default {
       this.$axios.post("visit-history-records", {
         datetime:this.$moment(),
         client_id:this.clientId,
-        hall_id: this.selectedHallId,
       }).then(async response => {
         await this.$store.dispatch("visit-history-records/loadById", {
           id: response.data.data.id,
