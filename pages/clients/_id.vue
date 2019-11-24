@@ -402,7 +402,7 @@ export default {
     },
     recordFilter() {
       return {
-        client_id: this.$route.params.id
+        client_id: this.client.id
       };
     },
 
@@ -502,15 +502,7 @@ export default {
       this.loadTrainingSessions()
     ]);
   },
-
-  created() {
-    this.interval = setInterval(() => this.loadRecords(), 3000);
-  },
-
-  beforeDestroy() {
-    clearInterval(this.interval);
-  },
-
+  
   methods: {
     openSubscriptionDialog() {
       this.$refs.subscriptionDialog.open().then(form => {
@@ -669,7 +661,7 @@ export default {
     },
 
     loadRecords() {
-      this.loading.records = false;
+      this.loading.records = true;
 
       return this.$store
         .dispatch("visit-history-records/loadWhere", {
