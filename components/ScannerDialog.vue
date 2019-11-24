@@ -25,6 +25,7 @@
 import { QrcodeStream } from "vue-qrcode-reader";
 import _ from "lodash";
 
+import selectedHallAware from "../mixins/selected-hall-aware";
 import client from "../mixins/client";
 
 export default {
@@ -34,7 +35,7 @@ export default {
     "qrcode-stream": QrcodeStream
   },
 
-  mixins: [client],
+  mixins: [client, selectedHallAware],
 
   props: {
     fullscreen: {
@@ -94,7 +95,8 @@ export default {
           this.text = content;
           this.loadIdentifier(content);
           this.text = content;
-          console.log(this.clientId);
+          console.log('Client Id ' + this.clientId);
+          this.addRecord();
           this.$router.push({
             name: "clients-id",
             params: { id: this.clientId }
@@ -114,6 +116,19 @@ export default {
           identifier: content
         }
       });
+    },
+
+    addRecord() {
+      this.$axios.post("visit-history-records", {
+        datetime:this.$moment(),
+        client_id:this.clientId,
+        hall_id: this.selectedHallId,
+      }).then(async response => {
+        await this.$store.dispatch("visit-history-records/loadById", {
+          id: response.data.data.id,
+        });
+      }),
+              this.$emit("create")
     },
 
     open() {
