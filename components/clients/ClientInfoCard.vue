@@ -202,7 +202,7 @@ export default {
             id: response.data.data.id
           });
         });
-      this.$emit("create");
+      this.$emit("createVisitHistoryRecord");
     }
   }
 };

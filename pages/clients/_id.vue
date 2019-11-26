@@ -2,45 +2,49 @@
   <div id="client" v-if="client">
     <v-layout row wrap>
       <v-flex xs12 sm6 lg4 xl3>
+        <!-- Client info -->
         <client-info-card :client="client" class="mb-2 mx-auto" />
-        <div>
-          <template
-            v-for="item in activeSubscriptions"
-            v-if="client.active_subscriptions.length > 0"
-          >
-            <subscription-info-card
-              :client="client"
-              :subscription="item"
-              is-active
-              class="mb-2 mx-auto"
-            />
-          </template>
-          <template
-            v-for="item in inactiveSubscriptions"
-            v-if="client.inactive_subscriptions.length > 0"
-          >
-            <subscription-info-card
-              :client="client"
-              :subscription="item"
-              class="mb-2 mx-auto"
-            />
-          </template>
-          <v-card
-            v-if="
-              client.active_subscriptions.length == 0 &&
-                client.inactive_subscriptions.length == 0
-            "
-          >
-            <v-card-text>
-              <div class="overline">
-                Активные абонементы отстутсвуют
-              </div>
-            </v-card-text>
-          </v-card>
-        </div>
+
+        <!-- Active subscriptions -->
+        <template
+          v-for="item in activeSubscriptions"
+          v-if="client.active_subscriptions.length > 0"
+        >
+          <subscription-info-card
+            :client="client"
+            :subscription="item"
+            is-active
+            class="mb-2 mx-auto"
+          />
+        </template>
+        <!-- Inactive subscriptions -->
+        <template
+          v-for="item in inactiveSubscriptions"
+          v-if="client.inactive_subscriptions.length > 0"
+        >
+          <subscription-info-card
+            :client="client"
+            :subscription="item"
+            class="mb-2 mx-auto"
+          />
+        </template>
+        <!-- No subscriptions -->
+        <v-card
+          v-if="
+            client.active_subscriptions.length == 0 &&
+              client.inactive_subscriptions.length == 0
+          "
+        >
+          <v-card-text>
+            <div class="overline">
+              Активные абонементы отстутсвуют
+            </div>
+          </v-card-text>
+        </v-card>
       </v-flex>
 
       <v-flex xs12 sm6 lg4 xl3>
+        <!-- Lockers info -->
         <v-card class="mb-2 mx-auto">
           <v-card-text>
             <div class="overline">
@@ -74,6 +78,8 @@
             />
           </v-card-text>
         </v-card>
+
+        <!-- Groups info -->
         <v-card class="mb-2 mx-auto">
           <v-card-text>
             <div class="overline">
@@ -113,11 +119,12 @@
           </v-card-text>
         </v-card>
 
+        <!-- Training sessions -->
         <training-session-info-card
           v-for="(session, index) in trainingSessions"
           :key="'training-session' + index"
           :session="session"
-          @sell="method => sellTrainingSession(session, method)"
+          @update="loadTrainingSessions"
         />
       </v-flex>
       <v-flex xs12 sm6 lg4 xl3>
@@ -425,12 +432,6 @@ export default {
   },
 
   fetch: ({ store, params, $moment }) => {
-    // eslint-disable-next-line no-unused-vars
-    const lockerClaimsFilter = {
-      client_id: params.id,
-      after: $moment().format("YYYY-MM-DD")
-    };
-
     return Promise.all([
       store.dispatch("clients/loadById", {
         id: params.id
@@ -641,14 +642,6 @@ export default {
         .then(() => {
           this.loading.subscriptions = false;
         });
-    },
-
-    sellTrainingSession(session, method = "cash") {
-      return this.$axios
-        .post("training-sessions/" + session.id + "/sell", {
-          payment_method: method
-        })
-        .then(() => this.loadTrainingSessions());
     },
 
     loadIdentifiers() {

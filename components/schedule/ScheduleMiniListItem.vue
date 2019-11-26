@@ -7,10 +7,14 @@
           {{ $moment(schedule.start_date).format("HH:mm") }} -
           {{ $moment(schedule.end_date).format("HH:mm") }}
         </v-list-item-title>
-        <v-list-item-subtitle>
+
+        <v-list-item-subtitle v-if="schedule.recurrence_type === null">
+          {{ $moment(schedule.start_date).format("LL") }}
+        </v-list-item-subtitle>
+        <v-list-item-subtitle v-else>
           {{ $t("schedule.repeat." + schedule.recurrence_type) }}
           <template v-if="schedule.recurrence_until">
-            до {{ $moment(schedule.start_date).format("LL") }}
+            до {{ $moment(schedule.recurrence_until).format("LL") }}
           </template>
         </v-list-item-subtitle>
       </v-list-item-content>
@@ -57,11 +61,11 @@ export default {
   props: {
     schedule: {
       type: Object,
-      default: () => null
+      required: true
     }
   },
   methods: {
-    confirmDelete() {
+    deleteItem() {
 
     }
   }
