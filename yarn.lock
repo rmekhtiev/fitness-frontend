@@ -2794,6 +2794,11 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
+date-fns@^2.1.0:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.8.1.tgz#2109362ccb6c87c3ca011e9e31f702bc09e4123b"
+  integrity sha512-EL/C8IHvYRwAHYgFRse4MGAPSqlJVlOrhVYZ75iQBKrnv+ZedmYsgwH3t+BCDuZDXpoo07+q9j4qgSSOa7irJg==
+
 de-indent@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/de-indent/-/de-indent-1.0.2.tgz#b2038e846dc33baa5796128d0804b455b8c1e21d"
@@ -8565,6 +8570,15 @@ vuelidate@^0.7.4:
   resolved "https://registry.yarnpkg.com/vuelidate/-/vuelidate-0.7.4.tgz#5a0e54be09ac0192f1aa3387d74b92e0945bf8aa"
   integrity sha512-QHZWYOL325Zo+2K7VBNEJTZ496Kd8Z31p85aQJFldKudUUGBmgw4zu4ghl4CyqPwjRCmqZ9lDdx4FSdMnu4fGg==
 
+vuetify-datetime-picker@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/vuetify-datetime-picker/-/vuetify-datetime-picker-2.1.1.tgz#582341b65fa6e8036cb10d7e56a90d9989335ad9"
+  integrity sha512-xY3YCVNxoe/5Chbm7G2BXrkg12CWLWwnDJZdhNPVKe1p8S72H8NomYOB6SSBzMMEHisRGIRzAQTDwDfDU06x/Q==
+  dependencies:
+    date-fns "^2.1.0"
+    vue "^2.6.10"
+    vuetify "^2.1.3"
+
 vuetify-loader@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/vuetify-loader/-/vuetify-loader-1.3.0.tgz#759f1d16f3f211eddbeeffc5c0b24105f2582b07"
@@ -8576,6 +8590,11 @@ vuetify@^2.0.11, vuetify@^2.1.0:
   version "2.1.9"
   resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-2.1.9.tgz#2c91163090675cde2cd1b6208829ac434d7d8877"
   integrity sha512-52CgEyPoGYHba5yocYKBB/LXcikoWzj9jCDTH8LlzH/hvjzkgsuEtFwUustGHyV9GstRaNZOrk4nuUWbPZc3kQ==
+
+vuetify@^2.1.3:
+  version "2.1.11"
+  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-2.1.11.tgz#cd9b6ce90763e69017932153aab39bc6861c7226"
+  integrity sha512-WkHtAeCQldbESC/wsUCXdBt3i+Wph56IWVvWNJO35tB4tFqqRLmbbCO/c5m+pdm5Byg36rs48+R+96Herxs+gA==
 
 vuex-persistedstate@^2.5.4:
   version "2.7.0"
