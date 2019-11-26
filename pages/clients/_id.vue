@@ -113,63 +113,12 @@
           </v-card-text>
         </v-card>
 
-        <v-card class="mb-2 mx-auto">
-          <v-card-text>
-            <div class="overline">
-              Индивидуальные тренировки
-            </div>
-          </v-card-text>
-
-          <v-list>
-            <v-list-item v-for="session in trainingSessions" two-line>
-              <v-list-item-content>
-                <v-list-item-title>
-                  <router-link
-                    :to="{
-                      name: 'trainers-id',
-                      params: { id: session.trainer_id }
-                    }"
-                  >
-                    {{
-                      $store.getters["trainers/byId"]({
-                        id: session.trainer_id
-                      })
-                        ? $store.getters["trainers/byId"]({
-                            id: session.trainer_id
-                          }).name
-                        : "Неизвестно"
-                    }}
-                  </router-link>
-                </v-list-item-title>
-                <v-list-item-subtitle>{{ session.count }}</v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action>
-                <v-menu bottom left>
-                  <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" icon>
-                      <v-icon>mdi-dots-vertical</v-icon>
-                    </v-btn>
-                  </template>
-
-                  <v-list dense flat>
-                    <template
-                      v-if="!session.sold"
-                      @click="sellTrainingSession(session)">
-                      <v-list-item v-for="method in ['cash', 'transfer', 'card']" @click="sellTrainingSession(session, method)">
-                        <v-list-item-icon>
-                          <v-icon>mdi-cash-usd-outline</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content class="pr-6">
-                          <v-list-item-title>Оформить продажу: {{ $t('methods.' + method) }}</v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </template>
-                  </v-list>
-                </v-menu>
-              </v-list-item-action>
-            </v-list-item>
-          </v-list>
-        </v-card>
+        <training-session-info-card
+          v-for="(session, index) in trainingSessions"
+          :key="'training-session' + index"
+          :session="session"
+          @sell="method => sellTrainingSession(session, method)"
+        />
       </v-flex>
       <v-flex xs12 sm6 lg4 xl3>
         <v-card class="mb-2 mx-auto">
@@ -330,6 +279,7 @@ import LockerClaimDialog from "../../components/locker-claims/LockerClaimDialog"
 import SubscriptionDialog from "../../components/subscriptions/SubscriptionDialog";
 import ClientIdentifierDialog from "../../components/clients/ClientIdentifierDialog";
 import TrainingSessionDialog from "../../components/training-sessions/TrainingSessionDialog";
+import TrainingSessionInfoCard from "../../components/training-sessions/TrainingSessionInfoCard";
 
 export default {
   head() {
@@ -339,6 +289,7 @@ export default {
   },
 
   components: {
+    TrainingSessionInfoCard,
     TrainingSessionDialog,
     ClientIdentifierDialog,
     SubscriptionDialog,

@@ -12,20 +12,20 @@
           <div style="position: absolute; right: .5rem; top: .5rem;">
             <v-btn
               v-if="isHallAdmin || isOwner"
+              @click="updateClient()"
               color="primary"
               text
               small
-              @click="updateClient()"
             >
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
 
             <v-btn
               v-if="link"
+              :to="{ name: 'clients-id', params: { id: client.id } }"
               color="primary"
               text
               small
-              :to="{ name: 'clients-id', params: { id: client.id } }"
               target="_blank"
             >
               <v-icon>mdi-open-in-new</v-icon>
@@ -109,21 +109,17 @@
       </v-list>
       <v-card-actions v-if="client.active_subscriptions">
         <v-spacer />
-        <v-btn
-                text
-               color="primary"
-               @click="addRecord()"
-        >
+        <v-btn @click="addRecord()" text color="primary">
           Зафиксировать посещение
         </v-btn>
       </v-card-actions>
     </v-card>
 
     <client-dialog
-      v-if="isHallAdmin || isOwner"
       ref="edit"
-      title="Редактирование клиента"
+      v-if="isHallAdmin || isOwner"
       :client="client"
+      title="Редактирование клиента"
       is-edit
     />
   </div>
@@ -195,17 +191,19 @@ export default {
     },
 
     addRecord() {
-      this.$axios.post("visit-history-records", {
-        datetime:this.$moment(),
-        client_id:this.client.id,
-        hall_id:this.client.primary_hall_id
-      }).then(async response => {
-        await this.$store.dispatch("visit-history-records/loadById", {
-          id: response.data.data.id,
+      this.$axios
+        .post("visit-history-records", {
+          datetime: this.$moment(),
+          client_id: this.client.id,
+          hall_id: this.client.primary_hall_id
+        })
+        .then(response => {
+          this.$store.dispatch("visit-history-records/loadById", {
+            id: response.data.data.id
+          });
         });
-      }),
-              this.$emit("create")
-    },
+      this.$emit("create");
+    }
   }
 };
 </script>
