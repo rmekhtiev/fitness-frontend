@@ -48,7 +48,7 @@
           </v-icon>
         </v-btn>
       </template>
-      <v-tooltip :value="tooltips" left>
+      <v-tooltip :value="tooltips" left v-if="schedules.length < session.count">
         <template v-slot:activator="{ on }">
           <v-btn
             @click.native="openScheduleDialog"
@@ -109,9 +109,22 @@ export default {
       };
     },
 
+    schedulesPastFilter() {
+      return {
+        ...this.schedulesFilter,
+        after: this.$moment().format("YYYY-MM-DD HH:mm")
+      };
+    },
+
     schedules() {
       return this.$store.getters["schedules/where"]({
         filter: this.schedulesFilter
+      });
+    },
+
+    schedulesPast() {
+      return this.$store.getters["schedules/where"]({
+        filter: this.schedulesPastFilter
       });
     }
   },
@@ -138,7 +151,8 @@ export default {
         this.loadClient(),
         this.loadTrainer(),
         this.loadTrainers(),
-        this.loadSchedules()
+        this.loadSchedules(),
+        this.loadSchedulesPast()
       ]);
     },
 
@@ -180,6 +194,23 @@ export default {
         })
         .then(() => {
           this.loading.schedules = false;
+
+          this.loadSchedulesPast();
+        });
+    },
+
+    loadSchedulesPast() {
+      this.loading.schedulesPast = true;
+
+      return this.$store
+        .dispatch("schedules/loadWhere", {
+          filter: this.schedulesPastFilter,
+          params: {
+            per_page: -1
+          }
+        })
+        .then(() => {
+          this.loading.schedulesPast = false;
         });
     },
 

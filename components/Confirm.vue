@@ -64,7 +64,7 @@ export default {
     message: null,
     title: null,
     options: {
-      color: "primary",
+      color: "red",
       width: 290,
       zIndex: 200
     }
