@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-card :class="classes" :to="to">
+  <v-card :class="classes" :to="to">
+    <template v-if="client">
       <v-list-item>
         <v-list-item-avatar color="grey" />
         <v-list-item-content>
@@ -113,16 +113,20 @@
           Зафиксировать посещение
         </v-btn>
       </v-card-actions>
-    </v-card>
 
-    <client-dialog
-      ref="edit"
-      v-if="isHallAdmin || isOwner"
-      :client="client"
-      title="Редактирование клиента"
-      is-edit
+      <client-dialog
+        ref="edit"
+        v-if="isHallAdmin || isOwner"
+        :client="client"
+        title="Редактирование клиента"
+        is-edit
+      />
+    </template>
+    <v-skeleton-loader
+      v-else
+      type="list-item-avatar-two-line, list-item-avatar-two-line, list-item-avatar-two-line, list-item-avatar-two-line, list-item-avatar-two-line, actions"
     />
-  </div>
+  </v-card>
 </template>
 
 <script>

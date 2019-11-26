@@ -124,6 +124,7 @@
           v-for="(session, index) in trainingSessions"
           :key="'training-session' + index"
           :session="session"
+          display-trainer
           @update="loadTrainingSessions"
         />
       </v-flex>

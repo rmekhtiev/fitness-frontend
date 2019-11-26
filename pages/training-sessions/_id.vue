@@ -4,9 +4,13 @@
       <v-flex xs12 sm6 lg4 xl3>
         <training-session-info-card
           :session="session"
-          @update="loadTrainingSession"
+          @update="Promise.all([loadTrainingSession(), loadTrainingSession()])"
+          display-client
+          display-trainer
           class="mb-2 mx-auto"
         />
+
+        <client-info-card :client="client" class="mb-2 mx-auto" />
       </v-flex>
       <v-flex xs12 sm6 lg4 xl3>
         <v-card class="mb-2 mx-auto">
@@ -48,7 +52,7 @@
           </v-icon>
         </v-btn>
       </template>
-      <v-tooltip :value="tooltips" left v-if="schedules.length < session.count">
+      <v-tooltip :value="tooltips" v-if="schedules.length < session.count" left>
         <template v-slot:activator="{ on }">
           <v-btn
             @click.native="openScheduleDialog"
@@ -79,9 +83,11 @@ import ScheduleMiniListItem from "../../components/schedule/ScheduleMiniListItem
 
 import fabWithTooltips from "../../mixins/fab-with-tooltips";
 import ScheduleDialog from "../../components/schedule/ScheduleDialog";
+import ClientInfoCard from "../../components/clients/ClientInfoCard";
 
 export default {
   components: {
+    ClientInfoCard,
     ScheduleDialog,
     ScheduleMiniListItem,
     TrainingSessionInfoCard
@@ -99,6 +105,12 @@ export default {
     session() {
       return this.$store.getters["training-sessions/byId"]({
         id: this.$route.params.id
+      });
+    },
+
+    client() {
+      return this.$store.getters["clients/byId"]({
+        id: this.session.client_id
       });
     },
 

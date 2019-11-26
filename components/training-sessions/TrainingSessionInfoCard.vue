@@ -7,7 +7,11 @@
     </v-card-text>
 
     <v-list two-line>
-      <v-skeleton-loader :loading="!trainer" type="list-item-two-line">
+      <v-skeleton-loader
+        v-if="displayTrainer"
+        :loading="!trainer"
+        type="list-item-two-line"
+      >
         <v-list-item
           :to="{ name: 'trainers-id', params: { id: session.trainer_id } }"
         >
@@ -15,6 +19,23 @@
             <v-list-item-subtitle class="caption">Тренер</v-list-item-subtitle>
             <v-list-item-title v-if="trainer">
               {{ trainer.name }}
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-skeleton-loader>
+
+      <v-skeleton-loader
+        v-if="displayClient"
+        :loading="!client"
+        type="list-item-two-line"
+      >
+        <v-list-item
+          :to="{ name: 'clients-id', params: { id: session.client_id } }"
+        >
+          <v-list-item-content>
+            <v-list-item-subtitle class="caption">Клиент</v-list-item-subtitle>
+            <v-list-item-title v-if="client">
+              {{ client.name }}
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -81,6 +102,14 @@ export default {
     session: {
       type: Object,
       required: true
+    },
+    displayTrainer: {
+      type: Boolean,
+      default: false
+    },
+    displayClient: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -88,6 +117,11 @@ export default {
     trainer() {
       return this.$store.getters["trainers/byId"]({
         id: this.session.trainer_id
+      });
+    },
+    client() {
+      return this.$store.getters["clients/byId"]({
+        id: this.session.client_id
       });
     }
   }
