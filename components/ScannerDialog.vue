@@ -5,7 +5,7 @@
         <v-btn icon dark @click="close()">
           <v-icon>mdi-close</v-icon>
         </v-btn>
-        <v-toolbar-title>Сканер</v-toolbar-title>
+        <v-toolbar-title>Сканер QR</v-toolbar-title>
         <div class="flex-grow-1" />
         <v-toolbar-items>
           <v-btn dark text @click="close()">
@@ -94,7 +94,8 @@ export default {
           this.text = content;
           this.loadIdentifier(content);
           this.text = content;
-          console.log(this.clientId);
+          console.log('Client Id ' + this.clientId);
+          this.addRecord();
           this.$router.push({
             name: "clients-id",
             params: { id: this.clientId }
@@ -104,7 +105,7 @@ export default {
           this.$toast.error("Неизвестный формат");
         }
       } catch (error) {
-        this.$toast.error(error);
+        this.$toast.error('Клиент не найден. Попробуйте еще раз.');
       }
     },
 
@@ -114,6 +115,18 @@ export default {
           identifier: content
         }
       });
+    },
+
+    addRecord() {
+      this.$axios.post("visit-history-records", {
+        datetime:this.$moment(),
+        client_id:this.clientId,
+      }).then(async response => {
+        await this.$store.dispatch("visit-history-records/loadById", {
+          id: response.data.data.id,
+        });
+      }),
+              this.$emit("create")
     },
 
     open() {

@@ -41,7 +41,8 @@ export default {
     "@/plugins/reststate-vuex",
     "@/plugins/vuelidate",
     "@/plugins/vue-the-mask",
-    "@/plugins/vue-i18n"
+    "@/plugins/vue-i18n",
+    "@/plugins/vuetify-datetime-picker"
   ],
   /*
    ** Nuxt.js dev-modules

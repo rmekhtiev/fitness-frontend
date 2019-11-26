@@ -59,12 +59,25 @@
         </v-card>
       </template>
     </v-data-iterator>
+    <v-btn
+      color="primary"
+      dark
+      fab
+      fixed
+      bottom
+      right
+      @click.native="openHallDialog"
+    >
+      <v-icon>mdi-plus</v-icon>
+    </v-btn>
+    <hall-dialog ref="hallDialog" title="Создать зал"> </hall-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import HallListItem from "../../components/hall/HallListItem";
+import HallDialog from "../../components/hall/HallDialog";
 
 export default {
   name: "Index",
@@ -76,6 +89,7 @@ export default {
   },
 
   components: {
+    HallDialog,
     HallListItem
   },
 
@@ -87,6 +101,21 @@ export default {
 
   fetch({ store }) {
     return Promise.all([store.dispatch("halls/loadAll")]);
+  },
+  methods: {
+    openHallDialog() {
+      this.$refs.hallDialog.open().then(form => {
+        this.$axios.post("halls", form).then(async response => {
+          await this.$store.dispatch("halls/loadById", {
+            id: response.data.data.id
+          });
+          this.$router.push({
+            name: "halls-id",
+            params: { id: response.data.data.id }
+          });
+        });
+      });
+    }
   }
 };
 </script>

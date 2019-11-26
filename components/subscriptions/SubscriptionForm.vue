@@ -81,7 +81,7 @@
             item-text="title"
             item-value="id"
     />
-    <v-alert v-if="group && group.clients_count >= group.max_members"
+    <v-alert v-if="group && group.clients_count >= group.max_members && value.subscriable_type === 'groups'"
       border="right"
       colored-border
       type="error"

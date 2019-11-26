@@ -2,45 +2,49 @@
   <div id="client" v-if="client">
     <v-layout row wrap>
       <v-flex xs12 sm6 lg4 xl3>
+        <!-- Client info -->
         <client-info-card :client="client" class="mb-2 mx-auto" />
-        <div>
-          <template
-            v-for="item in activeSubscriptions"
-            v-if="client.active_subscriptions.length > 0"
-          >
-            <subscription-info-card
-              :client="client"
-              :subscription="item"
-              is-active
-              class="mb-2 mx-auto"
-            />
-          </template>
-          <template
-            v-for="item in inactiveSubscriptions"
-            v-if="client.inactive_subscriptions.length > 0"
-          >
-            <subscription-info-card
-              :client="client"
-              :subscription="item"
-              class="mb-2 mx-auto"
-            />
-          </template>
-          <v-card
-            v-if="
-              client.active_subscriptions.length == 0 &&
-                client.inactive_subscriptions.length == 0
-            "
-          >
-            <v-card-text>
-              <div class="overline">
-                Активные абонементы отстутсвуют
-              </div>
-            </v-card-text>
-          </v-card>
-        </div>
+
+        <!-- Active subscriptions -->
+        <template
+          v-for="item in activeSubscriptions"
+          v-if="client.active_subscriptions.length > 0"
+        >
+          <subscription-info-card
+            :client="client"
+            :subscription="item"
+            is-active
+            class="mb-2 mx-auto"
+          />
+        </template>
+        <!-- Inactive subscriptions -->
+        <template
+          v-for="item in inactiveSubscriptions"
+          v-if="client.inactive_subscriptions.length > 0"
+        >
+          <subscription-info-card
+            :client="client"
+            :subscription="item"
+            class="mb-2 mx-auto"
+          />
+        </template>
+        <!-- No subscriptions -->
+        <v-card
+          v-if="
+            client.active_subscriptions.length == 0 &&
+              client.inactive_subscriptions.length == 0
+          "
+        >
+          <v-card-text>
+            <div class="overline">
+              Активные абонементы отстутсвуют
+            </div>
+          </v-card-text>
+        </v-card>
       </v-flex>
 
       <v-flex xs12 sm6 lg4 xl3>
+        <!-- Lockers info -->
         <v-card class="mb-2 mx-auto">
           <v-card-text>
             <div class="overline">
@@ -74,6 +78,8 @@
             />
           </v-card-text>
         </v-card>
+
+        <!-- Groups info -->
         <v-card class="mb-2 mx-auto">
           <v-card-text>
             <div class="overline">
@@ -113,63 +119,14 @@
           </v-card-text>
         </v-card>
 
-        <v-card class="mb-2 mx-auto">
-          <v-card-text>
-            <div class="overline">
-              Индивидуальные тренировки
-            </div>
-          </v-card-text>
-
-          <v-list>
-            <v-list-item v-for="session in trainingSessions" two-line>
-              <v-list-item-content>
-                <v-list-item-title>
-                  <router-link
-                    :to="{
-                      name: 'trainers-id',
-                      params: { id: session.trainer_id }
-                    }"
-                  >
-                    {{
-                      $store.getters["trainers/byId"]({
-                        id: session.trainer_id
-                      })
-                        ? $store.getters["trainers/byId"]({
-                            id: session.trainer_id
-                          }).name
-                        : "Неизвестно"
-                    }}
-                  </router-link>
-                </v-list-item-title>
-                <v-list-item-subtitle>{{ session.count }}</v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action>
-                <v-menu bottom left>
-                  <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" icon>
-                      <v-icon>mdi-dots-vertical</v-icon>
-                    </v-btn>
-                  </template>
-
-                  <v-list dense flat>
-                    <template
-                      v-if="!session.sold"
-                      @click="sellTrainingSession(session)">
-                      <v-list-item v-for="method in ['cash', 'transfer', 'card']" @click="sellTrainingSession(session, method)">
-                        <v-list-item-icon>
-                          <v-icon>mdi-cash-usd-outline</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content class="pr-6">
-                          <v-list-item-title>Оформить продажу: {{ $t('methods.' + method) }}</v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </template>
-                  </v-list>
-                </v-menu>
-              </v-list-item-action>
-            </v-list-item>
-          </v-list>
-        </v-card>
+        <!-- Training sessions -->
+        <training-session-info-card
+          v-for="(session, index) in trainingSessions"
+          :key="'training-session' + index"
+          :session="session"
+          display-trainer
+          @update="loadTrainingSessions"
+        />
       </v-flex>
       <v-flex xs12 sm6 lg4 xl3>
         <v-card class="mb-2 mx-auto">
@@ -330,6 +287,7 @@ import LockerClaimDialog from "../../components/locker-claims/LockerClaimDialog"
 import SubscriptionDialog from "../../components/subscriptions/SubscriptionDialog";
 import ClientIdentifierDialog from "../../components/clients/ClientIdentifierDialog";
 import TrainingSessionDialog from "../../components/training-sessions/TrainingSessionDialog";
+import TrainingSessionInfoCard from "../../components/training-sessions/TrainingSessionInfoCard";
 
 export default {
   head() {
@@ -339,6 +297,7 @@ export default {
   },
 
   components: {
+    TrainingSessionInfoCard,
     TrainingSessionDialog,
     ClientIdentifierDialog,
     SubscriptionDialog,
@@ -402,7 +361,7 @@ export default {
     },
     recordFilter() {
       return {
-        client_id: this.$route.params.id
+        client_id: this.client.id
       };
     },
 
@@ -474,12 +433,6 @@ export default {
   },
 
   fetch: ({ store, params, $moment }) => {
-    // eslint-disable-next-line no-unused-vars
-    const lockerClaimsFilter = {
-      client_id: params.id,
-      after: $moment().format("YYYY-MM-DD")
-    };
-
     return Promise.all([
       store.dispatch("clients/loadById", {
         id: params.id
@@ -502,15 +455,7 @@ export default {
       this.loadTrainingSessions()
     ]);
   },
-
-  created() {
-    this.interval = setInterval(() => this.loadRecords(), 3000);
-  },
-
-  beforeDestroy() {
-    clearInterval(this.interval);
-  },
-
+  
   methods: {
     openSubscriptionDialog() {
       this.$refs.subscriptionDialog.open().then(form => {
@@ -669,7 +614,7 @@ export default {
     },
 
     loadRecords() {
-      this.loading.records = false;
+      this.loading.records = true;
 
       return this.$store
         .dispatch("visit-history-records/loadWhere", {
@@ -690,14 +635,6 @@ export default {
         .then(() => {
           this.loading.subscriptions = false;
         });
-    },
-
-    sellTrainingSession(session, method = "cash") {
-      return this.$axios
-        .post("training-sessions/" + session.id + "/sell", {
-          payment_method: method
-        })
-        .then(() => this.loadTrainingSessions());
     },
 
     loadIdentifiers() {
