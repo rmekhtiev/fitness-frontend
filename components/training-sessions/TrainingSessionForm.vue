@@ -63,8 +63,8 @@ export default {
   computed: {
     defaultForm() {
       return {
-        count: 16,
-        cost: 2000
+        count: 13,
+        cost: 5000
       };
     },
 
