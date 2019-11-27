@@ -23,7 +23,6 @@
           :items="props.items"
         >
           <v-list-item-content class="py-0">
-
             <client-group-list-item :client="itemProps.item" />
           </v-list-item-content>
 
@@ -67,10 +66,7 @@
         </v-btn>
       </template>
 
-      <v-tooltip
-        left
-        :value="tooltips"
-      >
+      <v-tooltip left :value="tooltips">
         <template v-slot:activator="{ on }">
           <v-btn fab dark small color="green" @click.native="addClientToGroup">
             <v-icon>mdi-account</v-icon>
@@ -139,8 +135,13 @@ export default {
     }
   },
 
-  fetch({ store, params }) {
-    return store.dispatch("groups/loadById", { id: params.id });
+  fetch({ store, params, $axios }) {
+    return Promise.all([
+      store.dispatch("groups/loadById", {
+        id: params.id
+      }),
+      $axios.get("groups/" + params.id + "/events")
+    ]);
   },
 
   mounted() {
@@ -149,9 +150,12 @@ export default {
 
   methods: {
     loadResource() {
-      return this.$store.dispatch("groups/loadById", {
-        id: this.$route.params.id
-      });
+      return Promise.all([
+        this.$store.dispatch("groups/loadById", {
+          id: this.$route.params.id
+        }),
+        this.$axios.get("groups/" + this.$route.params.id + "/groups")
+      ]);
     },
 
     addClientToGroup() {
