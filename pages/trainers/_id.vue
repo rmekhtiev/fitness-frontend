@@ -3,6 +3,15 @@
     <v-layout row wrap>
       <v-flex xs12 sm6 lg4 xl3>
         <trainer-info-card :trainer="trainer" class="mb-2 mx-auto" />
+
+        <!-- Training sessions -->
+        <training-session-info-card
+          v-for="(session, index) in trainingSessions"
+          :key="'training-session' + index"
+          :session="session"
+          display-client
+          @update="loadTrainingSessions"
+        />
       </v-flex>
 
       <v-flex xs12 lg6 xl4>
@@ -18,14 +27,6 @@
       </v-flex>
 
       <v-flex xs12 sm6 lg4 xl3>
-        <!-- Training sessions -->
-        <training-session-info-card
-          v-for="(session, index) in trainingSessions"
-          :key="'training-session' + index"
-          :session="session"
-          display-client
-          @update="loadTrainingSessions"
-        />
       </v-flex>
     </v-layout>
   </div>
@@ -68,6 +69,13 @@ export default {
       return {
         trainer_id: this.$route.params.id,
         active: true
+      };
+    },
+
+    unboundTrainingSessionsFilter() {
+      return {
+        trainer_id: this.$route.params.id,
+        bound: false
       };
     },
 
@@ -121,7 +129,10 @@ export default {
   },
 
   mounted() {
-    return Promise.all([this.loadTrainingSessions()]);
+    return Promise.all([
+      this.loadTrainingSessions(),
+      this.loadUnboundTrainingSessions()
+    ]);
   },
 
   methods: {
@@ -134,6 +145,17 @@ export default {
         })
         .then(() => {
           this.loading.trainingSessions = false;
+        });
+    },
+    loadUnboundTrainingSessions() {
+      this.loading.unboundTrainingSessions = true;
+
+      return this.$store
+        .dispatch("training-sessions/loadWhere", {
+          filter: this.unboundTrainingSessionsFilter
+        })
+        .then(() => {
+          this.loading.unboundTrainingSessions = false;
         });
     },
     loadEvents({ start, end }) {
@@ -152,6 +174,7 @@ export default {
           await this.loadEventsSubjects(events);
 
           this.events = events.map(event => {
+            // eslint-disable-next-line standard/computed-property-even-spacing
             const subject = this.$store.getters[
               event.schedulable_type + "/byId"
             ]({
