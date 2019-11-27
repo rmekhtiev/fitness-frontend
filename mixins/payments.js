@@ -34,19 +34,9 @@ export default {
       });
     },
     calculateSum() {
-      const payments = _.concat(
-        this.barPayments,
-        this.trainingsPayments,
-        this.subscriptionsPayments
-      );
+      const payments = _.concat(this.barPayments, this.subscriptionsPayments);
       const result = {
         bar: {
-          cash: 0,
-          card: 0,
-          transfer: 0,
-          total: 0
-        },
-        trainings: {
           cash: 0,
           card: 0,
           transfer: 0,
@@ -82,19 +72,6 @@ export default {
                 break;
             }
             break;
-          case "training-sessions":
-            switch (payments[i].method) {
-              case "cash":
-                result.trainings.cash += cost / 2;
-                break;
-              case "card":
-                result.trainings.card += cost / 2; // делит стоимость на 2, вычисляя долю зала
-                break;
-              case "transfer":
-                result.trainings.transfer += cost / 2;
-                break;
-            }
-            break;
           case "subscriptions":
             switch (payments[i].method) {
               case "cash":
@@ -112,24 +89,15 @@ export default {
       }
       result.bar.total =
         result.bar.cash + result.bar.card + result.bar.transfer;
-      result.trainings.total =
-        result.trainings.cash +
-        result.trainings.card +
-        result.trainings.transfer;
       result.subscriptions.total =
         result.subscriptions.cash +
         result.subscriptions.card +
         result.subscriptions.transfer;
-      result.total.cash =
-        result.bar.cash + result.trainings.cash + result.subscriptions.cash;
-      result.total.card =
-        result.bar.card + result.trainings.card + result.subscriptions.card;
+      result.total.cash = result.bar.cash + result.subscriptions.cash;
+      result.total.card = result.bar.card + result.subscriptions.card;
       result.total.transfer =
-        result.bar.transfer +
-        result.trainings.transfer +
-        result.subscriptions.transfer;
-      result.total.total =
-        result.bar.total + result.trainings.total + result.subscriptions.total;
+        result.bar.transfer + result.subscriptions.transfer;
+      result.total.total = result.bar.total + result.subscriptions.total;
       console.log(result);
       return result;
     }
