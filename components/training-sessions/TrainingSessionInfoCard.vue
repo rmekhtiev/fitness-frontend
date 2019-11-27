@@ -53,6 +53,9 @@
             <span>{{ session.count - session.past_events_count }}</span>
             <span class="grey--text"> / </span>
             <span class="grey--text">{{ session.count }}</span>
+            <span class="grey--text">
+              ({{ session.events_count }} запланированно)
+            </span>
           </v-list-item-title>
         </v-list-item-content>
         <v-list-item-action>

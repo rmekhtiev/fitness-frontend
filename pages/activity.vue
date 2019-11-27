@@ -198,10 +198,7 @@ export default {
           return await Promise.all(
             _(activities)
               .groupBy("subject_type")
-              .map(
-                async (activities, type) =>
-                  await loadSubject(activities, type, store)
-              )
+              .map((activities, type) => loadSubject(activities, type, store))
               .value()
           );
         })
