@@ -13,22 +13,24 @@
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
+
       <v-card-text>
-        <trainer-form v-model="form" :is-edit="isEdit" :employees="employees" />
+        <event-form ref="form" v-model="form" :sessions="sessions" />
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import TrainerForm from "./TrainerForm";
+import EventForm from "./EventForm";
 
 export default {
-  name: "TrainerDialog",
+  name: "EventDialog",
 
   components: {
-    TrainerForm
+    EventForm
   },
+
   props: {
     fullscreen: {
       type: Boolean,
@@ -40,51 +42,41 @@ export default {
       default: ""
     },
 
-    employees: {
-      type: Array,
-      default: () => []
-    },
-
-    trainer: {
+    default: {
       type: Object,
       required: false,
       default: () => ({})
     },
 
-    isEdit: {
-      type: Boolean,
-      default: false
+    sessions: {
+      type: Array,
+      default: () => []
     }
   },
+
   data: () => ({
     dialog: false,
 
     resolve: null,
     reject: null,
 
-    form: {
-      phone_number: null,
-      associated_employee_id: null
-    }
+    form: {}
   }),
 
-  computed: {
-    halls() {
-      return this.$store.getters["halls/all"];
-    },
-  },
-
   created() {
-    // console.log(this.trainer);
-
-    if (this.trainer) {
-      Object.assign(this.form, this.trainer);
+    if (this.default) {
+      Object.assign(this.form, this.default);
     }
   },
 
   methods: {
-    open() {
+    open({ startDate }) {
       this.dialog = true;
+
+      setTimeout(() => {
+        this.form.start_date = startDate;
+        this.$refs.form.proxy.start_date = startDate;
+      }, 200);
 
       return new Promise((resolve, reject) => {
         this.resolve = resolve;
