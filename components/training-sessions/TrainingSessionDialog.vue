@@ -15,18 +15,15 @@
       </v-toolbar>
 
       <v-card-text>
-        <training-session-form
-          v-model="form"
-          :trainers="hallTrainers"
-        />
+        <training-session-form v-model="form" :trainers="hallTrainers" />
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-  import _ from "lodash"
-  import selectedHallAware from "../../mixins/selected-hall-aware";
+import _ from "lodash";
+import selectedHallAware from "../../mixins/selected-hall-aware";
 import employee from "../../mixins/employee";
 import TrainingSessionForm from "./TrainingSessionForm";
 
@@ -65,9 +62,13 @@ export default {
   }),
   computed: {
     hallTrainers() {
-      return _(this.$store.getters["trainers/all"]).filter({
-        hall_id: this.selectedHallId
-      }).value();
+      return this.selectedHallId
+        ? _(this.$store.getters["trainers/all"])
+            .filter({
+              hall_id: this.selectedHallId
+            })
+            .value()
+        : this.$store.getters["trainers/all"];
     }
   },
 

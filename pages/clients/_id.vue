@@ -356,7 +356,8 @@ export default {
       };
     },
 
-    groupFilter() { // +
+    groupFilter() {
+      // +
       return {
         id: this.groupsIds
       };
@@ -568,11 +569,13 @@ export default {
     },
 
     loadFilteredGroups() {
-      return this.$store.dispatch("groups/loadWhere", {
-        filter: {
-          hall_id: this.selectedHallId
-        }
-      });
+      return this.sellectedHallId
+        ? this.$store.dispatch("groups/loadWhere", {
+            filter: {
+              hall_id: this.selectedHallId
+            }
+          })
+        : this.$store.dispatch("groups/loadAll");
     },
 
     loadInactiveSubscriptions() {

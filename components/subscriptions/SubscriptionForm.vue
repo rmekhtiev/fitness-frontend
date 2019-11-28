@@ -1,7 +1,6 @@
-
 <template>
   <v-form>
-   <v-dialog
+    <v-dialog
       ref="issueDateDialog"
       v-model="modal.issue_date"
       :return-value.sync="value.issue_date"
@@ -64,49 +63,55 @@
         </v-btn>
       </v-date-picker>
     </v-dialog>
-      <v-autocomplete
-              v-model="value.subscriable_type"
-              :items="types"
-              label="Тип абонемента"
-              name="subscriable_type"
-              item-text="text"
-              item-value="value"
-              :disabled="isEdit"
-      />
-    <v-autocomplete v-if="value.subscriable_type === 'groups'"
-            v-model="value.subscriable_id"
-            :items="groups"
-            label="Группа"
-            name="subscriable_id"
-            item-text="title"
-            item-value="id"
+    <v-autocomplete
+      v-model="value.subscriable_type"
+      :items="types"
+      label="Тип абонемента"
+      name="subscriable_type"
+      item-text="text"
+      item-value="value"
+      :disabled="isEdit"
     />
-    <v-alert v-if="group && group.clients_count >= group.max_members && value.subscriable_type === 'groups'"
+    <v-autocomplete
+      v-if="value.subscriable_type === 'groups'"
+      v-model="value.subscriable_id"
+      :items="groups"
+      label="Группа"
+      name="subscriable_id"
+      item-text="title"
+      item-value="id"
+    />
+    <v-alert
+      v-if="
+        group &&
+          group.clients_count >= group.max_members &&
+          value.subscriable_type === 'groups'
+      "
       border="right"
       colored-border
       type="error"
       elevation="2"
     >
-              Внимание, группа заполнена
+      Внимание, группа заполнена
     </v-alert>
 
-      <v-text-field
-              v-model="value.cost"
-              min="1"
-              type="number"
-              label="Цена"
-              :disabled="subscription.sold"
-      />
+    <v-text-field
+      v-model="value.cost"
+      min="1"
+      type="number"
+      label="Цена"
+      :disabled="subscription.sold"
+    />
   </v-form>
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import auth from "../../mixins/auth"
-import selectedHallAware from "../../mixins/selected-hall-aware";
 import { QrcodeStream } from "vue-qrcode-reader";
-import group from '../../mixins/group';
+import auth from "../../mixins/auth";
+import selectedHallAware from "../../mixins/selected-hall-aware";
+import group from "../../mixins/group";
 
 export default {
   name: "SubscriptionForm",
@@ -133,16 +138,16 @@ export default {
       default: () => ({})
     },
 
-      client: {
-          type: Object,
-          required: false,
-          default: () => ({})
-      },
+    client: {
+      type: Object,
+      required: false,
+      default: () => ({})
+    }
   },
   data: () => ({
     modal: {
       issue_date: false,
-      valid_till: false,
+      valid_till: false
     },
 
     types: [
@@ -152,29 +157,34 @@ export default {
     ]
   }),
 
-
-   computed: {
+  computed: {
     defaultForm() {
       return {
         client_id: this.$route.params.id,
         issue_date: this.$moment().format("YYYY-MM-DD"),
-        valid_till: this.$moment().add(30, "day")
-                .format("YYYY-MM-DD"),
+        valid_till: this.$moment()
+          .add(30, "day")
+          .format("YYYY-MM-DD"),
         subscriable_id: null,
         subscriable_type: null,
-        cost: 2000,
-      }
+        cost: 2000
+      };
     },
-     
+
     groups() {
-      return this.$store.getters['groups/where']({ filter:{hall_id: this.selectedHallId}});
+      return this.sellectedHallId
+        ? this.$store.getters["groups/where"]({
+            filter: { hall_id: this.selectedHallId }
+          })
+        : this.$store.getters["groups/all"];
     },
 
     group() {
-      return this.$store.getters["groups/byId"]({ id: this.value.subscriable_id });
+      return this.$store.getters["groups/byId"]({
+        id: this.value.subscriable_id
+      });
     }
   },
-
 
   created() {
     const newVal = { ...this.value };
@@ -189,7 +199,6 @@ export default {
   },
 
   methods: {
-    
     open() {
       this.dialog = true;
     },
@@ -198,13 +207,13 @@ export default {
       this.dialog = false;
     },
 
-      selectedHallFilter(item) {
-          return this.selectedHallId === null
-              ? true
-              : item.primary_hall_id === this.selectedHallId;
-      }
+    selectedHallFilter(item) {
+      return this.selectedHallId === null
+        ? true
+        : item.primary_hall_id === this.selectedHallId;
+    }
   }
-}
+};
 </script>
 
 <style scoped></style>
