@@ -6,8 +6,8 @@
       <v-flex xs2 class="text-left">Клиент</v-flex>
       <v-flex xs2 class="text-left">Метод оплаты</v-flex>
       <v-flex xs2 class="text-left">Количество</v-flex>
-      <v-flex xs2 class="text-right">Доля тренера/зала</v-flex>
-      <v-flex xs2 class="text-right">Итого</v-flex>
+      <v-flex xs2 class="text-left">Дата начала/окончания занятий</v-flex>
+      <v-flex xs2 class="text-right">Оплата тренеру</v-flex>
     </v-flex>
     <template v-for="item in trainingsPayments">
       <trainings-payment-list-item
@@ -66,7 +66,7 @@ export default {
 
       return result;
     }
-  }
+  },
 };
 </script>
 
