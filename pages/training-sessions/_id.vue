@@ -4,10 +4,10 @@
       <v-flex xs12 sm6 lg4 xl3>
         <training-session-info-card
           :session="session"
-          @update="Promise.all([loadTrainingSession(), loadTrainingSession()])"
           display-client
           display-trainer
           class="mb-2 mx-auto"
+          @update="Promise.all([loadTrainingSession(), loadTrainingSession()])"
         />
 
         <client-info-card :client="client" class="mb-2 mx-auto" />
@@ -26,8 +26,8 @@
               type="list-item-two-line, list-item-two-line"
             />
             <schedule-mini-list-item
-              v-else
               v-for="(schedule, index) in schedules"
+              v-else
               :key="'schedule-' + index"
               :schedule="schedule"
             />
@@ -52,14 +52,18 @@
           </v-icon>
         </v-btn>
       </template>
-      <v-tooltip :value="tooltips" v-if="schedules.length < session.count" left>
+      <v-tooltip
+        v-if="$moment().isBefore($moment(session.date_end).endOf('day'))"
+        :value="tooltips"
+        left
+      >
         <template v-slot:activator="{ on }">
           <v-btn
-            @click.native="openScheduleDialog"
             fab
             dark
             small
             color="green"
+            @click.native="openScheduleDialog"
           >
             <v-icon>mdi-calendar</v-icon>
           </v-btn>
@@ -73,6 +77,8 @@
       :trainers="$store.getters['trainers/all']"
       :default="{ trainer_id: session.trainer_id }"
       title="Создать тренировку"
+      :min="$moment(session.date_start).format('YYYY-MM-DD')"
+      :max="$moment(session.date_end).format('YYYY-MM-DD')"
     />
   </div>
 </template>

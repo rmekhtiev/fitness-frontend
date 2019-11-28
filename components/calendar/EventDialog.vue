@@ -15,24 +15,20 @@
       </v-toolbar>
 
       <v-card-text>
-        <schedule-form
-          v-model="form"
-          :trainers="$store.getters['trainers/all']"
-          :min="min"
-          :max="max"
-        />
+        <event-form ref="form" v-model="form" :sessions="sessions" />
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import ScheduleForm from "./ScheduleForm";
+import EventForm from "./EventForm";
+
 export default {
-  name: "ScheduleDialog",
+  name: "EventDialog",
 
   components: {
-    ScheduleForm
+    EventForm
   },
 
   props: {
@@ -52,19 +48,9 @@ export default {
       default: () => ({})
     },
 
-    trainers: {
+    sessions: {
       type: Array,
       default: () => []
-    },
-
-    min: {
-      type: String,
-      default: undefined
-    },
-
-    max: {
-      type: String,
-      default: undefined
     }
   },
 
@@ -84,8 +70,13 @@ export default {
   },
 
   methods: {
-    open() {
+    open({ startDate }) {
       this.dialog = true;
+
+      setTimeout(() => {
+        this.form.start_date = startDate;
+        this.$refs.form.proxy.start_date = startDate;
+      }, 200);
 
       return new Promise((resolve, reject) => {
         this.resolve = resolve;

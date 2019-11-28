@@ -1,11 +1,10 @@
 <template>
   <v-form>
     <v-autocomplete
-      v-model="value.trainer_id"
-      :items="trainersFiltered"
-      label="Тренер"
-      name="trainer_id"
-      item-text="name"
+      v-model="value.schedulable_id"
+      :items="sessions"
+      label="Клиент"
+      item-text="title"
       item-value="id"
     />
 
@@ -16,10 +15,6 @@
         min: '8:00',
         max: '23:00',
         allowedMinutes: v => v === 0 || v === 30
-      }"
-      :date-picker-props="{
-        min: min,
-        max: max
       }"
       label="Дата и время"
     ></v-datetime-picker>
@@ -38,7 +33,7 @@ import _ from "lodash";
 import auth from "../../mixins/auth";
 
 export default {
-  name: "ScheduleForm",
+  name: "EventForm",
 
   mixins: [auth],
 
@@ -53,19 +48,9 @@ export default {
       default: false
     },
 
-    trainers: {
+    sessions: {
       type: Array,
       default: () => []
-    },
-
-    min: {
-      type: String,
-      default: undefined
-    },
-
-    max: {
-      type: String,
-      default: undefined
     }
   },
 
@@ -107,6 +92,10 @@ export default {
     "value.duration"() {
       return this.recalculateEndDate();
     }
+  },
+
+  mounted() {
+    this.proxy.start_date = this.value.start_date;
   },
 
   created() {
