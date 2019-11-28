@@ -112,7 +112,7 @@ export default {
     StatsMoneyTable
   },
 
-  mixins: [auth, selectedHallAware, payments],
+  mixins: [selectedHallAware, auth, payments],
 
   data: () => ({
     loading: {

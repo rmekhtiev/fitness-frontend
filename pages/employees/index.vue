@@ -102,7 +102,7 @@ export default {
     EmployeeDialog
   },
 
-  mixins: [serverSidePaginated, selectedHallAware],
+  mixins: [selectedHallAware, serverSidePaginated],
 
   data: () => ({
     resource: "employees"
