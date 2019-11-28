@@ -1,5 +1,4 @@
 <template>
-  <v-list-item :to="{ name: 'trainers-id', params: { id: trainer.id } }">
     <v-layout>
       <v-flex xs8 md3>
         <div style="display: flex; width: 100%">
@@ -40,7 +39,6 @@
         </div>
       </v-flex>
     </v-layout>
-  </v-list-item>
 </template>
 
 <script>
