@@ -1,5 +1,5 @@
 <template>
-  <div id="client" v-if="client">
+  <div v-if="client" id="client">
     <v-layout row wrap>
       <v-flex xs12 sm6 lg4 xl3>
         <!-- Client info -->
@@ -201,11 +201,11 @@
       <v-tooltip :value="tooltips" left>
         <template v-slot:activator="{ on }">
           <v-btn
-            @click.native="openLockerClaimDialog"
             fab
             dark
             small
             color="green"
+            @click.native="openLockerClaimDialog"
           >
             <v-icon>mdi-locker</v-icon>
           </v-btn>
@@ -215,11 +215,11 @@
       <v-tooltip :value="tooltips" left>
         <template v-slot:activator="{ on }">
           <v-btn
-            @click.native="openSubscriptionDialog"
             fab
             dark
             small
             color="red"
+            @click.native="openSubscriptionDialog"
           >
             <v-icon>mdi-account-badge-horizontal-outline</v-icon>
           </v-btn>
@@ -228,7 +228,7 @@
       </v-tooltip>
       <v-tooltip :value="tooltips" left>
         <template v-slot:activator="{ on }">
-          <v-btn @click.native="addIdentifier" fab dark small color="blue">
+          <v-btn fab dark small color="blue" @click.native="addIdentifier">
             <v-icon>mdi-qrcode</v-icon>
           </v-btn>
         </template>
@@ -237,11 +237,11 @@
       <v-tooltip :value="tooltips" left>
         <template v-slot:activator="{ on }">
           <v-btn
-            @click.native="openTrainingSessionsDialog"
             fab
             dark
             small
             color="purple"
+            @click.native="openTrainingSessionsDialog"
           >
             <v-icon>mdi-account-star</v-icon>
           </v-btn>
@@ -278,6 +278,8 @@ import _ from "lodash";
 import fabWithTooltips from "../../mixins/fab-with-tooltips";
 import client from "../../mixins/client";
 
+import selectedHallAware from "../../mixins/selected-hall-aware";
+
 import ClientInfoCard from "../../components/clients/ClientInfoCard";
 
 import SubscriptionInfoCard from "../../components/subscriptions/SubscriptionInfoCard";
@@ -307,7 +309,7 @@ export default {
     LockerClaimDialog
   },
 
-  mixins: [client, fabWithTooltips],
+  mixins: [client, fabWithTooltips, selectedHallAware],
 
   data: () => ({
     dialogs: {
@@ -354,7 +356,7 @@ export default {
       };
     },
 
-    groupFilter() {
+    groupFilter() { // +
       return {
         id: this.groupsIds
       };
@@ -455,7 +457,7 @@ export default {
       this.loadTrainingSessions()
     ]);
   },
-  
+
   methods: {
     openSubscriptionDialog() {
       this.$refs.subscriptionDialog.open().then(form => {
@@ -568,7 +570,7 @@ export default {
     loadFilteredGroups() {
       return this.$store.dispatch("groups/loadWhere", {
         filter: {
-          hall_id: this.client.primary_hall_id
+          hall_id: this.selectedHallId
         }
       });
     },

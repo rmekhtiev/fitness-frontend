@@ -104,6 +104,7 @@
 import _ from "lodash"
 
 import auth from "../../mixins/auth"
+import selectedHallAware from "../../mixins/selected-hall-aware";
 import { QrcodeStream } from "vue-qrcode-reader";
 import group from '../../mixins/group';
 
@@ -114,7 +115,7 @@ export default {
     "qrcode-stream": QrcodeStream
   },
 
-  mixins: [auth],
+  mixins: [auth, selectedHallAware],
 
   props: {
     value: {
@@ -166,7 +167,7 @@ export default {
     },
      
     groups() {
-      return this.$store.getters['groups/where']({ filter:{hall_id: this.client.primary_hall_id}});
+      return this.$store.getters['groups/where']({ filter:{hall_id: this.selectedHallId}});
     },
 
     group() {

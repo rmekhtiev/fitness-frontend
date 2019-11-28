@@ -24,7 +24,14 @@
             prepend-icon="mdi-account"
             item-text="name"
             item-value="id"
-          />
+          >
+            <template v-slot:item="{ item }">
+              {{ item.name }} ({{ addHall(item).title }})
+            </template>
+            <template v-slot:selection="{ item }">
+              {{ item.name }} ({{ addHall(item).title }})
+            </template>
+          </v-autocomplete>
         </v-form>
       </v-card-text>
     </v-card>
@@ -80,7 +87,6 @@ export default {
 
     pureFilter() {
       return _({
-        primary_hall_id: this.selectedHallId,
         subscriable: this.group.id,
         ...this.filter
       })
@@ -96,11 +102,9 @@ export default {
     },
 
     availableClients() {
-      return this.pureClients
-        .filter(this.selectedHallFilter)
-        .filter(
-          item => !this.groupClients.map(client => client.id).includes(item.id)
-        )
+      return this.pureClients.filter(
+        item => !this.groupClients.map(client => client.id).includes(item.id)
+      );
     }
   },
 
@@ -115,6 +119,14 @@ export default {
   },
 
   methods: {
+    addHall(item) {
+      return _(this.$store.getters["halls/all"])
+        .filter({
+          id: item.primary_hall_id
+        })
+        .last();
+    },
+
     open() {
       this.dialog = true;
 
