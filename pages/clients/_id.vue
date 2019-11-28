@@ -479,7 +479,9 @@ export default {
     },
 
     loadItems() {
-      console.log("loadItems");
+      this.loadGroups();
+      this.loadFilteredGroups();
+      this.loadTrainers();
     },
 
     openLockerClaimDialog() {
