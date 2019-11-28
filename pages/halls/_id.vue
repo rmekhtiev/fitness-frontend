@@ -75,13 +75,13 @@
         <bar-payments-table :payments="barPayments"></bar-payments-table>
       </v-flex>
       <v-flex xs12>
+        <subscriptions-payments-table :payments="subscriptionsPayments">
+        </subscriptions-payments-table>
+      </v-flex>
+      <v-flex xs12>
         <trainings-payments-table
           :payments="trainingsPayments"
         ></trainings-payments-table>
-      </v-flex>
-      <v-flex xs12>
-        <subscriptions-payments-table :payments="subscriptionsPayments">
-        </subscriptions-payments-table>
       </v-flex>
     </v-layout>
   </div>

@@ -10,14 +10,12 @@
       <v-flex xs2 class="text-left">{{
         $t("methods." + trainingsPayment.method)
       }}</v-flex>
-      <v-flex v-if="training" xs2 class="text-left">{{
-        training.count
-      }}</v-flex>
-      <v-flex v-if="training" xs2 class="text-left"
-        >12.12.2019/21.12.2019
-        <!-- todo {{formatDate()}}/{{formateDate()}} --></v-flex
+      <v-flex v-if="training" xs3 class="text-left">
+        {{ formatDate(training.start_date) }}/{{
+          formatDate(training.end_date)
+        }}</v-flex
       >
-      <v-flex xs2 class="text-right">{{ trainingsPayment.cost }} руб.</v-flex>
+      <v-flex xs3 class="text-right">{{ trainingsPayment.cost }} руб.</v-flex>
     </v-flex>
   </div>
 </template>
