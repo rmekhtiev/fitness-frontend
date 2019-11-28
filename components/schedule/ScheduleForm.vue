@@ -17,6 +17,10 @@
         max: '23:00',
         allowedMinutes: v => v === 0 || v === 30
       }"
+      :date-picker-props="{
+        min: min,
+        max: max
+      }"
       label="Дата и время"
     ></v-datetime-picker>
 
@@ -25,8 +29,6 @@
       :items="durations"
       label="Длительность"
     />
-
-<!--    <v-datetime-picker v-model="value.end_date" disabled />-->
   </v-form>
 </template>
 
@@ -54,6 +56,16 @@ export default {
     trainers: {
       type: Array,
       default: () => []
+    },
+
+    min: {
+      type: String,
+      default: undefined
+    },
+
+    max: {
+      type: String,
+      default: undefined
     }
   },
 
@@ -73,7 +85,7 @@ export default {
       return {
         start_date: "",
         end_date: "",
-        duration: 90
+        duration: 60
       };
     },
 

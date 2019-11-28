@@ -2,13 +2,13 @@
   <v-dialog v-model="dialog" :fullscreen="fullscreen" @keydown.esc="cancel">
     <v-card>
       <v-toolbar dark color="primary" class="mb-4">
-        <v-btn @click="cancel()" icon dark>
+        <v-btn icon dark @click="cancel()">
           <v-icon>mdi-close</v-icon>
         </v-btn>
         <v-toolbar-title>{{ title }}</v-toolbar-title>
         <div class="flex-grow-1" />
         <v-toolbar-items>
-          <v-btn @click="save" dark text>
+          <v-btn dark text @click="save">
             Сохранить
           </v-btn>
         </v-toolbar-items>
@@ -18,6 +18,8 @@
         <schedule-form
           v-model="form"
           :trainers="$store.getters['trainers/all']"
+          :min="min"
+          :max="max"
         />
       </v-card-text>
     </v-card>
@@ -53,6 +55,16 @@ export default {
     trainers: {
       type: Array,
       default: () => []
+    },
+
+    min: {
+      type: String,
+      default: undefined
+    },
+
+    max: {
+      type: String,
+      default: undefined
     }
   },
 
