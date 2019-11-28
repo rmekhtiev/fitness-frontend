@@ -70,7 +70,6 @@ export default {
     headers: [
       { text: "Клиент", sortable: false, value: "client_id" },
       { text: "Тренер", sortable: false, value: "trainer_id" },
-      { text: "Кол-во занятий", sortable: true, value: "count" },
       { text: "Цена", sortable: true, value: "cost" }
     ]
   }),
@@ -78,7 +77,7 @@ export default {
   computed: {
     pureFilter() {
       return _({
-        primary_hall_id: this.selectedHallId,
+        hall_id: this.selectedHallId,
         ...this.filter
       })
         .omitBy(_.isNull)
