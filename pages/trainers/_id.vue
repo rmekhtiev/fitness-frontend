@@ -72,13 +72,6 @@ export default {
       };
     },
 
-    unboundTrainingSessionsFilter() {
-      return {
-        trainer_id: this.$route.params.id,
-        bound: false
-      };
-    },
-
     trainingSessions() {
       return this.$store.getters["training-sessions/where"]({
         filter: this.trainingSessionsFilter
@@ -96,6 +89,7 @@ export default {
         weekdays: [1, 2, 3, 4, 5, 6, 0]
       };
     },
+
     calendarEvents() {
       return {
         "click:time"(val) {
@@ -130,8 +124,7 @@ export default {
 
   mounted() {
     return Promise.all([
-      this.loadTrainingSessions(),
-      this.loadUnboundTrainingSessions()
+      this.loadTrainingSessions()
     ]);
   },
 
@@ -145,17 +138,6 @@ export default {
         })
         .then(() => {
           this.loading.trainingSessions = false;
-        });
-    },
-    loadUnboundTrainingSessions() {
-      this.loading.unboundTrainingSessions = true;
-
-      return this.$store
-        .dispatch("training-sessions/loadWhere", {
-          filter: this.unboundTrainingSessionsFilter
-        })
-        .then(() => {
-          this.loading.unboundTrainingSessions = false;
         });
     },
     loadEvents({ start, end }) {

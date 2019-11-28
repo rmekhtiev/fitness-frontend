@@ -41,20 +41,30 @@
         </v-list-item>
       </v-skeleton-loader>
 
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-subtitle class="caption">
+            Дата проведения занятий
+          </v-list-item-subtitle>
+          <v-list-item-title>
+            {{ $moment(session.date_start).format("LL") }} &mdash;
+            {{ $moment(session.date_end).format("LL") }}
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
       <v-list-item
         :to="{ name: 'training-sessions-id', params: { id: session.id } }"
         active-class="none"
       >
         <v-list-item-content>
           <v-list-item-subtitle class="caption">
-            Оставшиеся занятия
+            Занятий запланированно
           </v-list-item-subtitle>
           <v-list-item-title>
-            <span>{{ session.count - session.past_events_count }}</span>
-            <span class="grey--text"> / </span>
-            <span class="grey--text">{{ session.count }}</span>
+            {{ session.events_count }}
             <span class="grey--text">
-              ({{ session.events_count }} запланированно)
+              ({{ session.events_count - session.past_events_count }} осталось)
             </span>
           </v-list-item-title>
         </v-list-item-content>
