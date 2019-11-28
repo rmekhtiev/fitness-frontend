@@ -129,7 +129,7 @@ export default {
           .add(1, "month")
           .toISOString()
           .substr(0, 10),
-        cost: 5000
+        cost: 2500
       };
     },
 

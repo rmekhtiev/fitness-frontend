@@ -81,8 +81,8 @@ export default {
     calendarProps() {
       return {
         locale: "ru",
-        firstInterval: "8",
-        intervalCount: "16",
+        firstInterval: "7",
+        intervalCount: "17",
         eventStart: "start_date",
         eventEnd: "end_date",
         intervalFormat: interval => interval.time,
@@ -123,9 +123,7 @@ export default {
   },
 
   mounted() {
-    return Promise.all([
-      this.loadTrainingSessions()
-    ]);
+    return Promise.all([this.loadTrainingSessions()]);
   },
 
   methods: {
