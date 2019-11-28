@@ -309,7 +309,7 @@ export default {
     LockerClaimDialog
   },
 
-  mixins: [client, fabWithTooltips, selectedHallAware],
+  mixins: [selectedHallAware, client, fabWithTooltips],
 
   data: () => ({
     dialogs: {
@@ -476,6 +476,10 @@ export default {
               });
         });
       });
+    },
+
+    loadItems() {
+      console.log("loadItems");
     },
 
     openLockerClaimDialog() {
