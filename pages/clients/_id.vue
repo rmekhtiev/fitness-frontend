@@ -573,7 +573,7 @@ export default {
     },
 
     loadFilteredGroups() {
-      return this.this.selectedHallId
+      return this.selectedHallId
         ? this.$store.dispatch("groups/loadWhere", {
             filter: {
               hall_id: this.selectedHallId

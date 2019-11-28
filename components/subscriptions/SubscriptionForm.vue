@@ -172,7 +172,7 @@ export default {
     },
 
     groups() {
-      return this.this.selectedHallId
+      return this.selectedHallId
         ? this.$store.getters["groups/where"]({
             filter: { hall_id: this.selectedHallId }
           })
