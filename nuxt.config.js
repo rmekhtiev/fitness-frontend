@@ -69,7 +69,7 @@ export default {
   },
 
   proxy: {
-    "/api/": "http://fitness.test/"
+    "/api/": "http://104.248.47.70:8000/"
   },
 
   router: {
