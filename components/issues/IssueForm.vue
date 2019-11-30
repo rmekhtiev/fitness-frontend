@@ -26,6 +26,13 @@
       label="Описание проблемы"
       placeholder="Подробное описание проблемы"
     />
+    <v-select
+      v-model="value.status"
+      label="Статус"
+      :items="statuses"
+      item-text="name"
+      item-value="value"
+    />
   </v-form>
 </template>
 
@@ -69,6 +76,14 @@ export default {
       default: false
     }
   },
+
+  data: () => ({
+    statuses: [
+      { name: "В ожидании", value: "pending" },
+      { name: "Выполняется", value: "in-work" },
+      { name: "Готово", value: "ready" }
+    ]
+  }),
 
   computed: {
     defaultForm() {

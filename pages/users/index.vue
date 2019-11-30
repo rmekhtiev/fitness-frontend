@@ -73,7 +73,7 @@ import UserDialog from "../../components/users/UserDialog";
 export default {
   name: "Index",
   components: { UserDialog, UserListItem },
-  mixins: [serverSidePaginated, selectedHallAware],
+  mixins: [selectedHallAware, serverSidePaginated],
   data: () => ({
     resource: "users",
     userFilter: {

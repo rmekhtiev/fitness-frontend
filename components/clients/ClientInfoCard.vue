@@ -12,10 +12,10 @@
           <div style="position: absolute; right: .5rem; top: .5rem;">
             <v-btn
               v-if="isHallAdmin || isOwner"
-              @click="updateClient()"
               color="primary"
               text
               small
+              @click="updateClient()"
             >
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
@@ -89,7 +89,11 @@
 
         <v-list-item
           v-if="primaryHall"
-          :to="{ name: 'halls-id', params: { id: primaryHall.id } }"
+          :to="
+            isOwner || client.primary_hall_id === selectedHallId
+              ? { name: 'halls-id', params: { id: client.primary_hall_id } }
+              : null
+          "
           nuxt
           exact
         >
@@ -115,8 +119,8 @@
       <!--      </v-card-actions>-->
 
       <client-dialog
-        ref="edit"
         v-if="isHallAdmin || isOwner"
+        ref="edit"
         :client="client"
         title="Редактирование клиента"
         is-edit
@@ -133,6 +137,7 @@
 import routable from "vuetify/es5/mixins/routable";
 
 import auth from "../../mixins/auth";
+import selectedHallAware from "../../mixins/selected-hall-aware";
 
 import ClientDialog from "./ClientDialog";
 
@@ -141,7 +146,7 @@ export default {
   components: { ClientDialog },
   // extend: VCard,
 
-  mixins: [routable, auth],
+  mixins: [selectedHallAware, routable, auth],
 
   props: {
     client: {

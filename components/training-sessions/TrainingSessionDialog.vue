@@ -15,23 +15,25 @@
       </v-toolbar>
 
       <v-card-text>
-        <training-session-form
-          v-model="form"
-          :trainers="$store.getters['trainers/all']"
-        />
+        <training-session-form v-model="form" :trainers="hallTrainers" />
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
+import _ from "lodash";
+import selectedHallAware from "../../mixins/selected-hall-aware";
+import employee from "../../mixins/employee";
 import TrainingSessionForm from "./TrainingSessionForm";
+
 export default {
   name: "TrainingSessionDialog",
 
   components: {
     TrainingSessionForm
   },
+  mixins: [selectedHallAware],
 
   props: {
     fullscreen: {
@@ -58,6 +60,17 @@ export default {
 
     form: {}
   }),
+  computed: {
+    hallTrainers() {
+      return this.selectedHallId
+        ? _(this.$store.getters["trainers/all"])
+            .filter({
+              hall_id: this.selectedHallId
+            })
+            .value()
+        : this.$store.getters["trainers/all"];
+    }
+  },
 
   created() {
     if (this.group) {

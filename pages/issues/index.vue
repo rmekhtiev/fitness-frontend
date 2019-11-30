@@ -154,7 +154,7 @@ export default {
     IssueListItem
   },
 
-  mixins: [serverSidePaginated, selectedHallAware],
+  mixins: [selectedHallAware, serverSidePaginated],
 
   data: () => ({
     resource: "issues",

@@ -148,7 +148,7 @@ export default {
           : null,
         claim_start: this.$moment().format("YYYY-MM-DD"),
         claim_end: this.$moment()
-          .add(2, "week")
+          .add(1, "month")
           .format("YYYY-MM-DD")
       };
     }

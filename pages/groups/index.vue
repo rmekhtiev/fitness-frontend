@@ -107,7 +107,7 @@ export default {
     GroupDialog
   },
 
-  mixins: [serverSidePaginated, selectedHallAware],
+  mixins: [selectedHallAware, serverSidePaginated],
 
   data: () => ({
     resource: "groups"

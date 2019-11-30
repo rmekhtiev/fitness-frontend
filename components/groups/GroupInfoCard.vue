@@ -51,7 +51,11 @@
         >
           <v-list-item
             v-if="group.hall_id"
-            :to="{ name: 'halls-id', params: { id: group.hall_id } }"
+            :to="
+              isOwner || group.hall_id === selectedHallId
+                ? { name: 'halls-id', params: { id: group.hall_id } }
+                : null
+            "
           >
             <v-list-item-avatar>
               <v-icon color="primary">
@@ -117,6 +121,7 @@
 import Confirm from "../Confirm";
 import auth from "../../mixins/auth";
 import group from "../../mixins/group";
+import selectedHallAware from "../../mixins/selected-hall-aware";
 import GroupDialog from "./GroupDialog";
 
 export default {
@@ -127,7 +132,7 @@ export default {
     Confirm
   },
 
-  mixins: [auth, group],
+  mixins: [selectedHallAware, auth, group],
 
   props: {
     group: {
