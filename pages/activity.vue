@@ -1,6 +1,12 @@
 <template>
   <div id="lockers" v-infinite-scroll="loadMore">
     <v-timeline dense clipped>
+      <template v-if="activities.length === 0">
+        <v-timeline-item v-for="index in 5" :key="index" small class="mb-6">
+          <v-skeleton-loader type="list-item-two-line" />
+        </v-timeline-item>
+      </template>
+
       <template v-for="(activitiesGroup, days) in groupedActivities">
         <v-timeline-item class="mb-6" hide-dot>
           <v-tooltip right>
@@ -184,25 +190,7 @@ export default {
   },
 
   fetch({ store }) {
-    return Promise.all([
-      store.dispatch("halls/loadAll"),
-      store
-        .dispatch("activities/loadPage", {
-          options: {
-            page: 1
-          }
-        })
-        .then(async () => {
-          const activities = store.getters["activities/page"];
-
-          return await Promise.all(
-            _(activities)
-              .groupBy("subject_type")
-              .map((activities, type) => loadSubject(activities, type, store))
-              .value()
-          );
-        })
-    ]);
+    return Promise.all([store.dispatch("halls/loadAll")]);
   },
 
   methods: {

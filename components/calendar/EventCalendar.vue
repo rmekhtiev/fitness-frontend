@@ -52,15 +52,6 @@
           @change="range => $emit('input', range)"
           v-on="calendarEvents"
         />
-<!--        <v-menu-->
-<!--          v-model="selectedOpen"-->
-<!--          :close-on-content-click="false"-->
-<!--          :activator="selectedElement"-->
-<!--          full-width-->
-<!--          offset-x-->
-<!--        >-->
-<!--          <slot name="eventSelection"></slot>-->
-<!--        </v-menu>-->
       </v-sheet>
     </v-col>
   </v-row>

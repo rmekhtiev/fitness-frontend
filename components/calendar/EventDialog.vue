@@ -15,25 +15,21 @@
       </v-toolbar>
 
       <v-card-text>
-        <training-session-form v-model="form" :trainers="hallTrainers" />
+        <event-form ref="form" v-model="form" :sessions="sessions" />
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import _ from "lodash";
-import selectedHallAware from "../../mixins/selected-hall-aware";
-import employee from "../../mixins/employee";
-import TrainingSessionForm from "./TrainingSessionForm";
+import EventForm from "./EventForm";
 
 export default {
-  name: "TrainingSessionDialog",
+  name: "EventDialog",
 
   components: {
-    TrainingSessionForm
+    EventForm
   },
-  mixins: [selectedHallAware],
 
   props: {
     fullscreen: {
@@ -46,7 +42,13 @@ export default {
       default: ""
     },
 
-    trainers: {
+    default: {
+      type: Object,
+      required: false,
+      default: () => ({})
+    },
+
+    sessions: {
       type: Array,
       default: () => []
     }
@@ -60,27 +62,21 @@ export default {
 
     form: {}
   }),
-  computed: {
-    hallTrainers() {
-      return this.selectedHallId
-        ? _(this.$store.getters["trainers/all"])
-            .filter({
-              hall_id: this.selectedHallId
-            })
-            .value()
-        : this.$store.getters["trainers/all"];
-    }
-  },
 
   created() {
-    if (this.group) {
-      Object.assign(this.form, this.group);
+    if (this.default) {
+      Object.assign(this.form, this.default);
     }
   },
 
   methods: {
-    open() {
+    open({ startDate }) {
       this.dialog = true;
+
+      setTimeout(() => {
+        this.form.start_date = startDate;
+        this.$refs.form.proxy.start_date = startDate;
+      }, 200);
 
       return new Promise((resolve, reject) => {
         this.resolve = resolve;

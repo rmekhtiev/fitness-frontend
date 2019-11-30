@@ -75,7 +75,7 @@ export default {
   },
 
   created() {
-    console.log(this.trainer);
+    // console.log(this.trainer);
 
     if (this.trainer) {
       Object.assign(this.form, this.trainer);

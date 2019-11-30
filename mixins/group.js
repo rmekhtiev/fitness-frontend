@@ -85,9 +85,7 @@ export default {
       this.loading.hall = true;
 
       return this.$store
-        .dispatch("halls/loadById", {
-          id: this.group.hall_id
-        })
+        .dispatch("halls/loadAll")
         .then(() => {
           this.loading.hall = false;
         });

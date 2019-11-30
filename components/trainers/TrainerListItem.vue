@@ -1,46 +1,44 @@
 <template>
-  <v-list-item :to="{ name: 'trainers-id', params: { id: trainer.id } }">
-    <v-layout>
-      <v-flex xs8 md3>
-        <div style="display: flex; width: 100%">
-          <div style="flex: 1 1 0%;" class="text-truncate">
-            <div class="body-2 text-truncate" :title="trainer.name">
-              {{ trainer.name }}
-            </div>
-            <div
-              class="caption text-truncate"
-              :title="trainer.associated_employee_id"
-            >
-              {{ trainer.associated_employee_id }}
-            </div>
+  <v-layout>
+    <v-flex xs8 md3>
+      <div style="display: flex; width: 100%">
+        <div style="flex: 1 1 0%;" class="text-truncate">
+          <div class="body-2 text-truncate" :title="trainer.name">
+            {{ trainer.name }}
+          </div>
+          <div
+            class="caption text-truncate"
+            :title="trainer.associated_employee_id"
+          >
+            {{ trainer.associated_employee_id }}
           </div>
         </div>
-      </v-flex>
+      </div>
+    </v-flex>
 
-      <v-flex xs8 md3>
-        <div style="display: flex; width: 100%">
-          <div style="flex: 1 1 0%;" class="text-truncate">
-            <div class="body-2 text-truncate" :title="hall.title">
-              {{ hall.title }}
-            </div>
-            <div class="caption text-truncate" :title="hall.address">
-              {{ hall.address }}
-            </div>
+    <v-flex xs8 md3>
+      <div style="display: flex; width: 100%">
+        <div style="flex: 1 1 0%;" class="text-truncate">
+          <div class="body-2 text-truncate" :title="hall.title">
+            {{ hall.title }}
+          </div>
+          <div class="caption text-truncate" :title="hall.address">
+            {{ hall.address }}
           </div>
         </div>
-      </v-flex>
+      </div>
+    </v-flex>
 
-      <v-flex xs8 md3>
-        <div style="display: flex; width: 100%">
-          <div style="flex: 1 1 0%;" class="text-truncate">
-            <div class="body-2 text-truncate" :title="trainer.phone_number">
-              {{ trainer.phone_number }}
-            </div>
+    <v-flex xs8 md3>
+      <div style="display: flex; width: 100%">
+        <div style="flex: 1 1 0%;" class="text-truncate">
+          <div class="body-2 text-truncate" :title="trainer.phone_number">
+            {{ trainer.phone_number }}
           </div>
         </div>
-      </v-flex>
-    </v-layout>
-  </v-list-item>
+      </div>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>

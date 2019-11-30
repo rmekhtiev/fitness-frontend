@@ -117,6 +117,13 @@ export default {
       };
     }
   },
+  watch: {
+    "value.phone_number"(newVal, oldVal) {
+      if (this.value.whats_app_number === oldVal) {
+        this.value.whats_app_number = newVal;
+      }
+    }
+  },
 
   created() {
     const newVal = { ...this.value };

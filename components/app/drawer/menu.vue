@@ -95,7 +95,7 @@
       <v-list dense nav subheader>
         <v-subheader>Статистика</v-subheader>
 
-        <v-list-item
+        <v-list-item v-if="hall"
           :key="hall.title"
           link
           nuxt

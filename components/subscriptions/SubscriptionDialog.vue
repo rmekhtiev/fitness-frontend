@@ -15,14 +15,19 @@
       </v-toolbar>
 
       <v-card-text>
-        <subscription-form :subscription="subscription" :client="client" v-model="form" :is-edit="isEdit" />
+        <subscription-form
+          v-model="form"
+          :subscription="subscription"
+          :client="client"
+          :is-edit="isEdit"
+        />
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import SubscriptionForm from "./SubscriptionForm"
+import SubscriptionForm from "./SubscriptionForm";
 export default {
   name: "SubscriptionDialog",
   components: { SubscriptionForm },
@@ -70,51 +75,52 @@ export default {
       cost: null,
       payment_method: null,
       subscriable_id: null,
-      subscriable_type: null,
+      subscriable_type: null
     }
   }),
 
   created() {
     if (this.client) {
-      this.form.client_id = this.client.id
+      this.form.client_id = this.client.id;
     }
 
     if (this.subscription) {
-      Object.assign(this.form, this.subscription)
+      Object.assign(this.form, this.subscription);
     }
   },
 
   methods: {
     open() {
-      this.dialog = true
+      this.dialog = true;
 
       return new Promise((resolve, reject) => {
-        this.resolve = resolve
-        this.reject = reject
-      })
+        this.resolve = resolve;
+        this.reject = reject;
+      });
     },
 
     loadClient() {
-      return this.$store
-              .dispatch("clients/loadById", {
-                id: this.$route.params.id
-              });
+      return this.$store.dispatch("clients/loadById", {
+        id: this.$route.params.id
+      });
     },
 
     save() {
-      this.resolve(this.form)
-      this.dialog = false
+      this.resolve(this.form);
+      this.dialog = false;
     },
 
     addClientToGroup() {
-      this.$axios.put("/groups/" + this.form.subscriable_id + "/clients/" + this.client.id)
+      this.$axios.put(
+        "/groups/" + this.form.subscriable_id + "/clients/" + this.client.id
+      );
     },
 
     cancel() {
-      this.dialog = false
-    },
+      this.dialog = false;
+    }
   }
-}
+};
 </script>
 
 <style scoped></style>

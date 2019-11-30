@@ -113,7 +113,7 @@ export default {
     LockerDialog
   },
 
-  mixins: [serverSidePaginated, selectedHallAware],
+  mixins: [selectedHallAware, serverSidePaginated],
 
   data: () => ({
     resource: "lockers",

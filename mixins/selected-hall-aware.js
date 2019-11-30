@@ -16,10 +16,10 @@ export default {
       return this.selectedHallId === null
         ? true
         : item.hall_id === this.selectedHallId;
-    }
+    },
 
-    // loadItems() {
-    //   console.error('Override this method');
-    // }
+    loadItems() {
+      console.error("Override this method");
+    }
   }
 };

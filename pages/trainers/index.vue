@@ -112,7 +112,7 @@ export default {
     TrainerDialog
   },
 
-  mixins: [serverSidePaginated, selectedHallAware],
+  mixins: [selectedHallAware, serverSidePaginated],
 
   data: () => ({
     resource: "trainers",

@@ -10,16 +10,12 @@
       <v-flex xs2 class="text-left">{{
         $t("methods." + trainingsPayment.method)
       }}</v-flex>
-      <v-flex v-if="training" xs2 class="text-left">{{
-        training.count
-      }}</v-flex>
-      <v-flex xs2 class="text-right"
-        >{{ trainingsPayment.cost / 2 }}/{{
-          trainingsPayment.cost / 2
-        }}
-        руб.</v-flex
+      <v-flex v-if="training" xs3 class="text-left">
+        {{ formatDate(training.start_date) }}/{{
+          formatDate(training.end_date)
+        }}</v-flex
       >
-      <v-flex xs2 class="text-right">{{ trainingsPayment.cost }} руб.</v-flex>
+      <v-flex xs3 class="text-right">{{ trainingsPayment.cost }} руб.</v-flex>
     </v-flex>
   </div>
 </template>
@@ -54,6 +50,9 @@ export default {
     calculateTotal(cost, quantity) {
       const floatCost = parseFloat(cost);
       return floatCost * quantity;
+    },
+    formatDate(date) {
+      return this.$moment.utc(date).format("D.M.YYYY");
     }
   }
 };

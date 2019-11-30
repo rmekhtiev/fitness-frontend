@@ -23,12 +23,49 @@
             :calendar-props="calendarProps"
             :calendar-events="calendarEvents"
           />
+
+          <!--          <v-menu-->
+          <!--            v-model="selectedOpen"-->
+          <!--            :close-on-content-click="false"-->
+          <!--            :activator="selectedElement"-->
+          <!--            offset-x-->
+          <!--          >-->
+          <!--            <v-card color="grey lighten-4" min-width="350px" flat>-->
+          <!--              <v-toolbar :color="selectedEvent.color" dark>-->
+          <!--                <v-btn icon>-->
+          <!--                  <v-icon>mdi-calendar</v-icon>-->
+          <!--                </v-btn>-->
+          <!--                <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>-->
+          <!--                <v-spacer></v-spacer>-->
+          <!--                <v-btn icon>-->
+          <!--                  <v-icon>mdi-heart</v-icon>-->
+          <!--                </v-btn>-->
+          <!--                <v-btn icon>-->
+          <!--                  <v-icon>mdi-dots-vertical</v-icon>-->
+          <!--                </v-btn>-->
+          <!--              </v-toolbar>-->
+          <!--              <v-card-text>-->
+          <!--                <span v-html="selectedEvent.details"></span>-->
+          <!--              </v-card-text>-->
+          <!--              <v-card-actions>-->
+          <!--                <v-btn text color="secondary" @click="selectedOpen = false">-->
+          <!--                  Cancel-->
+          <!--                </v-btn>-->
+          <!--              </v-card-actions>-->
+          <!--            </v-card>-->
+          <!--          </v-menu>-->
         </v-card>
       </v-flex>
 
-      <v-flex xs12 sm6 lg4 xl3>
-      </v-flex>
+      <v-flex xs12 sm6 lg4 xl3> </v-flex>
     </v-layout>
+
+    <event-dialog
+      ref="eventDialog"
+      :sessions="sessionsForDate"
+      :default="{ trainer_id: $route.params.id }"
+      title="Создать тренировку"
+    />
   </div>
 </template>
 
@@ -36,7 +73,8 @@
 import _ from "lodash";
 import TrainerInfoCard from "../../components/trainers/TrainerInfoCard";
 import TrainingSessionInfoCard from "../../components/training-sessions/TrainingSessionInfoCard";
-import EventCalendar from "../../components/EventCalendar";
+import EventCalendar from "../../components/calendar/EventCalendar";
+import EventDialog from "../../components/calendar/EventDialog";
 
 export default {
   // head() {
@@ -46,6 +84,7 @@ export default {
   // },
 
   components: {
+    EventDialog,
     EventCalendar,
     TrainingSessionInfoCard,
     TrainerInfoCard
@@ -55,7 +94,13 @@ export default {
     loading: {},
     events: [],
     calendarType: "week",
-    calendarRange: {}
+    calendarRange: {},
+
+    selectedEvent: {},
+    selectedElement: null,
+    selectedOpen: false,
+
+    sessionsForDate: []
   }),
 
   computed: {
@@ -72,13 +117,6 @@ export default {
       };
     },
 
-    unboundTrainingSessionsFilter() {
-      return {
-        trainer_id: this.$route.params.id,
-        bound: false
-      };
-    },
-
     trainingSessions() {
       return this.$store.getters["training-sessions/where"]({
         filter: this.trainingSessionsFilter
@@ -88,22 +126,19 @@ export default {
     calendarProps() {
       return {
         locale: "ru",
-        firstInterval: "8",
-        intervalCount: "16",
+        firstInterval: "7",
+        intervalCount: "17",
         eventStart: "start_date",
         eventEnd: "end_date",
         intervalFormat: interval => interval.time,
         weekdays: [1, 2, 3, 4, 5, 6, 0]
       };
     },
+
     calendarEvents() {
       return {
-        "click:time"(val) {
-          console.log(val);
-        },
-        "click:event"({ nativeEvent, event }) {
-          // this.showEvent();
-        }
+        "click:time": val => this.createEvent(val),
+        "click:event": _event => this.openEvent(_event)
       };
     }
   },
@@ -129,10 +164,7 @@ export default {
   },
 
   mounted() {
-    return Promise.all([
-      this.loadTrainingSessions(),
-      this.loadUnboundTrainingSessions()
-    ]);
+    return Promise.all([this.loadTrainingSessions()]);
   },
 
   methods: {
@@ -145,19 +177,24 @@ export default {
         })
         .then(() => {
           this.loading.trainingSessions = false;
+          this.loadClients();
         });
     },
-    loadUnboundTrainingSessions() {
-      this.loading.unboundTrainingSessions = true;
+
+    loadClients() {
+      this.loading.clients = true;
 
       return this.$store
-        .dispatch("training-sessions/loadWhere", {
-          filter: this.unboundTrainingSessionsFilter
+        .dispatch("clients/loadWhere", {
+          filter: {
+            id: this.trainingSessions.map(session => session.client_id)
+          }
         })
         .then(() => {
-          this.loading.unboundTrainingSessions = false;
+          this.loading.clients = false;
         });
     },
+
     loadEvents({ start, end }) {
       this.loading.events = true;
 
@@ -212,6 +249,68 @@ export default {
           )
           .value()
       );
+    },
+
+    openEvent({ nativeEvent, event }) {
+      const open = () => {
+        this.selectedEvent = event;
+        this.selectedElement = nativeEvent.target;
+        setTimeout(() => (this.selectedOpen = true), 10);
+      };
+
+      if (this.selectedOpen) {
+        this.selectedOpen = false;
+        setTimeout(open, 10);
+      } else {
+        open();
+      }
+
+      nativeEvent.stopPropagation();
+    },
+
+    createEvent(input) {
+      const moment = this.$moment(input.date + " " + input.time);
+      const remainder = moment.minute() % 30;
+      const rounded = this.$moment(moment)
+        .subtract(remainder, "minutes")
+        .format("YYYY-MM-DD HH:mm");
+
+      const filter = {
+        trainer_id: this.$route.params.id,
+        after: input.date,
+        before: input.date
+      };
+
+      this.$store
+        .dispatch("training-sessions/loadWhere", {
+          filter,
+          params: {
+            per_page: -1
+          }
+        })
+        .then(() => {
+          this.sessionsForDate = this.$store.getters["training-sessions/where"](
+            {
+              filter
+            }
+          );
+        });
+
+      // console.log({
+      //   input,
+      //   moment: moment.format("YYYY-MM-DD HH:mm"),
+      //   remainder,
+      //   rounded
+      // });
+
+      this.$refs.eventDialog.open({ startDate: rounded }).then(form => {
+        form.schedulable_type = "training-sessions";
+
+        this.$axios.post("schedules", form).then(() => {
+          this.loadTrainingSessions();
+          this.loadEvents(this.calendarRange);
+        });
+      });
     }
   }
 };
