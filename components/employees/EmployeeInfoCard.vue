@@ -44,7 +44,7 @@
         </v-list-item-content>
       </v-list-item>
       <v-list two-line>
-        <v-list-item>
+        <v-list-item v-if="hall">
           <v-list-item-icon>
             <v-icon color="primary">
               mdi-map-marker

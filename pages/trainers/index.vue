@@ -22,7 +22,7 @@
     >
       <template v-slot:header>
         <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
-          <v-flex xs8 md3>
+          <v-flex xs4 md4>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
                 ФИО
@@ -30,7 +30,7 @@
             </div>
           </v-flex>
 
-          <v-flex md3>
+          <v-flex xs4 md4>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
                 Зал
@@ -38,15 +38,13 @@
             </div>
           </v-flex>
 
-          <v-flex md3>
+          <v-flex xs4 md4>
             <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate">
+              <div style="flex: 1 1 0%;" class="overline text-truncate text-right">
                 Номер телефона
               </div>
             </div>
           </v-flex>
-
-          <v-flex md3 />
         </v-layout>
       </template>
 
