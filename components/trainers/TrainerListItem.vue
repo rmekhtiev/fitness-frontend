@@ -1,24 +1,24 @@
 <template>
   <v-layout>
-    <v-flex xs8 md3>
+    <v-flex xs4 md4>
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate">
           <div class="body-2 text-truncate" :title="trainer.name">
             {{ trainer.name }}
           </div>
-          <div
-            class="caption text-truncate"
-            :title="trainer.associated_employee_id"
-          >
-            {{ trainer.associated_employee_id }}
-          </div>
+<!--          <div-->
+<!--            class="caption text-truncate"-->
+<!--            :title="trainer.associated_employee_id"-->
+<!--          >-->
+<!--            {{ trainer.associated_employee_id }}-->
+<!--          </div>-->
         </div>
       </div>
     </v-flex>
 
-    <v-flex xs8 md3>
+    <v-flex xs4 md4>
       <div style="display: flex; width: 100%">
-        <div style="flex: 1 1 0%;" class="text-truncate">
+        <div style="flex: 1 1 0%;" class="text-truncate" v-if="hall">
           <div class="body-2 text-truncate" :title="hall.title">
             {{ hall.title }}
           </div>
@@ -29,9 +29,9 @@
       </div>
     </v-flex>
 
-    <v-flex xs8 md3>
+    <v-flex xs4 md4>
       <div style="display: flex; width: 100%">
-        <div style="flex: 1 1 0%;" class="text-truncate">
+        <div style="flex: 1 1 0%;" class="text-truncate text-right">
           <div class="body-2 text-truncate" :title="trainer.phone_number">
             {{ trainer.phone_number }}
           </div>

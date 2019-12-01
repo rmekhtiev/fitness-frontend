@@ -12,9 +12,9 @@
         </div>
       </v-flex>
 
-      <v-flex xs8 md3>
-        <div style="display: flex; width: 100%">
-          <div style="flex: 1 1 0%;" class="text-truncate">
+      <v-flex md3>
+        <div v-if="hall" style="display: flex; width: 100%">
+          <div style="flex: 1 1 0%;" class="text-truncate text-right">
             <div class="body-2 text-truncate" :title="hall.title">
               {{ hall.title }}
             </div>

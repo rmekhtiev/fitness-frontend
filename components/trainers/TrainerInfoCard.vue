@@ -63,7 +63,7 @@
             <v-icon>mdi-message-text</v-icon>
           </v-list-item-icon>
         </v-list-item>
-        <v-list-item>
+        <v-list-item v-if="hall">
           <v-list-item-icon>
             <v-icon color="primary">
               mdi-map-marker
