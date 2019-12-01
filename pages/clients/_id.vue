@@ -689,7 +689,7 @@ export default {
 
     recordTime(record) {
       return this.$moment
-        .utc(record.datetime)
+        .utc(record.datetime).local()
         .format("D MMMM YYYY года в HH:mm");
     }
   }

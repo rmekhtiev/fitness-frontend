@@ -32,15 +32,11 @@
 
           <v-flex md3>
             <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate">
+              <div style="flex: 1 1 0%;" class="overline text-truncate text-right">
                 Зал
               </div>
             </div>
           </v-flex>
-
-          <v-flex md3 />
-
-          <v-flex md3 />
         </v-layout>
       </template>
 
