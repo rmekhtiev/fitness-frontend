@@ -1,5 +1,6 @@
 <template>
-  <v-card class="mb-2 mx-auto">
+  <div>
+    <v-card class="mb-2 mx-auto">
     <v-card-text>
       <div class="overline">
         Индивидуальные тренировки
@@ -72,6 +73,21 @@
           <v-icon>mdi-pencil</v-icon>
         </v-list-item-action>
       </v-list-item>
+      <v-list-item
+      >
+        <v-list-item-content>
+          <v-list-item-subtitle class="caption">
+            Комментарий
+          </v-list-item-subtitle>
+          <v-flex style="padding-left: 0" v-if="session.comment">
+            {{session.comment}}
+          </v-flex>
+          <v-flex style="padding-left: 0" class="grey--text" v-else>Без комментария</v-flex>
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-icon @click="commentSession">mdi-pencil</v-icon>
+        </v-list-item-action>
+      </v-list-item>
     </v-list>
 
     <v-card-actions>
@@ -101,14 +117,17 @@
       </v-menu>
     </v-card-actions>
   </v-card>
+    <training-session-comment-dialog ref="sessionComment" :session="session"></training-session-comment-dialog>
+  </div>
 </template>
 
 <script>
 import trainingSessionsMixin from "../../mixins/trainingSessions";
+import TrainingSessionCommentDialog from "./TrainingSessionCommentDialog";
 
 export default {
   name: "TrainingSessionInfoCard",
-
+  components: {TrainingSessionCommentDialog},
   mixins: [trainingSessionsMixin],
 
   props: {
@@ -135,6 +154,21 @@ export default {
     client() {
       return this.$store.getters["clients/byId"]({
         id: this.session.client_id
+      });
+    }
+  },
+  methods:{
+    commentSession(){
+      this.$refs.sessionComment.open().then(form => {
+        this.$axios
+                .patch("training-sessions/" + this.session.id, form)
+                .then(async response => {
+                  await this.$store.dispatch("training-sessions/loadById", {
+                    id: response.data.data.id
+                  });
+                });
+
+        this.$emit("update");
       });
     }
   }

@@ -76,6 +76,7 @@
 import Confirm from "../Confirm";
 import BarSellDialog from "./BarSellDialog";
 import BarDialog from "./BarDialog";
+import auth from "../../mixins/auth";
 
 export default {
   name: "BarItemListItem",
@@ -92,6 +93,7 @@ export default {
       required: true
     }
   },
+  mixins: [auth],
 
   data: () => ({
     menu: {
@@ -109,7 +111,7 @@ export default {
           title: "Редактировать",
           icon: "mdi-pencil",
           if: true,
-          disabled: false,
+          disabled: this.isHallAdmin,
           click: this.editItem
         },
         {

@@ -44,18 +44,26 @@ export default {
     "@/plugins/vue-i18n",
     "@/plugins/vuetify-datetime-picker"
   ],
+
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: ["@nuxtjs/vuetify", "@nuxtjs/toast", "@nuxtjs/moment"],
+  buildModules: [
+    "@nuxtjs/vuetify",
+    "@nuxtjs/toast",
+    "@nuxtjs/moment",
+    "@nuxtjs/dotenv"
+  ],
   /*
    ** Nuxt.js modules
    */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     "@nuxtjs/axios",
-    "@nuxtjs/auth"
+    "@nuxtjs/auth",
+    "@nuxtjs/sentry"
   ],
+
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
@@ -102,6 +110,8 @@ export default {
 
     plugins: [{ src: "~/plugins/axios" }]
   },
+
+  sentry: {},
 
   /*
    ** vuetify module configuration

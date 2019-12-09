@@ -36,8 +36,10 @@
     "vuex-persistedstate": "^2.5.4"
   },
   "devDependencies": {
+    "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/eslint-config": "^1.0.1",
     "@nuxtjs/eslint-module": "^1.0.0",
+    "@nuxtjs/sentry": "^3.0.1",
     "@nuxtjs/vuetify": "^1.0.0",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.5.1",
