@@ -77,4 +77,8 @@ export default function({ $axios, store }) {
     "training-sessions",
     resourceModule({ name: "training-sessions", httpClient: $axios })
   );
+  store.registerModule(
+      "requests",
+      resourceModule({ name: "requests", httpClient: $axios })
+  );
 }
