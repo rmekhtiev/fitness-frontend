@@ -168,14 +168,10 @@ export default {
         title: "Пользователи",
         icon: "mdi-account-card-details",
         to: { name: "users" }
-      }
+      },
+      { title: "Заявки", icon: "mdi-phone", to: { name: "requests" } }
     ]
-  }),
-  computed: {
-    hall() {
-      return this.$store.getters.selectedHall;
-    }
-  }
+  })
 };
 </script>
 
