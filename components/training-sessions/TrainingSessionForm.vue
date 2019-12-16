@@ -55,7 +55,7 @@
           <template v-slot:activator="{ on }">
             <v-text-field
               v-model="value.date_end"
-              label="Начало занятий"
+              label="Окончание занятий"
               readonly
               v-on="on"
             ></v-text-field>
