@@ -3,7 +3,7 @@
     <template v-slot:activator>
       <v-list-item-content>
         <v-list-item-title class="title">
-          {{ me.name }}
+          {{ me.email }}
         </v-list-item-title>
 
         <v-list-item-subtitle v-if="hall" :title="hall.address">
