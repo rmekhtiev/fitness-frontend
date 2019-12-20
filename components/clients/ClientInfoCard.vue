@@ -57,7 +57,7 @@
 
         <v-list-item
           v-if="client.whats_app_number"
-          :href="'https://wa.me/' + updateWhatsAppNumber()"
+          :href="'https://wa.me/' + updateWhatsAppNumber().replace('+', '')"
         >
           <v-list-item-icon>
             <v-icon color="primary">
@@ -195,8 +195,9 @@ export default {
     updateWhatsAppNumber() {
       return this.client.whats_app_number
         .replace(/-/g, "")
-        .replace("8", "7")
-        .replace("+", "");
+        .replace(/\s/g, "")
+        .replace("(", "")
+        .replace(")", "");
     }
 
     // addRecord() {

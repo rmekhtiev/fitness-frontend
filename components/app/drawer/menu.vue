@@ -95,11 +95,12 @@
       <v-list dense nav subheader>
         <v-subheader>Статистика</v-subheader>
 
-        <v-list-item v-if="hall"
+        <v-list-item
+          v-if="hall"
           :key="hall.title"
           link
           nuxt
-          :to="{name: 'halls-id', params:{id: hall.id}}"
+          :to="{ name: 'halls-id', params: { id: hall.id } }"
           exact
         >
           <v-list-item-icon>
@@ -117,9 +118,10 @@
 
 <script>
 import auth from "../../../mixins/auth";
+import selectedHallAware from "../../../mixins/selected-hall-aware";
 
 export default {
-  mixins: [auth],
+  mixins: [auth, selectedHallAware],
 
   data: () => ({
     mainActions: [
@@ -171,7 +173,13 @@ export default {
       },
       { title: "Заявки", icon: "mdi-phone", to: { name: "requests" } }
     ]
-  })
+  }),
+
+  computed: {
+    hall() {
+      return this.$store.getters["halls/byId"]({ id: this.selectedHallId });
+    }
+  }
 };
 </script>
 

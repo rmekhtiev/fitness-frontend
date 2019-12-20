@@ -12,7 +12,7 @@
           <v-flex xs8 sm4>
             <div style="display: flex; width: 100%">
               <div style="flex: 1 1 0%;" class="overline text-truncate">
-                Имя пользователя
+                Email пользователя
               </div>
             </div>
           </v-flex>

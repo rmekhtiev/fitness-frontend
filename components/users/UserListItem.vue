@@ -3,8 +3,8 @@
     <v-flex xs8 sm4>
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate">
-          <div class="body-2 text-truncate" :title="user.name">
-            {{ user.name }}
+          <div class="body-2 text-truncate" :title="user.email">
+            {{ user.email }}
           </div>
         </div>
       </div>
