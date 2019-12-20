@@ -22,9 +22,9 @@
         >
           <template v-slot:activator="{ on }">
             <v-text-field
-              v-model="value.date_start"
               label="Начало занятий"
               readonly
+              :value="$moment(value.date_start).format('ll')"
               v-on="on"
             ></v-text-field>
           </template>
@@ -54,8 +54,8 @@
         >
           <template v-slot:activator="{ on }">
             <v-text-field
-              v-model="value.date_end"
-              label="Начало занятий"
+              :value="$moment(value.date_end).format('ll')"
+              label="Окончание занятий"
               readonly
               v-on="on"
             ></v-text-field>

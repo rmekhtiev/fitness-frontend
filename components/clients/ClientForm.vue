@@ -2,7 +2,6 @@
   <v-form>
     <v-autocomplete
       v-model="value.primary_hall_id"
-      :disabled="isHallAdmin || isEdit"
       :items="halls"
       label="Зал"
       name="hall_id"

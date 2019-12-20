@@ -1,7 +1,7 @@
 <template>
   <v-form>
     <v-autocomplete
-      v-model="value.name"
+      v-model="value.employee_id"
       :items="employees"
       label="ФИО"
       item-text="full_name"
@@ -114,7 +114,7 @@ export default {
   computed: {
     defaultForm() {
       return {
-        name: null,
+        employee_id: null,
         email: null,
         password: null,
         password_confirmation: null,

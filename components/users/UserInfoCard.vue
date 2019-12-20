@@ -5,7 +5,7 @@
         <v-list-item-avatar color="grey" />
         <v-list-item-content>
           <v-list-item-title class="headline">
-            {{ user.name }}
+            {{ user.email }}
           </v-list-item-title>
           <v-list-item-subtitle>
             {{ $t("users.primary_role.name." + user.primary_role.name) }}
