@@ -7,6 +7,7 @@
       <v-flex v-if="training && client" xs2 class="text-left">{{
         client.full_name
       }}</v-flex>
+      <v-flex v-else xs2 class="text-left">Удален</v-flex>
       <v-flex xs2 class="text-left">{{
         $t("methods." + trainingsPayment.method)
       }}</v-flex>

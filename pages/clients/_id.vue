@@ -5,22 +5,22 @@
         <!-- Client info -->
         <client-info-card :client="client" class="mb-2 mx-auto" />
         <v-card>
-<!--          {{identifiers.client_id}}-->
+          <!--          {{identifiers.client_id}}-->
           <v-alert
-                  v-if="identifiers && identifiers.client_id"
-                  border="right"
-                  colored-border
-                  type="success"
-                  elevation="2"
+            v-if="identifiers && identifiers.client_id"
+            border="right"
+            colored-border
+            type="success"
+            elevation="2"
           >
             У клиента есть привязанная карточка
           </v-alert>
           <v-alert
-                  v-else
-                  border="right"
-                  colored-border
-                  type="error"
-                  elevation="2"
+            v-else
+            border="right"
+            colored-border
+            type="error"
+            elevation="2"
           >
             У клиента нет привязанных карточек
           </v-alert>
@@ -314,9 +314,11 @@ import TrainingSessionInfoCard from "../../components/training-sessions/Training
 
 export default {
   head() {
-    return {
-      title: this.client.name
-    };
+    if (this.client) {
+      return {
+        title: this.client.name
+      };
+    }
   },
 
   components: {
@@ -406,9 +408,10 @@ export default {
     },
 
     identifiers() {
-      return _(this.$store.getters["identifiers/where"]({
-        filter: this.identifierFilter
-      })
+      return _(
+        this.$store.getters["identifiers/where"]({
+          filter: this.identifierFilter
+        })
       ).last();
     },
 
@@ -717,7 +720,8 @@ export default {
 
     recordTime(record) {
       return this.$moment
-        .utc(record.datetime).local()
+        .utc(record.datetime)
+        .local()
         .format("D MMMM YYYY года в HH:mm");
     }
   }
