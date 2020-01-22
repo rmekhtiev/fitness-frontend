@@ -21,6 +21,16 @@
             </v-btn>
 
             <v-btn
+              v-if="isHallAdmin || isOwner"
+              color="red"
+              text
+              small
+              @click="deleteClient()"
+            >
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+
+            <v-btn
               v-if="link"
               :to="{ name: 'clients-id', params: { id: client.id } }"
               color="primary"
@@ -125,6 +135,7 @@
         title="Редактирование клиента"
         is-edit
       />
+      <confirm ref="delete" />
     </template>
     <v-skeleton-loader
       v-else
@@ -139,11 +150,12 @@ import routable from "vuetify/es5/mixins/routable";
 import auth from "../../mixins/auth";
 import selectedHallAware from "../../mixins/selected-hall-aware";
 
+import Confirm from "../Confirm";
 import ClientDialog from "./ClientDialog";
 
 export default {
   name: "ClientInfoCard",
-  components: { ClientDialog },
+  components: { ClientDialog, Confirm },
   // extend: VCard,
 
   mixins: [selectedHallAware, routable, auth],
@@ -191,6 +203,22 @@ export default {
 
         this.$emit("update");
       });
+    },
+    deleteClient() {
+      this.$refs.delete
+        .open(
+          "Удалить клиента?",
+          "Вы уверены? Это действие невозможно отменить",
+          { color: "red" }
+        )
+        .then(confirm => {
+          if (confirm) {
+            this.$store.dispatch("clients/delete", { id: this.client.id });
+            this.$toast.success("Клиент удален");
+            this.$emit("delete");
+            this.$router.back();
+          }
+        });
     },
     updateWhatsAppNumber() {
       return this.client.whats_app_number
