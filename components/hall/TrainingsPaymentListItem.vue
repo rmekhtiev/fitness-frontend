@@ -4,7 +4,6 @@
       <v-flex v-if="training && trainer" xs2 class="text-left">{{
         trainer.full_name
       }}</v-flex>
-      яяя
       <v-flex v-if="training && client" xs2 class="text-left">{{
         client.full_name
       }}</v-flex>
