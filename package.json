@@ -49,8 +49,10 @@
     "eslint-plugin-nuxt": ">=0.4.2",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^5.2.3",
+    "gitlab-ci-license-checker-parser": "^1.0.3",
     "gitlab-ci-yarn-audit-parser": "leon0399/gitlab-ci-yarn-audit-parser",
     "gitlab-npm-audit-parser": "^1.0.3",
+    "license-checker": "^25.0.1",
     "prettier": "^1.18.2",
     "vuetify": "^2.0.11"
   }
