@@ -42,12 +42,17 @@
     "@nuxtjs/sentry": "^3.0.1",
     "@nuxtjs/vuetify": "^1.0.0",
     "babel-eslint": "^10.0.3",
-    "eslint": "^6.5.1",
+    "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.4.0",
+    "eslint-formatter-gitlab": "^1.1.0",
     "eslint-loader": "^3.0.2",
     "eslint-plugin-nuxt": ">=0.4.2",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^5.2.3",
+    "gitlab-ci-license-checker-parser": "^1.0.3",
+    "gitlab-ci-yarn-audit-parser": "leon0399/gitlab-ci-yarn-audit-parser",
+    "gitlab-npm-audit-parser": "^1.0.3",
+    "license-checker": "^25.0.1",
     "prettier": "^1.18.2",
     "vuetify": "^2.0.11"
   }
