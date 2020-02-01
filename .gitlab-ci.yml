@@ -1,11 +1,32 @@
 stages:
+  - prepare
   - test
   - security
 
 image: node:dubnium-alpine
 
+cache:
+  key: $CI_COMMIT_REF_SLUG
+  paths:
+    - node_modules/
+
 before_script:
   - yarn install --frozen-lockfile
+
+install:yarn:
+  stage: prepare
+  script:
+    - yarn install --frozen-lockfile
+    - cp .env.example .env
+  artifacts:
+    paths:
+      - node_modules/
+      - .env
+    expire_in: 1 days
+    when: always
+  cache:
+    paths:
+      - node_modules/
 
 code_quality:eslint:
   stage: test
@@ -16,14 +37,32 @@ code_quality:eslint:
       codequality: gl-codequality.json
     paths:
       - gl-codequality.json
+  cache:
+    policy: pull
+    paths:
+      - node_modules/
+  dependencies:
+    - install:yarn
+  needs:
+    - install:yarn
   allow_failure: true
 
 dependency_scanning:
   stage: security
   script:
-    - yarn audit || true
     - yarn audit --json | yarn gitlab-ci-yarn-audit-parser -o gl-dependency-scanning.json
   artifacts:
+    reports:
+      dependency_scanning: gl-dependency-scanning.json
     paths:
       - gl-dependency-scanning.json
+    when: always
+  cache:
+    policy: pull
+    paths:
+      - node_modules/
+  dependencies:
+    - install:yarn
+  needs:
+    - install:yarn
   allow_failure: true
