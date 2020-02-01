@@ -4097,6 +4097,20 @@ get-value@^2.0.3, get-value@^2.0.6:
   resolved "https://registry.yarnpkg.com/get-value/-/get-value-2.0.6.tgz#dc15ca1c672387ca76bd37ac0a395ba2042a2c28"
   integrity sha1-3BXKHGcjh8p2vTesCjlbogQqLCg=
 
+gitlab-ci-yarn-audit-parser@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/gitlab-ci-yarn-audit-parser/-/gitlab-ci-yarn-audit-parser-1.0.3.tgz#ca6ce9460bd9ef656129d9347f10df5d7792f5de"
+  integrity sha512-8eIZqrUVx9w4m6xmdNQL7rlWmeDWIPoWSqHY6o3SAd3tEn47/thzpK56lTDBx7MlIU+P1wGU2xS57f3Y/8wkrA==
+  dependencies:
+    commander "^2.18.0"
+
+gitlab-npm-audit-parser@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/gitlab-npm-audit-parser/-/gitlab-npm-audit-parser-1.0.3.tgz#88e8fec49042975ea3b887d7732936118871a07f"
+  integrity sha512-vjWwQhvHTTZvpyV5bAW+4TSjhwB++HsX57j0I2UfT/HkveXplkne1PM/1HuwkemQvS/RfKzHO+AtXxTuXXlJVw==
+  dependencies:
+    commander "^2.18.0"
+
 glob-all@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/glob-all/-/glob-all-3.1.0.tgz#8913ddfb5ee1ac7812656241b03d5217c64b02ab"

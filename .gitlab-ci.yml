@@ -1,13 +1,29 @@
 stages:
   - test
+  - security
 
 image: node:dubnium-alpine
 
-eslint:
+before_script:
+  - yarn install --frozen-lockfile
+
+code_quality:eslint:
   stage: test
   script:
-    - yarn install --frozen-lockfile
-    - yarn eslint --format gitlab .
+    - yarn eslint --format gitlab --ext .js,.vue --ignore-path .gitignore .
   artifacts:
     reports:
       codequality: gl-codequality.json
+    paths:
+      - gl-codequality.json
+  allow_failure: true
+
+dependency_scanning:
+  stage: security
+  script:
+    - yarn audit || true
+    - yarn audit --json | yarn gitlab-ci-yarn-audit-parser -o gl-dependency-scanning.json
+  artifacts:
+    paths:
+      - gl-dependency-scanning.json
+  allow_failure: true
