@@ -1,0 +1,13 @@
+stages:
+  - test
+
+image: node:dubnium-alpine
+
+eslint:
+  stage: test
+  script:
+    - yarn install --frozen-lockfile
+    - yarn eslint --format gitlab .
+  artifacts:
+    reports:
+      codequality: gl-codequality.json
