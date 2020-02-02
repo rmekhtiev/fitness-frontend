@@ -1,14 +1,29 @@
 stages:
   - prepare
   - test
+  - build
+  - release
   - security
 
 image: node:dubnium-alpine
+
+variables: &global-variables
+  DOCKER_DRIVER: overlay2
+
+  CI_APPLICATION_REPOSITORY: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
+  CI_APPLICATION_TAG: $CI_COMMIT_SHA
 
 cache:
   key: $CI_COMMIT_REF_SLUG
   paths:
     - node_modules/
+
+include:
+  - template: Container-Scanning.gitlab-ci.yml
+
+  - project: 'internal/templates/instance-template-repository'
+    ref: master
+    file: '/gitlab-ci/Docker.yml'
 
 before_script:
   - yarn install --frozen-lockfile
@@ -63,6 +78,28 @@ license_management:
   needs:
     - install:yarn
   allow_failure: true
+
+# Build docker image
+build:container:
+  stage: build
+  dependencies:
+    - install:yarn
+
+# Release docker image
+release:container:latest:
+  stage: release
+  needs:
+    - build:container
+
+release:container:tags:
+  stage: release
+  needs:
+    - build:container
+
+container_scanning:
+  stage: security
+  needs:
+    - build:container
 
 dependency_scanning:
   stage: security
