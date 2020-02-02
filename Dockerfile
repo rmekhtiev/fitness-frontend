@@ -15,7 +15,7 @@ RUN yarn install
 
 # build necessary, even if no static files are needed,
 # since it builds the server as well
-RUN yarn run build --spa
+RUN yarn run build --modern=server,client --spa
 
 # expose 5000 on container
 EXPOSE 5000
@@ -26,4 +26,4 @@ ENV NUXT_HOST=0.0.0.0
 ENV NUXT_PORT=5000
 
 # start the app
-CMD [ "npm", "start" ]
+CMD [ "yarn", "start", "--modern=server,client", "--spa" ]

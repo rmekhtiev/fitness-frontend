@@ -69,7 +69,6 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    host: "fitness.test",
     prefix: "/api/",
     port: "80",
 
@@ -77,7 +76,7 @@ export default {
   },
 
   proxy: {
-    "/api/": "http://104.248.47.70:8000/"
+    "/api/": process.env.API_URL || "https://fitness-backend.test"
   },
 
   router: {
