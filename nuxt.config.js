@@ -76,7 +76,7 @@ export default {
   },
 
   proxy: {
-    "/api/": process.env.API_URL || "https://fitness-backend.test"
+    "/api/": process.env.API_URL || "http://fitness-backend.test"
   },
 
   router: {
