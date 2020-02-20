@@ -1,7 +1,8 @@
 <template>
   <div>
     <v-flex xs12 row>
-      <v-flex xs3 class="text-left" v-if="barItem">{{barItem.title}}</v-flex>
+      <v-flex v-if="barItem" xs3 class="text-left">{{ barItem.title }}</v-flex>
+      <v-flex v-else xs3 class="text-left">Неизвестно</v-flex>
       <v-flex xs3>{{ $t("methods." + barPayment.method) }}</v-flex>
       <v-flex xs2>{{ barPayment.quantity }}</v-flex>
       <v-flex xs2 class="text-right">{{ barPayment.cost }} руб.</v-flex>

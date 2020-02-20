@@ -67,36 +67,77 @@
         </v-dialog>
       </v-flex>
     </v-layout>
-    <v-layout wrap row>
-      <v-flex xs12>
-        <stats-money-table :items="calculateSum"></stats-money-table>
-      </v-flex>
-      <v-flex xs12>
-        <bar-payments-table :payments="barPayments"></bar-payments-table>
-      </v-flex>
-      <v-flex xs12>
-        <subscriptions-payments-table :payments="subscriptionsPayments">
-        </subscriptions-payments-table>
-      </v-flex>
-      <v-flex xs12>
-        <trainings-payments-table
-          :payments="trainingsPayments"
-        ></trainings-payments-table>
-      </v-flex>
-    </v-layout>
+      <v-card outlined class="pl-4 text-center">
+        <v-flex class="font-weight-bold title">Итоговая статистика продаж</v-flex>
+        <v-flex xs12 row class="font-weight-medium">
+          <v-flex xs3>Категория</v-flex>
+          <v-flex xs2>Наличными</v-flex>
+          <v-flex xs2>По карте</v-flex>
+          <v-flex xs2>Переводом</v-flex>
+          <v-flex xs3>Итого</v-flex>
+        </v-flex>
+        <v-list-item :to="{ name: 'halls-id-bar-items'}">
+          <v-flex xs12 row>
+            <v-flex xs3>Бар</v-flex>
+            <v-flex xs2>224</v-flex>
+            <v-flex xs2>5646</v-flex>
+            <v-flex xs2>7676</v-flex>
+            <v-flex xs3>7676</v-flex>
+          </v-flex>
+        </v-list-item>
+        <v-list-item :to="{ name: 'halls-id-subscriptions'}">
+          <v-flex xs12 row>
+          <v-flex xs3>Абонементы</v-flex>
+          <v-flex xs2>3453</v-flex>
+          <v-flex xs2>767</v-flex>
+          <v-flex xs2>1443</v-flex>
+          <v-flex xs3>1443</v-flex>
+        </v-flex>
+        </v-list-item>
+        <v-list-item :to="{ name: 'halls-id-trainings'}">
+          <v-flex xs12 row>
+            <v-flex xs3>Тренировки</v-flex>
+            <v-flex xs2>1113</v-flex>
+            <v-flex xs2>4444</v-flex>
+            <v-flex xs2>666</v-flex>
+            <v-flex xs3>666</v-flex>
+          </v-flex>
+        </v-list-item>
+      </v-card>
+      <!--      <v-flex xs12>-->
+      <!--        <stats-money-table :items="calculateSum"></stats-money-table>-->
+      <!--      </v-flex>-->
+<!--      <v-flex xs12>-->
+<!--        <bar-payments-table-->
+<!--          :date-filter="dateFilter"-->
+<!--        ></bar-payments-table>-->
+<!--      </v-flex>-->
+<!--      <v-flex xs12>-->
+<!--        <subscriptions-payments-table-->
+<!--          :date-filter="dateFilter"-->
+<!--        >-->
+<!--        </subscriptions-payments-table>-->
+<!--      </v-flex>-->
+      <!--      <v-flex xs12>-->
+      <!--        <trainings-payments-table-->
+      <!--          :payments="trainingsPayments"-->
+      <!--        ></trainings-payments-table>-->
+      <!--      </v-flex>-->
+    </v-flex>
   </div>
 </template>
 
 <script>
 import _ from "lodash";
-import StatsMoneyTable from "../../components/hall/StatsMoneyTable";
-import BarPaymentsTable from "../../components/hall/barPaymentsTable";
-import auth from "../../mixins/auth";
-import TrainingsPaymentsTable from "../../components/hall/TrainingsPaymentsTable";
-import SubscriptionsPaymentsTable from "../../components/hall/SubscriptionsPaymentsTable";
-import selectedHallAware from "../../mixins/selected-hall-aware";
-import HallInfoCard from "../../components/hall/HallInfoCard";
-import payments from "../../mixins/payments";
+import StatsMoneyTable from "../../../components/hall/StatsMoneyTable";
+import BarPaymentsTable from "../../../components/hall/barPaymentsTable";
+import auth from "../../../mixins/auth";
+
+import TrainingsPaymentsTable from "../../../components/hall/TrainingsPaymentsTable";
+import SubscriptionsPaymentsTable from "../../../components/hall/SubscriptionsPaymentsTable";
+import selectedHallAware from "../../../mixins/selected-hall-aware";
+import HallInfoCard from "../../../components/hall/HallInfoCard";
+import payments from "../../../mixins/payments";
 
 export default {
   head() {
@@ -105,47 +146,39 @@ export default {
     };
   },
   components: {
-    HallInfoCard,
     SubscriptionsPaymentsTable,
-    TrainingsPaymentsTable,
-    BarPaymentsTable,
-    StatsMoneyTable
+    HallInfoCard,
+    BarPaymentsTable
   },
 
   mixins: [selectedHallAware, auth, payments],
 
   data: () => ({
-    loading: {
-      payments: true
-    },
-    resource: "payments",
-
     modal: {
       start: false,
       end: false
     },
 
     filter: {
-      start: String,
-      end: String
+      start: "",
+      end: ""
     }
   }),
 
   computed: {
-    pureFilter() {
-      return _({
-        hall_id: this.$route.params.id,
-        ...this.filter
-      })
+    dateFilter() {
+      return _(this.filter)
         .omitBy(_.isNull)
         .omitBy(_.isUndefined)
         .value();
     }
   },
 
-  mounted() {
+  created() {
     this.standartTimeFilter();
-    return Promise.all([this.loadPayments(), this.loadHall()]);
+  },
+  mounted() {
+    return Promise.all([this.loadHall()]);
   },
   methods: {
     loadHall() {
@@ -156,11 +189,11 @@ export default {
 
     saveStartDateFilter() {
       this.$refs.startDialog.save(this.filter.start);
-      this.loadPayments();
+      // this.loadPayments();
     },
     saveEndDateFilter() {
       this.$refs.endDialog.save(this.filter.end);
-      this.loadPayments();
+      // this.loadPayments();
     },
     standartTimeFilter() {
       this.filter.start = this.$moment().format("YYYY-MM-DD");
