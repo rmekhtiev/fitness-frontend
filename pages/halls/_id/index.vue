@@ -85,33 +85,25 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="text-left">Бар:</td>
-              <td class="text-right">5000 &#8381;</td>
-              <td class="text-right">5000 &#8381;</td>
-              <td class="text-right">5000 &#8381;</td>
-              <td class="text-right font-weight-bold">15 000 &#8381;</td>
-            </tr>
-            <tr>
-              <td class="text-left">Абонементы:</td>
-              <td class="text-right">5000 &#8381;</td>
-              <td class="text-right">5000 &#8381;</td>
-              <td class="text-right">5000 &#8381;</td>
-              <td class="text-right font-weight-bold">15 000 &#8381;</td>
-            </tr>
-            <tr>
-              <td class="text-left">Тренировки:</td>
-              <td class="text-right">5000 &#8381;</td>
-              <td class="text-right">5000 &#8381;</td>
-              <td class="text-right">5000 &#8381;</td>
-              <td class="text-right font-weight-bold">15 000 &#8381;</td>
-            </tr>
-            <tr class="body-1">
-              <td class="text-left">Подитог:</td>
-              <td class="text-right">5000 &#8381;</td>
-              <td class="text-right">5000 &#8381;</td>
-              <td class="text-right">5000 &#8381;</td>
-              <td class="text-right font-weight-bold">15 000 &#8381;</td>
+            <tr
+              v-for="(method, key) in stats"
+              :key="'stats-method-' + key"
+              :class="{ 'body-2 font-weight-bold': key === 'total' }"
+            >
+              <td class="text-left">
+                <component
+                  :is="key !== 'total' ? 'nuxt-link' : 'span'"
+                  :to="{ name: `halls-id-${key}` }"
+                >
+                  {{ $t(`categories.${key}`) }}
+                </component>
+              </td>
+              <td class="text-right">{{ method.cash || 0 }} &#8381;</td>
+              <td class="text-right">{{ method.transfer }} &#8381;</td>
+              <td class="text-right">{{ method.card }} &#8381;</td>
+              <td class="text-right font-weight-bold">
+                {{ method.total }} &#8381;
+              </td>
             </tr>
           </tbody>
         </v-simple-table>
@@ -127,6 +119,12 @@ import auth from "../../../mixins/auth";
 import selectedHallAware from "../../../mixins/selected-hall-aware";
 import HallInfoCard from "../../../components/hall/HallInfoCard";
 import payments from "../../../mixins/payments";
+
+const getOptionsQuery = (optionsObject = {}) =>
+  Object.keys(optionsObject)
+    .filter(k => typeof optionsObject[k] !== "undefined")
+    .map(k => `${k}=${encodeURIComponent(optionsObject[k])}`)
+    .join("&");
 
 export default {
   head() {
@@ -149,7 +147,9 @@ export default {
     filter: {
       start: "",
       end: ""
-    }
+    },
+
+    stats: {}
   }),
 
   computed: {
@@ -162,7 +162,8 @@ export default {
   },
 
   created() {
-    this.standartTimeFilter();
+    this.standardTimeFilter();
+    this.loadStats();
   },
   mounted() {
     return Promise.all([this.loadHall()]);
@@ -173,16 +174,22 @@ export default {
         id: this.$route.params.id
       });
     },
-
+    loadStats() {
+      this.$axios
+        .get(
+          `halls/${this.$route.params.id}/stats?${getOptionsQuery(this.filter)}`
+        )
+        .then(({ data }) => (this.stats = data.data.payments));
+    },
     saveStartDateFilter() {
       this.$refs.startDialog.save(this.filter.start);
-      // this.loadPayments();
+      this.loadStats();
     },
     saveEndDateFilter() {
       this.$refs.endDialog.save(this.filter.end);
-      // this.loadPayments();
+      this.loadStats();
     },
-    standartTimeFilter() {
+    standardTimeFilter() {
       this.filter.start = this.$moment().format("YYYY-MM-DD");
       this.filter.end = this.$moment().format("YYYY-MM-DD");
     }
