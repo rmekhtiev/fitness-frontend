@@ -86,23 +86,29 @@
           </thead>
           <tbody>
             <tr
-              v-for="(method, key) in stats"
-              :key="'stats-method-' + key"
-              :class="{ 'body-2 font-weight-bold': key === 'total' }"
+              v-for="category in categories"
+              :key="'stats-method-' + category"
+              :class="{ 'body-2 font-weight-bold': category === 'total' }"
             >
               <td class="text-left">
                 <component
-                  :is="key !== 'total' ? 'nuxt-link' : 'span'"
-                  :to="{ name: `halls-id-${key}` }"
+                  :is="category !== 'total' ? 'nuxt-link' : 'span'"
+                  :to="{ name: `halls-id-${category}` }"
                 >
-                  {{ $t(`categories.${key}`) }}
+                  {{ $t(`categories.${category}`) }}
                 </component>
               </td>
-              <td class="text-right">{{ method.cash || 0 }} &#8381;</td>
-              <td class="text-right">{{ method.transfer }} &#8381;</td>
-              <td class="text-right">{{ method.card }} &#8381;</td>
+              <td class="text-right">
+                {{ stats[category] ? stats[category].cash : 0 }} &#8381;
+              </td>
+              <td class="text-right">
+                {{ stats[category] ? stats[category].transfer : 0 }} &#8381;
+              </td>
+              <td class="text-right">
+                {{ stats[category] ? stats[category].card : 0 }} &#8381;
+              </td>
               <td class="text-right font-weight-bold">
-                {{ method.total }} &#8381;
+                {{ stats[category] ? stats[category].total : 0 }} &#8381;
               </td>
             </tr>
           </tbody>
@@ -149,6 +155,8 @@ export default {
       end: ""
     },
 
+    categories: ["subscriptions", "training-sessions", "bar-items", "total"],
+
     stats: {}
   }),
 
@@ -192,6 +200,12 @@ export default {
     standardTimeFilter() {
       this.filter.start = this.$moment().format("YYYY-MM-DD");
       this.filter.end = this.$moment().format("YYYY-MM-DD");
+
+      if (this.role("owner")) {
+        this.filter.start = this.$moment()
+          .subtract(1, "month")
+          .format("YYYY-MM-DD");
+      }
     }
   }
 };
