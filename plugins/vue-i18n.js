@@ -52,7 +52,14 @@ export default ({ app }) => {
         methods: {
           cash: "Наличные",
           card: "По карте",
-          transfer: "Переводом"
+          transfer: "Переводом",
+          total: "Всего"
+        },
+        categories: {
+          subscriptions: "Абонементы",
+          "bar-items": "Бар",
+          "training-sessions": "Тренировки",
+          total: "Всего"
         }
       }
     }

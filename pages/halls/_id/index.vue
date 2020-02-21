@@ -1,12 +1,12 @@
 <template>
   <div>
-    <v-layout wrap row class="mb-12">
+    <v-layout wrap row class="mb-4">
       <v-flex xs6>
         <hall-info-card></hall-info-card>
       </v-flex>
     </v-layout>
-    <v-layout wrap row class="justify-center">
-      <v-flex xs6 md4>
+    <v-layout row>
+      <v-flex xs4>
         <v-dialog
           ref="startDialog"
           v-model="modal.start"
@@ -22,13 +22,14 @@
               name="start"
               readonly
               :disabled="isHallAdmin"
+              filled
               v-on="on"
             />
           </template>
           <v-date-picker v-model="filter.start" scrollable locale="ru-ru">
             <div class="flex-grow-1" />
             <v-btn text color="primary" @click="modal.start = false">
-              Cancel
+              Отмена
             </v-btn>
             <v-btn text color="primary" @click="saveStartDateFilter">
               OK
@@ -36,7 +37,7 @@
           </v-date-picker>
         </v-dialog>
       </v-flex>
-      <v-flex xs6 md4>
+      <v-flex xs4>
         <v-dialog
           ref="endDialog"
           v-model="modal.end"
@@ -52,13 +53,14 @@
               name="end"
               readonly
               :disabled="isHallAdmin"
+              filled
               v-on="on"
             />
           </template>
           <v-date-picker v-model="filter.end" scrollable locale="ru-ru">
             <div class="flex-grow-1" />
             <v-btn text color="primary" @click="modal.end = false">
-              Cancel
+              Отмена
             </v-btn>
             <v-btn text color="primary" @click="saveEndDateFilter">
               OK
@@ -67,77 +69,62 @@
         </v-dialog>
       </v-flex>
     </v-layout>
-      <v-card outlined class="pl-4 text-center">
-        <v-flex class="font-weight-bold title">Итоговая статистика продаж</v-flex>
-        <v-flex xs12 row class="font-weight-medium">
-          <v-flex xs3>Категория</v-flex>
-          <v-flex xs2>Наличными</v-flex>
-          <v-flex xs2>По карте</v-flex>
-          <v-flex xs2>Переводом</v-flex>
-          <v-flex xs3>Итого</v-flex>
-        </v-flex>
-        <v-list-item :to="{ name: 'halls-id-bar-items'}">
-          <v-flex xs12 row>
-            <v-flex xs3>Бар</v-flex>
-            <v-flex xs2>224</v-flex>
-            <v-flex xs2>5646</v-flex>
-            <v-flex xs2>7676</v-flex>
-            <v-flex xs3>7676</v-flex>
-          </v-flex>
-        </v-list-item>
-        <v-list-item :to="{ name: 'halls-id-subscriptions'}">
-          <v-flex xs12 row>
-          <v-flex xs3>Абонементы</v-flex>
-          <v-flex xs2>3453</v-flex>
-          <v-flex xs2>767</v-flex>
-          <v-flex xs2>1443</v-flex>
-          <v-flex xs3>1443</v-flex>
-        </v-flex>
-        </v-list-item>
-        <v-list-item :to="{ name: 'halls-id-trainings'}">
-          <v-flex xs12 row>
-            <v-flex xs3>Тренировки</v-flex>
-            <v-flex xs2>1113</v-flex>
-            <v-flex xs2>4444</v-flex>
-            <v-flex xs2>666</v-flex>
-            <v-flex xs3>666</v-flex>
-          </v-flex>
-        </v-list-item>
+    <v-flex>
+      <v-card outlined>
+        <v-card-title class="font-weight-bold">
+          <span class="title">Итоговая статистика продаж</span>
+        </v-card-title>
+        <v-simple-table>
+          <thead>
+            <tr>
+              <th class="text-left">Категория</th>
+              <th class="text-right">Наличными</th>
+              <th class="text-right">Переводом</th>
+              <th class="text-right">По карте</th>
+              <th class="text-right font-weight-bold">Итого</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(method, key) in stats"
+              :key="'stats-method-' + key"
+              :class="{ 'body-2 font-weight-bold': key === 'total' }"
+            >
+              <td class="text-left">
+                <component
+                  :is="key !== 'total' ? 'nuxt-link' : 'span'"
+                  :to="{ name: `halls-id-${key}` }"
+                >
+                  {{ $t(`categories.${key}`) }}
+                </component>
+              </td>
+              <td class="text-right">{{ method.cash || 0 }} &#8381;</td>
+              <td class="text-right">{{ method.transfer }} &#8381;</td>
+              <td class="text-right">{{ method.card }} &#8381;</td>
+              <td class="text-right font-weight-bold">
+                {{ method.total }} &#8381;
+              </td>
+            </tr>
+          </tbody>
+        </v-simple-table>
       </v-card>
-      <!--      <v-flex xs12>-->
-      <!--        <stats-money-table :items="calculateSum"></stats-money-table>-->
-      <!--      </v-flex>-->
-<!--      <v-flex xs12>-->
-<!--        <bar-payments-table-->
-<!--          :date-filter="dateFilter"-->
-<!--        ></bar-payments-table>-->
-<!--      </v-flex>-->
-<!--      <v-flex xs12>-->
-<!--        <subscriptions-payments-table-->
-<!--          :date-filter="dateFilter"-->
-<!--        >-->
-<!--        </subscriptions-payments-table>-->
-<!--      </v-flex>-->
-      <!--      <v-flex xs12>-->
-      <!--        <trainings-payments-table-->
-      <!--          :payments="trainingsPayments"-->
-      <!--        ></trainings-payments-table>-->
-      <!--      </v-flex>-->
     </v-flex>
   </div>
 </template>
 
 <script>
 import _ from "lodash";
-import StatsMoneyTable from "../../../components/hall/StatsMoneyTable";
-import BarPaymentsTable from "../../../components/hall/barPaymentsTable";
 import auth from "../../../mixins/auth";
 
-import TrainingsPaymentsTable from "../../../components/hall/TrainingsPaymentsTable";
-import SubscriptionsPaymentsTable from "../../../components/hall/SubscriptionsPaymentsTable";
 import selectedHallAware from "../../../mixins/selected-hall-aware";
 import HallInfoCard from "../../../components/hall/HallInfoCard";
 import payments from "../../../mixins/payments";
+
+const getOptionsQuery = (optionsObject = {}) =>
+  Object.keys(optionsObject)
+    .filter(k => typeof optionsObject[k] !== "undefined")
+    .map(k => `${k}=${encodeURIComponent(optionsObject[k])}`)
+    .join("&");
 
 export default {
   head() {
@@ -146,9 +133,7 @@ export default {
     };
   },
   components: {
-    SubscriptionsPaymentsTable,
-    HallInfoCard,
-    BarPaymentsTable
+    HallInfoCard
   },
 
   mixins: [selectedHallAware, auth, payments],
@@ -162,7 +147,9 @@ export default {
     filter: {
       start: "",
       end: ""
-    }
+    },
+
+    stats: {}
   }),
 
   computed: {
@@ -175,7 +162,8 @@ export default {
   },
 
   created() {
-    this.standartTimeFilter();
+    this.standardTimeFilter();
+    this.loadStats();
   },
   mounted() {
     return Promise.all([this.loadHall()]);
@@ -186,16 +174,22 @@ export default {
         id: this.$route.params.id
       });
     },
-
+    loadStats() {
+      this.$axios
+        .get(
+          `halls/${this.$route.params.id}/stats?${getOptionsQuery(this.filter)}`
+        )
+        .then(({ data }) => (this.stats = data.data.payments));
+    },
     saveStartDateFilter() {
       this.$refs.startDialog.save(this.filter.start);
-      // this.loadPayments();
+      this.loadStats();
     },
     saveEndDateFilter() {
       this.$refs.endDialog.save(this.filter.end);
-      // this.loadPayments();
+      this.loadStats();
     },
-    standartTimeFilter() {
+    standardTimeFilter() {
       this.filter.start = this.$moment().format("YYYY-MM-DD");
       this.filter.end = this.$moment().format("YYYY-MM-DD");
     }
