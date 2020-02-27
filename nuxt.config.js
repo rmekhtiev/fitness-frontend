@@ -69,6 +69,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
+    host: "fitness.test",
     prefix: "/api/",
     port: "80",
 
