@@ -195,6 +195,8 @@ export default {
           }
         })
       ]).then(() => {
+        const _promises = [];
+
         const subscriptions = this.$store.getters["subscriptions/where"]({
           filter: {
             subscription_id: subscriptionsIds
@@ -204,23 +206,34 @@ export default {
           .map(subscription => subscription.client_id)
           .uniq()
           .value();
+
+        if (clientsIds.length > 0) {
+          _promises.push(
+            this.$store.dispatch("clients/loadWhere", {
+              filter: {
+                client_id: clientsIds
+              }
+            })
+          );
+        }
+
         const groupsIds = _(subscriptions)
           .filter({ subscriable_type: "groups" })
           .map(subscription => subscription.subscriable_id)
           .uniq()
           .value();
-        return Promise.all([
-          this.$store.dispatch("clients/loadWhere", {
-            filter: {
-              client_id: clientsIds
-            }
-          }),
-          this.$store.dispatch("groups/loadWhere", {
-            filter: {
-              group_id: groupsIds
-            }
-          })
-        ]);
+
+        if (groupsIds.length > 0) {
+          _promises.push(
+            this.$store.dispatch("groups/loadWhere", {
+              filter: {
+                group_id: groupsIds
+              }
+            })
+          );
+        }
+
+        return Promise.all(_promises);
       });
     }
   }

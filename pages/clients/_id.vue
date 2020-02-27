@@ -189,7 +189,7 @@
 
           <v-timeline dense>
             <v-list v-if="!loading.records">
-              <template v-for="(record, index) in records">
+              <template v-for="(record, index) in records.slice(0, 10)">
                 <v-timeline-item small>
                   {{ recordTime(record) }}
                 </v-timeline-item>
@@ -496,15 +496,16 @@ export default {
         this.$axios.post("subscriptions", form).then(async response => {
           await this.$store.dispatch("subscriptions/loadById", {
             id: response.data.data.id
-          }),
-            this.$store
-              .dispatch("clients/loadById", {
-                id: this.$route.params.id
-              })
-              .then(() => {
-                this.loadActiveSubscriptions();
-                this.loadInactiveSubscriptions();
-              });
+          });
+
+          this.$store
+            .dispatch("clients/loadById", {
+              id: this.$route.params.id
+            })
+            .then(() => {
+              this.loadActiveSubscriptions();
+              this.loadInactiveSubscriptions();
+            });
         });
       });
     },
@@ -577,34 +578,6 @@ export default {
         });
     },
 
-    loadActiveSubscriptions() {
-      this.loading.subscriptions = true;
-
-      return this.$store
-        .dispatch("subscriptions/loadWhere", {
-          filter: this.activeFilter
-        })
-        .then(() => {
-          const activeIds = _(
-            this.$store.getters["subscriptions/where"]({
-              filter: this.activeFilter
-            })
-          )
-            .map(subscription => subscription.id)
-            .uniq();
-
-          console.info("Gonna load next lockers: " + activeIds);
-
-          return Promise.all(
-            activeIds.map(activeId =>
-              this.$store.dispatch("subscriptions/loadById", { id: activeId })
-            )
-          ).then(() => {
-            this.loading.subscriptions = false;
-          });
-        });
-    },
-
     loadFilteredGroups() {
       return this.selectedHallId
         ? this.$store.dispatch("groups/loadWhere", {
@@ -615,44 +588,50 @@ export default {
         : this.$store.dispatch("groups/loadAll");
     },
 
+    loadActiveSubscriptions() {
+      this.loading.subscriptions = true;
+
+      if (this.activeFilter.id.length > 0) {
+        return this.$store.dispatch("subscriptions/loadWhere", {
+          filter: this.activeFilter
+        });
+      } else {
+        return Promise.resolve().then(() => {
+          this.loading.subscriptions = false;
+        });
+      }
+    },
+
     loadInactiveSubscriptions() {
       this.loading.subscriptions = true;
 
-      return this.$store
-        .dispatch("subscriptions/loadWhere", {
+      if (this.inactiveFilter.id.length > 0) {
+        return this.$store.dispatch("subscriptions/loadWhere", {
           filter: this.inactiveFilter
-        })
-        .then(() => {
-          const inactiveIds = _(
-            this.$store.getters["subscriptions/where"]({
-              filter: this.inactiveFilter
-            })
-          )
-            .map(subscription => subscription.id)
-            .uniq();
-
-          console.info("Gonna load next lockers: " + inactiveIds);
-
-          return Promise.all(
-            inactiveIds.map(inactiveId =>
-              this.$store.dispatch("subscriptions/loadById", { id: inactiveId })
-            )
-          ).then(() => {
-            this.loading.subscriptions = false;
-          });
         });
+      } else {
+        return Promise.resolve().then(() => {
+          this.loading.subscriptions = false;
+        });
+      }
     },
 
     loadGroups() {
       this.loading.groups = true;
 
-      return this.$store
-        .dispatch("groups/loadWhere", {
-          filter: this.groupFilter
-        })
-        .then(() => {
+      if (this.groupFilter.id.length > 0) {
+        return this.$store
+          .dispatch("groups/loadWhere", {
+            filter: this.groupFilter
+          })
+          .then(() => {
+            this.loading.groups = false;
+          });
+      } else {
+        return Promise.resolve().then(() => {
           this.loading.groups = false;
         });
+      }
     },
 
     loadRecords() {
