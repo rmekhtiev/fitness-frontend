@@ -1,9 +1,12 @@
 <template>
   <tr>
     <td>
-      <template v-if="subscription && client">
+      <nuxt-link
+        v-if="subscription && client"
+        :to="{ name: 'clients-id', params: { id: client.id } }"
+      >
         {{ client.full_name }}
-      </template>
+      </nuxt-link>
       <v-skeleton-loader v-else-if="loading" type="table-cell" />
       <template v-else>
         [Удален]
@@ -21,7 +24,10 @@
     </td>
     <td>
       <template v-if="subscription && group && group !== 'Зал'">
-        В группу {{ group.title }}
+        В группу
+        <nuxt-link :to="{ name: 'groups-id', params: { id: group.id } }">
+          {{ group.title }}
+        </nuxt-link>
       </template>
       <v-skeleton-loader v-else-if="loading" type="table-cell" />
       <template v-else>
