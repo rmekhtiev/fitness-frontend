@@ -8,9 +8,9 @@
         {{ client.full_name }}
       </nuxt-link>
       <v-skeleton-loader v-else-if="loading" type="table-cell" />
-      <template v-else>
-        [Удален]
-      </template>
+      <span v-else class="deleted">
+        [Удалено]
+      </span>
     </td>
     <td>
       <template v-if="subscription">
@@ -18,9 +18,9 @@
         {{ formatDate(subscription.valid_till) }}
       </template>
       <v-skeleton-loader v-else-if="loading" type="table-cell" />
-      <template v-else>
-        [Удален]
-      </template>
+      <span v-else class="deleted">
+        [Удалено]
+      </span>
     </td>
     <td>
       <template v-if="subscription && group && group !== 'Зал'">

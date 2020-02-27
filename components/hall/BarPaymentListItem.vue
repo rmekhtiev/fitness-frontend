@@ -1,16 +1,21 @@
 <template>
-  <div>
-    <v-flex xs12 row>
-      <v-flex v-if="barItem" xs3 class="text-left">{{ barItem.title }}</v-flex>
-      <v-flex v-else xs3 class="text-left">Неизвестно</v-flex>
-      <v-flex xs3>{{ $t("methods." + barPayment.method) }}</v-flex>
-      <v-flex xs2>{{ barPayment.quantity }}</v-flex>
-      <v-flex xs2 class="text-right">{{ barPayment.cost }} руб.</v-flex>
-      <v-flex xs2 class="text-right"
-        >{{ calculateTotal(barPayment.cost, barPayment.quantity) }} руб.</v-flex
-      >
-    </v-flex>
-  </div>
+  <tr>
+    <td>
+      <template v-if="barItem">
+        {{ barItem.title }}
+      </template>
+      <v-skeleton-loader v-else-if="loading" type="table-cell" />
+      <span v-else class="deleted">
+        [Удалено]
+      </span>
+    </td>
+    <td>
+      {{ $t("methods." + barPayment.method) }}
+    </td>
+    <td class="text-right">{{ barPayment.quantity }}</td>
+    <td class="text-right">{{ barPayment.cost }} &#8381;</td>
+    <td class="text-right">{{ barPayment.total }} &#8381;</td>
+  </tr>
 </template>
 
 <script>
@@ -20,6 +25,10 @@ export default {
     barPayment: {
       type: Object,
       required: true
+    },
+    loading: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-layout wrap row class="justify-center">
-      <v-flex xs6 md4>
+    <v-layout row>
+      <v-flex xs4>
         <v-dialog
           ref="startDialog"
           v-model="modal.start"
@@ -16,13 +16,15 @@
               label="Начало периода"
               name="start"
               readonly
+              :disabled="isHallAdmin"
+              filled
               v-on="on"
             />
           </template>
           <v-date-picker v-model="filter.start" scrollable locale="ru-ru">
             <div class="flex-grow-1" />
             <v-btn text color="primary" @click="modal.start = false">
-              Cancel
+              Отмена
             </v-btn>
             <v-btn text color="primary" @click="saveStartDateFilter">
               OK
@@ -30,7 +32,7 @@
           </v-date-picker>
         </v-dialog>
       </v-flex>
-      <v-flex xs6 md4>
+      <v-flex xs4>
         <v-dialog
           ref="endDialog"
           v-model="modal.end"
@@ -45,13 +47,15 @@
               label="Окончание периода"
               name="end"
               readonly
+              :disabled="isHallAdmin"
+              filled
               v-on="on"
             />
           </template>
           <v-date-picker v-model="filter.end" scrollable locale="ru-ru">
             <div class="flex-grow-1" />
             <v-btn text color="primary" @click="modal.end = false">
-              Cancel
+              Отмена
             </v-btn>
             <v-btn text color="primary" @click="saveEndDateFilter">
               OK
@@ -60,37 +64,26 @@
         </v-dialog>
       </v-flex>
     </v-layout>
-    <v-layout wrap row class="justify-center">
-      <v-flex xs10 class="text-center">
-        <v-data-iterator
-          :items="items"
-          :options.sync="iteratorOptions"
-          :server-items-length="totalItems"
-          :loading="itemsLoading"
-          :items-per-page="15"
-        >
-          <template v-slot:header>
-            <v-flex class="font-weight-bold title"
-              >История продаж тренировок</v-flex
-            >
-            <v-flex xs12 row class="font-weight-medium">
-              <v-flex xs2 class="text-left">Тренер</v-flex>
-              <v-flex xs2 class="text-left">Клиент</v-flex>
-              <v-flex xs2 class="text-left">Метод оплаты</v-flex>
-              <v-flex xs3 class="text-left"
-                >Дата начала/окончания занятий</v-flex
-              >
-              <v-flex xs3 class="text-right">Оплата тренеру</v-flex>
-            </v-flex>
-            <template v-for="item in items">
-              <trainings-payment-list-item
-                :trainings-payment="item"
-              ></trainings-payment-list-item>
-            </template>
-          </template>
-        </v-data-iterator>
-      </v-flex>
-    </v-layout>
+    <v-card>
+      <v-card-title class="font-weight-bold">
+        <span class="title">История продаж тренировок</span>
+      </v-card-title>
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        :options.sync="iteratorOptions"
+        :server-items-length="totalItems"
+        :loading="itemsLoading"
+        :items-per-page="15"
+      >
+        <template v-slot:item="{ item }">
+          <trainings-payment-list-item
+            :trainings-payment="item"
+            :loading="itemsLoading"
+          />
+        </template>
+      </v-data-table>
+    </v-card>
   </div>
 </template>
 
@@ -98,13 +91,28 @@
 import _ from "lodash";
 import serverSidePaginated from "../../../mixins/server-side-paginated";
 import TrainingsPaymentListItem from "../../../components/hall/TrainingsPaymentListItem";
+import auth from "../../../mixins/auth";
 
 export default {
   name: "Trainings",
   components: { TrainingsPaymentListItem },
-  mixins: [serverSidePaginated],
+  mixins: [auth, serverSidePaginated],
   data: () => ({
     resource: "payments",
+
+    headers: [
+      { text: "Тренер", sortable: false, value: "trainer" },
+      { text: "Клиент", sortable: false, value: "client" },
+      { text: "Дата начала/окончания", sortable: false, value: "dates_range" },
+      { text: "Метод оплаты", sortable: false, value: "method" },
+      {
+        text: "Оплата тренеру",
+        sortable: false,
+        value: "trainer-revenue",
+        align: "right"
+      }
+    ],
+
     modal: {
       start: false,
       end: false
@@ -154,7 +162,7 @@ export default {
     }
   },
   created() {
-    this.standartTimeFilter();
+    this.standardTimeFilter();
   },
   methods: {
     saveStartDateFilter() {
@@ -163,9 +171,15 @@ export default {
     saveEndDateFilter() {
       this.$refs.endDialog.save(this.filter.end);
     },
-    standartTimeFilter() {
+    standardTimeFilter() {
       this.filter.start = this.$moment().format("YYYY-MM-DD");
       this.filter.end = this.$moment().format("YYYY-MM-DD");
+
+      if (this.role("owner")) {
+        this.filter.start = this.$moment()
+          .subtract(1, "month")
+          .format("YYYY-MM-DD");
+      }
     },
     loadRelated() {
       const trainingsIds = _(this.items)

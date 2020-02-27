@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-layout wrap row class="justify-center">
-      <v-flex xs6 md4>
+    <v-layout row>
+      <v-flex xs4>
         <v-dialog
           ref="startDialog"
           v-model="modal.start"
@@ -16,13 +16,15 @@
               label="Начало периода"
               name="start"
               readonly
+              :disabled="isHallAdmin"
+              filled
               v-on="on"
             />
           </template>
           <v-date-picker v-model="filter.start" scrollable locale="ru-ru">
             <div class="flex-grow-1" />
             <v-btn text color="primary" @click="modal.start = false">
-              Cancel
+              Отмена
             </v-btn>
             <v-btn text color="primary" @click="saveStartDateFilter">
               OK
@@ -30,7 +32,7 @@
           </v-date-picker>
         </v-dialog>
       </v-flex>
-      <v-flex xs6 md4>
+      <v-flex xs4>
         <v-dialog
           ref="endDialog"
           v-model="modal.end"
@@ -45,13 +47,15 @@
               label="Окончание периода"
               name="end"
               readonly
+              :disabled="isHallAdmin"
+              filled
               v-on="on"
             />
           </template>
           <v-date-picker v-model="filter.end" scrollable locale="ru-ru">
             <div class="flex-grow-1" />
             <v-btn text color="primary" @click="modal.end = false">
-              Cancel
+              Отмена
             </v-btn>
             <v-btn text color="primary" @click="saveEndDateFilter">
               OK
@@ -60,35 +64,23 @@
         </v-dialog>
       </v-flex>
     </v-layout>
-    <v-layout wrap row class="justify-center">
-      <v-flex xs10 class="text-center">
-        <v-data-iterator
-          :items="items"
-          :options.sync="iteratorOptions"
-          :server-items-length="totalItems"
-          :loading="itemsLoading"
-          :items-per-page="15"
-        >
-          <template v-slot:header>
-            <v-flex class="font-weight-bold title">История продаж бара</v-flex>
-            <v-flex xs12 row class="font-weight-medium">
-              <v-flex xs3 class="text-left">Наименование</v-flex>
-              <v-flex xs3>Метод оплаты</v-flex>
-              <v-flex xs2>Количество</v-flex>
-              <v-flex xs2 class="text-right">Цена за ед.</v-flex>
-              <v-flex xs2 class="text-right">Итого</v-flex>
-            </v-flex>
-          </template>
-
-          <template v-for="(item, index) in items">
-            <bar-payment-list-item
-              :key="'bar-payment-' + index"
-              :bar-payment="item"
-            />
-          </template>
-        </v-data-iterator>
-      </v-flex>
-    </v-layout>
+    <v-card>
+      <v-card-title class="font-weight-bold">
+        <span class="title">История продаж бара</span>
+      </v-card-title>
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        :options.sync="iteratorOptions"
+        :server-items-length="totalItems"
+        :loading="itemsLoading"
+        :items-per-page="15"
+      >
+        <template v-slot:item="{ item }">
+          <bar-payment-list-item :loading="itemsLoading" :bar-payment="item" />
+        </template>
+      </v-data-table>
+    </v-card>
   </div>
 </template>
 
@@ -97,12 +89,22 @@ import _ from "lodash";
 import serverSidePaginated from "../../../mixins/server-side-paginated";
 
 import BarPaymentListItem from "../../../components/hall/BarPaymentListItem";
+import auth from "../../../mixins/auth";
 export default {
   name: "BarItems",
   components: { BarPaymentListItem },
-  mixins: [serverSidePaginated],
+  mixins: [auth, serverSidePaginated],
   data: () => ({
     resource: "payments",
+
+    headers: [
+      { text: "Наименование", sortable: false, value: "title" },
+      { text: "Метод оплаты", sortable: false, value: "method" },
+      { text: "Кол-во", sortable: false, value: "quantity", align: "right" },
+      { text: "За ед.", sortable: false, value: "cost", align: "right" },
+      { text: "Итого", sortable: false, value: "total", align: "right" }
+    ],
+
     modal: {
       start: false,
       end: false
@@ -152,7 +154,7 @@ export default {
     }
   },
   created() {
-    this.standartTimeFilter();
+    this.standardTimeFilter();
   },
   methods: {
     saveStartDateFilter() {
@@ -161,9 +163,15 @@ export default {
     saveEndDateFilter() {
       this.$refs.endDialog.save(this.filter.end);
     },
-    standartTimeFilter() {
+    standardTimeFilter() {
       this.filter.start = this.$moment().format("YYYY-MM-DD");
       this.filter.end = this.$moment().format("YYYY-MM-DD");
+
+      if (this.role("owner")) {
+        this.filter.start = this.$moment()
+          .subtract(1, "month")
+          .format("YYYY-MM-DD");
+      }
     },
     loadRelated() {
       const barItemsIds = _(this.items)
