@@ -30,7 +30,13 @@
         </v-btn>
       </v-card-text>
 
-      <v-data-iterator :items="clients" :items-per-page="15">
+      <v-data-iterator
+        :items="items"
+        :options.sync="iteratorOptions"
+        :server-items-length="totalItems"
+        :loading="itemsLoading"
+        :items-per-page="30"
+      >
         <template v-slot:header>
           <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
             <v-flex xs8 md3>
@@ -84,13 +90,17 @@
 </template>
 
 <script>
+import _ from "lodash";
+import serverSidePaginated from "../mixins/server-side-paginated";
 import ClientListItem from "./clients/ClientListItem";
+
 export default {
   name: "ClientSearchDialog",
 
   components: {
     ClientListItem
   },
+  mixins: [serverSidePaginated],
 
   props: {
     fullscreen: {
@@ -100,31 +110,43 @@ export default {
   },
 
   data: () => ({
+    resource: "clients",
     dialog: false,
 
     resolve: null,
     reject: null,
 
-    search: null
+    search: null,
+    iteratorOptions: {
+      itemsPerPage: 30,
+      page: 1
+    }
   }),
 
   computed: {
-    filter() {
-      return {
+    pureFilter() {
+      return _({
         search: this.search
-      };
+      })
+        .omitBy(_.isNull)
+        .omitBy(_.isUndefined)
+        .value();
     },
-
-    clients() {
-      return this.$store.getters["clients/where"]({ filter: this.filter });
+    serverPayload() {
+      return {
+        filter: { search: this.search },
+        options: {
+          page: this.iteratorOptions.page,
+          per_page: this.iteratorOptions.itemsPerPage,
+          sort: this.sortString
+        }
+      };
     }
   },
 
   methods: {
     loadFiltered() {
-      this.$store.dispatch("clients/loadWhere", {
-        filter: this.filter
-      });
+      this.loadItems();
     },
 
     open() {

@@ -15,32 +15,30 @@
 
       <v-flex md3>
         <v-select
-                v-model="filter.status"
-                :items="statuses"
-                label="Статус"
-                single-line
-                filled
-                clearable
-                @input="loadFiltered"
+          v-model="filter.status"
+          :items="statuses"
+          label="Статус"
+          single-line
+          filled
+          clearable
+          @input="loadFiltered"
         />
       </v-flex>
 
       <v-flex md3>
         <v-select
-                v-model="filter.primary_hall_id"
-                :items="halls"
-                item-text="title"
-                item-value="id"
-                label="Зал"
-                single-line
-                filled
-                clearable
-                multiple
-                @input="loadFiltered"
+          v-model="filter.primary_hall_id"
+          :items="halls"
+          item-text="title"
+          item-value="id"
+          label="Зал"
+          single-line
+          filled
+          clearable
+          multiple
+          @input="loadFiltered"
         />
       </v-flex>
-
-
     </v-layout>
 
     <v-data-iterator
@@ -48,7 +46,7 @@
       :options.sync="iteratorOptions"
       :server-items-length="totalItems"
       :loading="itemsLoading"
-      :items-per-page="15"
+      :items-per-page="30"
     >
       <template v-slot:header>
         <client-list-header></client-list-header>
@@ -110,14 +108,17 @@ export default {
       { value: "active", text: "Активные" },
       { value: "expired", text: "Просрочен" },
       { value: "no_subscription", text: "Без абонемента" },
-      { value: "not_activated", text: "Не активирован" },
-    ]
+      { value: "not_activated", text: "Не активирован" }
+    ],
+    iteratorOptions: {
+      itemsPerPage: 30,
+      page: 1
+    }
   }),
 
   computed: {
-
     halls() {
-      return this.$store.getters['halls/all'];
+      return this.$store.getters["halls/all"];
     },
 
     pureFilter() {
@@ -143,7 +144,6 @@ export default {
   },
 
   methods: {
-
     openCreateDialog() {
       this.$refs.createDialog.open().then(form => {
         this.$axios.post("clients", form).then(async response => {

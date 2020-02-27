@@ -1,12 +1,7 @@
 <template>
   <div>
-    <v-layout wrap row class="mb-12">
-      <v-flex xs6>
-        <hall-info-card></hall-info-card>
-      </v-flex>
-    </v-layout>
-    <v-layout wrap row class="justify-center">
-      <v-flex xs6 md4>
+    <v-layout row>
+      <v-flex xs12 md4>
         <v-dialog
           ref="startDialog"
           v-model="modal.start"
@@ -22,13 +17,14 @@
               name="start"
               readonly
               :disabled="isHallAdmin"
+              filled
               v-on="on"
             />
           </template>
           <v-date-picker v-model="filter.start" scrollable locale="ru-ru">
             <div class="flex-grow-1" />
             <v-btn text color="primary" @click="modal.start = false">
-              Cancel
+              Отмена
             </v-btn>
             <v-btn text color="primary" @click="saveStartDateFilter">
               OK
@@ -36,7 +32,7 @@
           </v-date-picker>
         </v-dialog>
       </v-flex>
-      <v-flex xs6 md4>
+      <v-flex xs12 md4>
         <v-dialog
           ref="endDialog"
           v-model="modal.end"
@@ -52,13 +48,14 @@
               name="end"
               readonly
               :disabled="isHallAdmin"
+              filled
               v-on="on"
             />
           </template>
           <v-date-picker v-model="filter.end" scrollable locale="ru-ru">
             <div class="flex-grow-1" />
             <v-btn text color="primary" @click="modal.end = false">
-              Cancel
+              Отмена
             </v-btn>
             <v-btn text color="primary" @click="saveEndDateFilter">
               OK
@@ -67,58 +64,46 @@
         </v-dialog>
       </v-flex>
     </v-layout>
-    <v-layout wrap row>
-      <v-flex xs12>
-        <stats-money-table :items="calculateSum"></stats-money-table>
-      </v-flex>
-      <v-flex xs12>
-        <bar-payments-table :payments="barPayments"></bar-payments-table>
-      </v-flex>
-      <v-flex xs12>
-        <subscriptions-payments-table :payments="subscriptionsPayments">
-        </subscriptions-payments-table>
-      </v-flex>
-      <v-flex xs12>
-        <trainings-payments-table
-          :payments="trainingsPayments"
-        ></trainings-payments-table>
-      </v-flex>
-    </v-layout>
+    <v-card>
+      <v-card-title>
+        История продаж бара
+      </v-card-title>
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        :options.sync="iteratorOptions"
+        :server-items-length="totalItems"
+        :loading="itemsLoading"
+        :items-per-page="15"
+      >
+        <template v-slot:item="{ item }">
+          <bar-payment-list-item :loading="itemsLoading" :bar-payment="item" />
+        </template>
+      </v-data-table>
+    </v-card>
   </div>
 </template>
 
 <script>
 import _ from "lodash";
-import StatsMoneyTable from "../../components/hall/StatsMoneyTable";
-import BarPaymentsTable from "../../components/hall/barPaymentsTable";
-import auth from "../../mixins/auth";
-import TrainingsPaymentsTable from "../../components/hall/TrainingsPaymentsTable";
-import SubscriptionsPaymentsTable from "../../components/hall/SubscriptionsPaymentsTable";
-import selectedHallAware from "../../mixins/selected-hall-aware";
-import HallInfoCard from "../../components/hall/HallInfoCard";
-import payments from "../../mixins/payments";
+import serverSidePaginated from "../../../mixins/server-side-paginated";
 
+import BarPaymentListItem from "../../../components/hall/BarPaymentListItem";
+import auth from "../../../mixins/auth";
 export default {
-  head() {
-    return {
-      title: "Зал" // todo
-    };
-  },
-  components: {
-    HallInfoCard,
-    SubscriptionsPaymentsTable,
-    TrainingsPaymentsTable,
-    BarPaymentsTable,
-    StatsMoneyTable
-  },
-
-  mixins: [selectedHallAware, auth, payments],
-
+  name: "BarItems",
+  components: { BarPaymentListItem },
+  mixins: [auth, serverSidePaginated],
   data: () => ({
-    loading: {
-      payments: true
-    },
     resource: "payments",
+
+    headers: [
+      { text: "Наименование", sortable: false, value: "title" },
+      { text: "Метод оплаты", sortable: false, value: "method" },
+      { text: "Кол-во", sortable: false, value: "quantity", align: "right" },
+      { text: "За ед.", sortable: false, value: "cost", align: "right" },
+      { text: "Итого", sortable: false, value: "total", align: "right" }
+    ],
 
     modal: {
       start: false,
@@ -126,45 +111,81 @@ export default {
     },
 
     filter: {
-      start: String,
-      end: String
+      start: "",
+      end: ""
     }
   }),
-
   computed: {
+    dateFilter() {
+      return _(this.filter)
+        .omitBy(_.isNull)
+        .omitBy(_.isUndefined)
+        .value();
+    },
+    localFilter() {
+      return {
+        sellable_type: "bar-items"
+      };
+    },
     pureFilter() {
       return _({
         hall_id: this.$route.params.id,
-        ...this.filter
+        ...this.localFilter,
+        ...this.dateFilter
       })
         .omitBy(_.isNull)
         .omitBy(_.isUndefined)
         .value();
+    },
+    serverPayload() {
+      return {
+        filter: this.pureFilter,
+        options: {
+          page: this.iteratorOptions.page,
+          per_page: this.iteratorOptions.itemsPerPage,
+          sort: this.sortString
+        }
+      };
     }
   },
-
-  mounted() {
-    this.standartTimeFilter();
-    return Promise.all([this.loadPayments(), this.loadHall()]);
+  watch: {
+    dateFilter() {
+      this.loadItems();
+    }
+  },
+  created() {
+    this.standardTimeFilter();
   },
   methods: {
-    loadHall() {
-      return this.$store.dispatch("halls/loadById", {
-        id: this.$route.params.id
-      });
-    },
-
     saveStartDateFilter() {
       this.$refs.startDialog.save(this.filter.start);
-      this.loadPayments();
     },
     saveEndDateFilter() {
       this.$refs.endDialog.save(this.filter.end);
-      this.loadPayments();
     },
-    standartTimeFilter() {
+    standardTimeFilter() {
       this.filter.start = this.$moment().format("YYYY-MM-DD");
       this.filter.end = this.$moment().format("YYYY-MM-DD");
+
+      if (this.role("owner")) {
+        this.filter.start = this.$moment()
+          .subtract(1, "month")
+          .format("YYYY-MM-DD");
+      }
+    },
+    loadRelated() {
+      const barItemsIds = _(this.items)
+        .map(payment => payment.sellable_id)
+        .uniq()
+        .value();
+
+      return Promise.all([
+        this.$store.dispatch("bar-items/loadWhere", {
+          filter: {
+            bar_item_id: barItemsIds
+          }
+        })
+      ]);
     }
   }
 };
