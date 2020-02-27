@@ -99,16 +99,28 @@
                 </component>
               </td>
               <td class="text-right">
-                {{ stats[category] ? stats[category].cash : 0 }} &#8381;
+                <v-skeleton-loader v-if="loading" type="table-cell" />
+                <template v-else>
+                  {{ stats[category] ? stats[category].cash || 0 : 0 }} &#8381;
+                </template>
               </td>
               <td class="text-right">
-                {{ stats[category] ? stats[category].transfer : 0 }} &#8381;
+                <v-skeleton-loader v-if="loading" type="table-cell" />
+                <template v-else>
+                  {{ stats[category] ? stats[category].transfer || 0 : 0 }} &#8381;
+                </template>
               </td>
               <td class="text-right">
-                {{ stats[category] ? stats[category].card : 0 }} &#8381;
+                <v-skeleton-loader v-if="loading" type="table-cell" />
+                <template v-else>
+                  {{ stats[category] ? stats[category].card || 0 : 0 }} &#8381;
+                </template>
               </td>
               <td class="text-right font-weight-bold">
-                {{ stats[category] ? stats[category].total : 0 }} &#8381;
+                <v-skeleton-loader v-if="loading" type="table-cell" />
+                <template v-else>
+                  {{ stats[category] ? stats[category].total || 0 : 0 }} &#8381;
+                </template>
               </td>
             </tr>
           </tbody>
@@ -150,6 +162,8 @@ export default {
       end: false
     },
 
+    loading: true,
+
     filter: {
       start: "",
       end: ""
@@ -183,11 +197,15 @@ export default {
       });
     },
     loadStats() {
+      this.loading = true;
       this.$axios
         .get(
           `halls/${this.$route.params.id}/stats?${getOptionsQuery(this.filter)}`
         )
-        .then(({ data }) => (this.stats = data.data.payments));
+        .then(({ data }) => {
+          this.loading = false;
+          this.stats = data.data.payments;
+        });
     },
     saveStartDateFilter() {
       this.$refs.startDialog.save(this.filter.start);
@@ -211,4 +229,13 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.text-right {
+  .v-skeleton-loader {
+    &__bone {
+      margin-left: auto;
+      margin-right: 0;
+    }
+  }
+}
+</style>
