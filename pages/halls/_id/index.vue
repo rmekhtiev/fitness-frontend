@@ -6,7 +6,7 @@
       </v-flex>
     </v-layout>
     <v-layout row>
-      <v-flex xs4>
+      <v-flex xs12 md4>
         <v-dialog
           ref="startDialog"
           v-model="modal.start"
@@ -37,7 +37,7 @@
           </v-date-picker>
         </v-dialog>
       </v-flex>
-      <v-flex xs4>
+      <v-flex xs12 md4>
         <v-dialog
           ref="endDialog"
           v-model="modal.end"
@@ -70,9 +70,9 @@
       </v-flex>
     </v-layout>
     <v-flex>
-      <v-card outlined>
-        <v-card-title class="font-weight-bold">
-          <span class="title">Итоговая статистика продаж</span>
+      <v-card>
+        <v-card-title>
+          Итоговая статистика продаж
         </v-card-title>
         <v-simple-table>
           <thead>

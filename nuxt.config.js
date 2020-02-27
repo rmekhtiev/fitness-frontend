@@ -121,6 +121,14 @@ export default {
     lang: {
       locales: { ru },
       current: "ru"
+    },
+    theme: {
+      themes: {
+        light: {
+          primary: "#157FFA",
+          secondary: "#002b43"
+        }
+      }
     }
   },
 

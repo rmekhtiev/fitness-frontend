@@ -7,7 +7,7 @@
 
       <drawer-menu />
     </v-navigation-drawer>
-    <v-app-bar fixed app>
+    <v-app-bar fixed app dark color="secondary">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 
       <v-toolbar-title v-text="title" />
@@ -22,7 +22,7 @@
         <v-icon>mdi-qrcode-scan</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-content>
+    <v-content style="background-color: rgb(248, 250, 254);">
       <v-container grid-list-md fluid>
         <nuxt/>
       </v-container>

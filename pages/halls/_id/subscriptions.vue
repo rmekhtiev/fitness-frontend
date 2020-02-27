@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-layout row>
-      <v-flex xs4>
+      <v-flex xs12 md4>
         <v-dialog
           ref="startDialog"
           v-model="modal.start"
@@ -32,7 +32,7 @@
           </v-date-picker>
         </v-dialog>
       </v-flex>
-      <v-flex xs4>
+      <v-flex xs12 md4>
         <v-dialog
           ref="endDialog"
           v-model="modal.end"
@@ -65,8 +65,8 @@
       </v-flex>
     </v-layout>
     <v-card>
-      <v-card-title class="font-weight-bold">
-        <span class="title">История продаж абонементов</span>
+      <v-card-title>
+        История продаж абонементов
       </v-card-title>
       <v-data-table
         :headers="headers"
