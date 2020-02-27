@@ -33,7 +33,7 @@ export default {
   /*
    ** Global CSS
    */
-  css: ["@/assets/css/v-data-iterator.css"],
+  css: ["@/assets/css/v-data-iterator.scss"],
   /*
    ** Plugins to load before mounting the App
    */
@@ -69,7 +69,6 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    host: "fitness.test",
     prefix: "/api/",
     port: "80",
 
@@ -77,7 +76,7 @@ export default {
   },
 
   proxy: {
-    "/api/": "http://104.248.47.70:8000/"
+    "/api/": process.env.API_URL || "http://fitness-backend.test"
   },
 
   router: {
@@ -122,6 +121,14 @@ export default {
     lang: {
       locales: { ru },
       current: "ru"
+    },
+    theme: {
+      themes: {
+        light: {
+          primary: "#157FFA",
+          secondary: "#002b43"
+        }
+      }
     }
   },
 

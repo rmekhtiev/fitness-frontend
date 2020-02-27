@@ -65,6 +65,71 @@
       </template>
     </v-list>
 
+    <template v-if="hall">
+      <v-divider />
+
+      <v-list dense nav subheader>
+        <v-subheader>Статистика</v-subheader>
+
+        <v-list-group
+          v-if="hall"
+          prepend-icon="mdi-domain"
+          value="true"
+          no-action
+        >
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title>{{ hall.title }}</v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            link
+            nuxt
+            :to="{ name: 'halls-id', params: { id: hall.id } }"
+            exact
+          >
+            <v-list-item-content>
+              <v-list-item-title>Итого</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item
+            link
+            nuxt
+            :to="{ name: 'halls-id-subscriptions', params: { id: hall.id } }"
+            exact
+          >
+            <v-list-item-content>
+              <v-list-item-title>Абонементы</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item
+            link
+            nuxt
+            :to="{ name: 'halls-id-training-sessions', params: { id: hall.id } }"
+            exact
+          >
+            <v-list-item-content>
+              <v-list-item-title>Тренировки</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item
+            link
+            nuxt
+            :to="{ name: 'halls-id-bar-items', params: { id: hall.id } }"
+            exact
+          >
+            <v-list-item-content>
+              <v-list-item-title>Бар</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+      </v-list>
+    </template>
+
     <template v-if="isOwner">
       <v-divider />
 
@@ -85,30 +150,6 @@
 
           <v-list-item-content>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </template>
-    <template v-if="isHallAdmin">
-      <v-divider />
-
-      <v-list dense nav subheader>
-        <v-subheader>Статистика</v-subheader>
-
-        <v-list-item
-          v-if="hall"
-          :key="hall.title"
-          link
-          nuxt
-          :to="{ name: 'halls-id', params: { id: hall.id } }"
-          exact
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-domain</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title>{{ hall.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
