@@ -46,7 +46,7 @@
       :options.sync="iteratorOptions"
       :server-items-length="totalItems"
       :loading="itemsLoading"
-      :items-per-page="30"
+      :footer-props="footerProps"
     >
       <template v-slot:header>
         <client-list-header></client-list-header>
@@ -111,9 +111,10 @@ export default {
       { value: "not_activated", text: "Не активирован" }
     ],
     iteratorOptions: {
-      itemsPerPage: 30,
+      itemsPerPage: 50,
       page: 1
-    }
+    },
+    footerProps: { "items-per-page-options": [15, 30, 50] }
   }),
 
   computed: {
