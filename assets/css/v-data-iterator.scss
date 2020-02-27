@@ -1,0 +1,12 @@
+.v-data-footer {
+  justify-content: flex-start !important;
+
+  &__select {
+    margin-left: 14px;
+  }
+}
+
+span.deleted {
+  background-color: #f5f5f5;
+  font-family: monospace, monospace;
+}

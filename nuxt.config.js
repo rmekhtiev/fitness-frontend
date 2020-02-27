@@ -33,7 +33,7 @@ export default {
   /*
    ** Global CSS
    */
-  css: ["@/assets/css/v-data-iterator.css"],
+  css: ["@/assets/css/v-data-iterator.scss"],
   /*
    ** Plugins to load before mounting the App
    */
