@@ -1,30 +1,38 @@
 <template>
-  <div>
-    <v-flex xs12 row>
-      <v-flex v-if="subscription && client" xs3 class="text-left">{{
-        client.full_name
-      }}</v-flex>
-      <v-flex v-else xs3 class="text-left">Удален</v-flex>
-      <v-flex v-if="subscription" xs3 class="text-left"
-        >{{ formatDate(subscription.issue_date) }}/{{
-          formatDate(subscription.valid_till)
-        }}</v-flex
-      >
-      <v-flex
-        v-if="subscription && group && group !== 'Зал'"
-        xs2
-        class="text-left"
-        >В группу {{ group.title }}</v-flex
-      >
-      <v-flex v-else xs2 class="text-left">В зал</v-flex>
-      <v-flex xs2 class="text-left">{{
-        $t("methods." + subscriptionsPayment.method)
-      }}</v-flex>
-      <v-flex xs2 class="text-right"
-        >{{ subscriptionsPayment.cost }} руб.</v-flex
-      >
-    </v-flex>
-  </div>
+  <tr>
+    <td>
+      <template v-if="subscription && client">
+        {{ client.full_name }}
+      </template>
+      <v-skeleton-loader v-else-if="loading" type="table-cell" />
+      <template v-else>
+        [Удален]
+      </template>
+    </td>
+    <td>
+      <template v-if="subscription">
+        {{ formatDate(subscription.issue_date) }} &mdash;
+        {{ formatDate(subscription.valid_till) }}
+      </template>
+      <v-skeleton-loader v-else-if="loading" type="table-cell" />
+      <template v-else>
+        [Удален]
+      </template>
+    </td>
+    <td>
+      <template v-if="subscription && group && group !== 'Зал'">
+        В группу {{ group.title }}
+      </template>
+      <v-skeleton-loader v-else-if="loading" type="table-cell" />
+      <template v-else>
+        В зал
+      </template>
+    </td>
+    <td>
+      {{ $t("methods." + subscriptionsPayment.method) }}
+    </td>
+    <td class="text-right">{{ subscriptionsPayment.total }} &#8381;</td>
+  </tr>
 </template>
 
 <script>
@@ -34,6 +42,10 @@ export default {
     subscriptionsPayment: {
       type: Object,
       required: true
+    },
+    loading: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -61,7 +73,7 @@ export default {
       return floatCost * quantity;
     },
     formatDate(date) {
-      return this.$moment.utc(date).format("D.M.YYYY");
+      return this.$moment.utc(date).format("LL");
     }
   }
 };
