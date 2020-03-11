@@ -107,7 +107,8 @@
               <td class="text-right">
                 <v-skeleton-loader v-if="loading" type="table-cell" />
                 <template v-else>
-                  {{ stats[category] ? stats[category].transfer || 0 : 0 }} &#8381;
+                  {{ stats[category] ? stats[category].transfer || 0 : 0 }}
+                  &#8381;
                 </template>
               </td>
               <td class="text-right">
@@ -218,12 +219,6 @@ export default {
     standardTimeFilter() {
       this.filter.start = this.$moment().format("YYYY-MM-DD");
       this.filter.end = this.$moment().format("YYYY-MM-DD");
-
-      if (this.role("owner")) {
-        this.filter.start = this.$moment()
-          .subtract(1, "month")
-          .format("YYYY-MM-DD");
-      }
     }
   }
 };

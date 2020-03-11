@@ -74,7 +74,7 @@
         :options.sync="iteratorOptions"
         :server-items-length="totalItems"
         :loading="itemsLoading"
-        :items-per-page="15"
+        :footer-props="footerProps"
       >
         <template v-slot:item="{ item }">
           <subscriptions-payment-list-item
@@ -110,6 +110,7 @@ export default {
       { text: "Дата начала/окончания", sortable: false, value: "dates_range" },
       { text: "Тип абонимента", sortable: false, value: "type" },
       { text: "Метод оплаты", sortable: false, value: "method" },
+      { text: "Дата продажи", sortable: false, value: "updated_at" },
       { text: "Итого", sortable: false, value: "total", align: "right" }
     ],
 
@@ -121,7 +122,12 @@ export default {
     filter: {
       start: "",
       end: ""
-    }
+    },
+    iteratorOptions: {
+      itemsPerPage: 15,
+      page: 1
+    },
+    footerProps: { "items-per-page-options": [15] }
   }),
   computed: {
     dateFilter() {
@@ -167,21 +173,17 @@ export default {
   methods: {
     saveStartDateFilter() {
       this.$refs.startDialog.save(this.filter.start);
+      this.iteratorOptions.page = 1;
       // this.loadPayments();
     },
     saveEndDateFilter() {
       this.$refs.endDialog.save(this.filter.end);
+      this.iteratorOptions.page = 1;
       // this.loadPayments();
     },
     standardTimeFilter() {
       this.filter.start = this.$moment().format("YYYY-MM-DD");
       this.filter.end = this.$moment().format("YYYY-MM-DD");
-
-      if (this.role("owner")) {
-        this.filter.start = this.$moment()
-          .subtract(1, "month")
-          .format("YYYY-MM-DD");
-      }
     },
     loadRelated() {
       const subscriptionsIds = _(this.items)

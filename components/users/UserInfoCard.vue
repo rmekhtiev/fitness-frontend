@@ -28,7 +28,7 @@
         </v-list-item-content>
       </v-list-item>
       <v-list-item>
-        <v-btn text color="primary" v-if="isOwner" @click="changePassword()">
+        <v-btn v-if="isOwner" text color="primary" @click="changePassword()">
           Сменить пароль
         </v-btn>
       </v-list-item>

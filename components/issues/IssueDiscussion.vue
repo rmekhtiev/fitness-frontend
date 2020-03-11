@@ -23,8 +23,8 @@
   </div>
 </template>
 <script>
-import auth from "../../mixins/auth"
-import IssueCommentItem from "./IssueCommentItem"
+import auth from "../../mixins/auth";
+import IssueCommentItem from "./IssueCommentItem";
 
 export default {
   name: "IssueDiscussion",
@@ -50,14 +50,14 @@ export default {
   }),
 
   methods: {
-    save: function() {
-      this.form.issue_id = this.$route.params.id
-      this.form.user_id = this.me.id
+    save() {
+      this.form.issue_id = this.$route.params.id;
+      this.form.user_id = this.me.id;
       this.$axios.post("issue-discussions", this.form).then(() => {
-        this.$emit("createComment")
-        this.form.text = null
-      })
+        this.$emit("createComment");
+        this.form.text = null;
+      });
     }
   }
-}
+};
 </script>

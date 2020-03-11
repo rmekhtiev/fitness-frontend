@@ -23,12 +23,17 @@ export default {
     },
 
     activeIds() {
-      return this.client ? this.client.active_subscriptions.map(subscription => subscription.id) : [];
+      return this.client
+        ? this.client.active_subscriptions.map(subscription => subscription.id)
+        : [];
     },
 
     inactiveIds() {
-      return this.client ? this.client.inactive_subscriptions.map(subscription => subscription.id) : [];
+      return this.client
+        ? this.client.inactive_subscriptions.map(
+            subscription => subscription.id
+          )
+        : [];
     }
-
   }
 };

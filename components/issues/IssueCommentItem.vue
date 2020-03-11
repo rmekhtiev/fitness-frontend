@@ -27,10 +27,13 @@ export default {
   },
   methods: {
     commentTime(comment) {
-      return this.$moment.utc(comment.created_at).local().format("D.M.YYYY в HH:mm")
+      return this.$moment
+        .utc(comment.created_at)
+        .local()
+        .format("D.M.YYYY в HH:mm");
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

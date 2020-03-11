@@ -18,11 +18,13 @@
           "
           type="table-cell"
         >
-          <router-link :to="{ name: 'clients-id', params: { id: item.client_id }}">
+          <router-link
+            :to="{ name: 'clients-id', params: { id: item.client_id } }"
+          >
             {{
-            $store.getters["clients/byId"]({ id: item.client_id })
-            ? $store.getters["clients/byId"]({ id: item.client_id }).name
-            : "Неизвестно"
+              $store.getters["clients/byId"]({ id: item.client_id })
+                ? $store.getters["clients/byId"]({ id: item.client_id }).name
+                : "Неизвестно"
             }}
           </router-link>
         </v-skeleton-loader>
@@ -36,11 +38,13 @@
           "
           type="table-cell"
         >
-          <router-link :to="{ name: 'trainers-id', params: { id: item.trainer_id } }">
+          <router-link
+            :to="{ name: 'trainers-id', params: { id: item.trainer_id } }"
+          >
             {{
-            $store.getters["trainers/byId"]({ id: item.trainer_id })
-            ? $store.getters["trainers/byId"]({ id: item.trainer_id }).name
-            : "Неизвестно"
+              $store.getters["trainers/byId"]({ id: item.trainer_id })
+                ? $store.getters["trainers/byId"]({ id: item.trainer_id }).name
+                : "Неизвестно"
             }}
           </router-link>
         </v-skeleton-loader>

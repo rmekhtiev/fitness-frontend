@@ -70,15 +70,15 @@ export default function({ $axios, store }) {
     resourceModule({ name: "payments", httpClient: $axios })
   );
   store.registerModule(
-      "identifiers",
-      resourceModule({ name: "identifiers", httpClient: $axios })
+    "identifiers",
+    resourceModule({ name: "identifiers", httpClient: $axios })
   );
   store.registerModule(
     "training-sessions",
     resourceModule({ name: "training-sessions", httpClient: $axios })
   );
   store.registerModule(
-      "requests",
-      resourceModule({ name: "requests", httpClient: $axios })
+    "requests",
+    resourceModule({ name: "requests", httpClient: $axios })
   );
 }

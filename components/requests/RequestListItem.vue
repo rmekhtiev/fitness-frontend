@@ -56,26 +56,22 @@
       </v-flex>
     </v-layout>
 
-
     <confirm ref="delete" />
   </v-list-item>
-
 </template>
 
 <script>
-
 import request from "../../mixins/request";
 import Confirm from "../Confirm";
 
 export default {
-
   name: "RequestListItem",
 
-  mixins: [request],
-
   components: {
-    Confirm,
+    Confirm
   },
+
+  mixins: [request],
 
   props: {
     request: {
@@ -84,20 +80,18 @@ export default {
     }
   },
 
-
   methods: {
     deleteRequest() {
       this.$refs.delete
-              .open("Удалить заявку", "Вы уверены?", { color: "red" })
-              .then(confirm => {
-                if (confirm) {
-                  this.$store.dispatch("requests/delete", { id: this.request.id });
-                  this.$emit("delete");
-                }
-              });
-    },
-  },
-
+        .open("Удалить заявку", "Вы уверены?", { color: "red" })
+        .then(confirm => {
+          if (confirm) {
+            this.$store.dispatch("requests/delete", { id: this.request.id });
+            this.$emit("delete");
+          }
+        });
+    }
+  }
 };
 </script>
 

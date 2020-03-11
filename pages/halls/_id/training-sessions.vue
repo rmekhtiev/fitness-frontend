@@ -74,7 +74,7 @@
         :options.sync="iteratorOptions"
         :server-items-length="totalItems"
         :loading="itemsLoading"
-        :items-per-page="15"
+        :footer-props="footerProps"
       >
         <template v-slot:item="{ item }">
           <trainings-payment-list-item
@@ -105,6 +105,8 @@ export default {
       { text: "Клиент", sortable: false, value: "client" },
       { text: "Дата начала/окончания", sortable: false, value: "dates_range" },
       { text: "Метод оплаты", sortable: false, value: "method" },
+      { text: "Дата продажи", sortable: false, value: "updated_at" },
+
       {
         text: "Оплата тренеру",
         sortable: false,
@@ -121,7 +123,12 @@ export default {
     filter: {
       start: "",
       end: ""
-    }
+    },
+    iteratorOptions: {
+      itemsPerPage: 15,
+      page: 1
+    },
+    footerProps: { "items-per-page-options": [15] }
   }),
   computed: {
     dateFilter() {
@@ -167,19 +174,15 @@ export default {
   methods: {
     saveStartDateFilter() {
       this.$refs.startDialog.save(this.filter.start);
+      this.iteratorOptions.page = 1;
     },
     saveEndDateFilter() {
       this.$refs.endDialog.save(this.filter.end);
+      this.iteratorOptions.page = 1;
     },
     standardTimeFilter() {
       this.filter.start = this.$moment().format("YYYY-MM-DD");
       this.filter.end = this.$moment().format("YYYY-MM-DD");
-
-      if (this.role("owner")) {
-        this.filter.start = this.$moment()
-          .subtract(1, "month")
-          .format("YYYY-MM-DD");
-      }
     },
     loadRelated() {
       const trainingsIds = _(this.items)

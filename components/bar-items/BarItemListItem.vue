@@ -74,9 +74,9 @@
 
 <script>
 import Confirm from "../Confirm";
+import auth from "../../mixins/auth";
 import BarSellDialog from "./BarSellDialog";
 import BarDialog from "./BarDialog";
-import auth from "../../mixins/auth";
 
 export default {
   name: "BarItemListItem",
@@ -86,6 +86,7 @@ export default {
     BarDialog,
     Confirm
   },
+  mixins: [auth],
 
   props: {
     barItem: {
@@ -93,7 +94,6 @@ export default {
       required: true
     }
   },
-  mixins: [auth],
 
   data: () => ({
     menu: {

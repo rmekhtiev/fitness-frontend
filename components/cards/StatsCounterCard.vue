@@ -5,7 +5,7 @@
     </v-card-title>
 
     <v-card-text>
-      <p class="headline" v-if="description">
+      <p v-if="description" class="headline">
         {{ description }}
       </p>
       <p class="display-1 text--primary">
@@ -14,10 +14,12 @@
 
       <template v-if="change">
         <div :class="data.class">
-          <v-icon small :color="color" v-if="icon" style="margin-right: 5px;">{{ icon }}</v-icon>
+          <v-icon v-if="icon" small :color="color" style="margin-right: 5px;">{{
+            icon
+          }}</v-icon>
           <span style="margin-top: 2px;">{{ change }}</span>
         </div>
-        <div class="caption" v-if="range">
+        <div v-if="range" class="caption">
           {{ range }}
         </div>
       </template>
@@ -26,56 +28,51 @@
 </template>
 
 <script>
-  import Colorable from 'vuetify/es5/mixins/colorable'
+import Colorable from "vuetify/es5/mixins/colorable";
 
-    export default {
-        name: "StatsCounterCard",
+export default {
+  name: "StatsCounterCard",
 
-        mixins: [
-            Colorable,
-        ],
+  mixins: [Colorable],
 
-        props: {
-            title: {
-                type: String,
-                required: true
-            },
+  props: {
+    title: {
+      type: String,
+      required: true
+    },
 
-            counter: {
-                type: String | Number,
-                required: true
-            },
+    counter: {
+      type: String | Number,
+      required: true
+    },
 
-            description: {
-                type: String,
-            },
+    description: {
+      type: String
+    },
 
-            change: {
-                type: String | Number,
-            },
+    change: {
+      type: String | Number
+    },
 
-            icon: {
-                type: String,
-            },
+    icon: {
+      type: String
+    },
 
-            range: {
-                type: String,
-            },
-
-        },
-
-        computed: {
-            data() {
-                return this.setTextColor(this.color, {
-                    class: {
-                        'd-flex': true,
-                    }
-                })
-            }
-        }
+    range: {
+      type: String
     }
+  },
+
+  computed: {
+    data() {
+      return this.setTextColor(this.color, {
+        class: {
+          "d-flex": true
+        }
+      });
+    }
+  }
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
