@@ -74,7 +74,7 @@
         :options.sync="iteratorOptions"
         :server-items-length="totalItems"
         :loading="itemsLoading"
-        :items-per-page="15"
+        :footer-props="footerProps"
       >
         <template v-slot:item="{ item }">
           <bar-payment-list-item :loading="itemsLoading" :bar-payment="item" />
@@ -114,7 +114,12 @@ export default {
     filter: {
       start: "",
       end: ""
-    }
+    },
+    iteratorOptions: {
+      itemsPerPage: 15,
+      page: 1
+    },
+    footerProps: { "items-per-page-options": [15] }
   }),
   computed: {
     dateFilter() {
