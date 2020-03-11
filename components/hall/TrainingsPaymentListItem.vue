@@ -37,7 +37,7 @@
     <td>
       {{ $t("methods." + trainingsPayment.method) }}
     </td>
-    <td>{{ $moment(trainingsPayment.updated_at).format('ll')}}</td>
+    <td>{{ $moment(trainingsPayment.updated_at).format("ll") }}</td>
     <td class="text-right">{{ trainingsPayment.total }} &#8381;</td>
   </tr>
 </template>

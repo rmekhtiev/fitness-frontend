@@ -132,7 +132,7 @@ export default {
             this.$router.back();
           }
         });
-    },
+    }
   }
 };
 </script>

@@ -108,7 +108,10 @@
           <v-list-item
             link
             nuxt
-            :to="{ name: 'halls-id-training-sessions', params: { id: hall.id } }"
+            :to="{
+              name: 'halls-id-training-sessions',
+              params: { id: hall.id }
+            }"
             exact
           >
             <v-list-item-content>

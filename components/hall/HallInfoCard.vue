@@ -10,7 +10,13 @@
           <v-list-item-subtitle>{{ hall.address }}</v-list-item-subtitle>
 
           <div style="position: absolute; right: .5rem; top: .5rem;">
-            <v-btn v-if="isHallAdmin || isOwner" color="primary" text small @click="updateHall()">
+            <v-btn
+              v-if="isHallAdmin || isOwner"
+              color="primary"
+              text
+              small
+              @click="updateHall()"
+            >
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </div>

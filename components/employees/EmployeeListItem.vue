@@ -1,5 +1,8 @@
 <template>
-  <v-list-item :to="{ name: 'employees-id', params: { id: employee.id } }" v-if="employee">
+  <v-list-item
+    v-if="employee"
+    :to="{ name: 'employees-id', params: { id: employee.id } }"
+  >
     <v-layout>
       <v-flex xs8 md3>
         <div style="display: flex; width: 100%">

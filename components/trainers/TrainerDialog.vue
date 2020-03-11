@@ -71,7 +71,7 @@ export default {
   computed: {
     halls() {
       return this.$store.getters["halls/all"];
-    },
+    }
   },
 
   created() {

@@ -107,7 +107,8 @@
               <td class="text-right">
                 <v-skeleton-loader v-if="loading" type="table-cell" />
                 <template v-else>
-                  {{ stats[category] ? stats[category].transfer || 0 : 0 }} &#8381;
+                  {{ stats[category] ? stats[category].transfer || 0 : 0 }}
+                  &#8381;
                 </template>
               </td>
               <td class="text-right">

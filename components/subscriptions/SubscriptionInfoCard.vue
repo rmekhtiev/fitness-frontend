@@ -21,7 +21,9 @@
           <v-list-item-title
             v-else-if="subscription.subscriable_type === 'groups'"
           >
-            <template v-if="group">Абонемент группу {{ group.title }}</template>
+            <template v-if="group"
+              >Абонемент группу {{ group.title }}</template
+            >
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
@@ -82,33 +84,33 @@
           $moment(subscription.frozen_till).isBefore($moment()) ||
             (subscription.frozen_till == null && subscription.sold === true)
         "
-        @click="freezeSubscription()"
         color="primary"
         text
         small
+        @click="freezeSubscription()"
       >
         <v-icon left>mdi-snowflake</v-icon>
         Заморозить
       </v-btn>
       <v-btn
         v-if="$moment(subscription.frozen_till).isAfter($moment())"
-        @click="deleteFreeze()"
         color="red"
         text
+        @click="deleteFreeze()"
       >
         Отменить заморозку
       </v-btn>
 
       <v-btn
         v-if="this.subscription.sold == false"
-        @click="sellItem()"
         color="red"
         text
+        @click="sellItem()"
       >
         Оформить продажу
       </v-btn>
 
-      <v-btn @click="updateSubscription()" color="primary" text small>
+      <v-btn color="primary" text small @click="updateSubscription()">
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
     </v-card-actions>

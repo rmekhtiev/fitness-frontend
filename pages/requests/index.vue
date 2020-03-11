@@ -34,7 +34,6 @@
           </v-flex>
 
           <v-flex xs2 md2></v-flex>
-
         </v-layout>
       </template>
 
@@ -63,37 +62,31 @@
 </template>
 
 <script>
-
-  import serverSidePaginated from "../../mixins/server-side-paginated";
+import serverSidePaginated from "../../mixins/server-side-paginated";
 import RequestListItem from "../../components/requests/RequestListItem";
 
 export default {
-  head(){
+  head() {
     return {
       title: "Заявки"
     };
   },
 
-  mixins: [serverSidePaginated],
-
   components: {
     RequestListItem
   },
 
+  mixins: [serverSidePaginated],
+
   data: () => ({
-    resource: "requests",
+    resource: "requests"
   }),
 
-  computed: {
-
-  },
+  computed: {},
 
   fetch({ store }) {
-    return Promise.all([
-      store.dispatch("requests/loadAll"),
-    ]);
-  },
-
+    return Promise.all([store.dispatch("requests/loadAll")]);
+  }
 };
 </script>
 
