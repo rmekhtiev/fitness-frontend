@@ -173,10 +173,12 @@ export default {
   methods: {
     saveStartDateFilter() {
       this.$refs.startDialog.save(this.filter.start);
+      this.iteratorOptions.page = 1;
       // this.loadPayments();
     },
     saveEndDateFilter() {
       this.$refs.endDialog.save(this.filter.end);
+      this.iteratorOptions.page = 1;
       // this.loadPayments();
     },
     standardTimeFilter() {
