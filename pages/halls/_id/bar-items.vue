@@ -100,6 +100,7 @@ export default {
     headers: [
       { text: "Наименование", sortable: false, value: "title" },
       { text: "Метод оплаты", sortable: false, value: "method" },
+      { text: "Дата продажи", sortable: false, value: "updated_at" },
       { text: "Кол-во", sortable: false, value: "quantity", align: "right" },
       { text: "За ед.", sortable: false, value: "cost", align: "right" },
       { text: "Итого", sortable: false, value: "total", align: "right" }
@@ -166,12 +167,6 @@ export default {
     standardTimeFilter() {
       this.filter.start = this.$moment().format("YYYY-MM-DD");
       this.filter.end = this.$moment().format("YYYY-MM-DD");
-
-      if (this.role("owner")) {
-        this.filter.start = this.$moment()
-          .subtract(1, "month")
-          .format("YYYY-MM-DD");
-      }
     },
     loadRelated() {
       const barItemsIds = _(this.items)

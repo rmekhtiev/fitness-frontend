@@ -105,6 +105,8 @@ export default {
       { text: "Клиент", sortable: false, value: "client" },
       { text: "Дата начала/окончания", sortable: false, value: "dates_range" },
       { text: "Метод оплаты", sortable: false, value: "method" },
+      { text: "Дата продажи", sortable: false, value: "updated_at" },
+
       {
         text: "Оплата тренеру",
         sortable: false,
@@ -174,12 +176,6 @@ export default {
     standardTimeFilter() {
       this.filter.start = this.$moment().format("YYYY-MM-DD");
       this.filter.end = this.$moment().format("YYYY-MM-DD");
-
-      if (this.role("owner")) {
-        this.filter.start = this.$moment()
-          .subtract(1, "month")
-          .format("YYYY-MM-DD");
-      }
     },
     loadRelated() {
       const trainingsIds = _(this.items)

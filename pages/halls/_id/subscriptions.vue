@@ -110,6 +110,7 @@ export default {
       { text: "Дата начала/окончания", sortable: false, value: "dates_range" },
       { text: "Тип абонимента", sortable: false, value: "type" },
       { text: "Метод оплаты", sortable: false, value: "method" },
+      { text: "Дата продажи", sortable: false, value: "updated_at" },
       { text: "Итого", sortable: false, value: "total", align: "right" }
     ],
 
@@ -176,12 +177,6 @@ export default {
     standardTimeFilter() {
       this.filter.start = this.$moment().format("YYYY-MM-DD");
       this.filter.end = this.$moment().format("YYYY-MM-DD");
-
-      if (this.role("owner")) {
-        this.filter.start = this.$moment()
-          .subtract(1, "month")
-          .format("YYYY-MM-DD");
-      }
     },
     loadRelated() {
       const subscriptionsIds = _(this.items)

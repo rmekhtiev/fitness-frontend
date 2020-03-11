@@ -12,6 +12,7 @@
     <td>
       {{ $t("methods." + barPayment.method) }}
     </td>
+    <td>{{ $moment(barPayment.updated_at).format('ll')}}</td>
     <td class="text-right">{{ barPayment.quantity }}</td>
     <td class="text-right">{{ barPayment.cost }} &#8381;</td>
     <td class="text-right">{{ barPayment.total }} &#8381;</td>
