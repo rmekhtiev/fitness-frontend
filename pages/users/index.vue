@@ -61,7 +61,11 @@
     >
       <v-icon>mdi-plus</v-icon>
     </v-btn>
-    <user-dialog ref="userDialog" :employees="freeEmployees" title="Создать пользователя" />
+    <user-dialog
+      ref="userDialog"
+      :employees="freeEmployees"
+      title="Создать пользователя"
+    />
   </div>
 </template>
 

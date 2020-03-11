@@ -74,7 +74,7 @@
         :options.sync="iteratorOptions"
         :server-items-length="totalItems"
         :loading="itemsLoading"
-        :items-per-page="15"
+        :footer-props="footerProps"
       >
         <template v-slot:item="{ item }">
           <bar-payment-list-item :loading="itemsLoading" :bar-payment="item" />
@@ -100,6 +100,7 @@ export default {
     headers: [
       { text: "Наименование", sortable: false, value: "title" },
       { text: "Метод оплаты", sortable: false, value: "method" },
+      { text: "Дата продажи", sortable: false, value: "updated_at" },
       { text: "Кол-во", sortable: false, value: "quantity", align: "right" },
       { text: "За ед.", sortable: false, value: "cost", align: "right" },
       { text: "Итого", sortable: false, value: "total", align: "right" }
@@ -113,7 +114,12 @@ export default {
     filter: {
       start: "",
       end: ""
-    }
+    },
+    iteratorOptions: {
+      itemsPerPage: 15,
+      page: 1
+    },
+    footerProps: { "items-per-page-options": [15] }
   }),
   computed: {
     dateFilter() {
@@ -159,19 +165,15 @@ export default {
   methods: {
     saveStartDateFilter() {
       this.$refs.startDialog.save(this.filter.start);
+      this.iteratorOptions.page = 1;
     },
     saveEndDateFilter() {
       this.$refs.endDialog.save(this.filter.end);
+      this.iteratorOptions.page = 1;
     },
     standardTimeFilter() {
       this.filter.start = this.$moment().format("YYYY-MM-DD");
       this.filter.end = this.$moment().format("YYYY-MM-DD");
-
-      if (this.role("owner")) {
-        this.filter.start = this.$moment()
-          .subtract(1, "month")
-          .format("YYYY-MM-DD");
-      }
     },
     loadRelated() {
       const barItemsIds = _(this.items)

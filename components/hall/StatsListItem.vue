@@ -1,13 +1,9 @@
-<template>
-    
-</template>
+<template> </template>
 
 <script>
-    export default {
-        name: "StatsListItem"
-    }
+export default {
+  name: "StatsListItem"
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

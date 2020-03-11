@@ -23,7 +23,6 @@
         </div>
       </div>
     </v-flex>
-
   </v-layout>
 </template>
 

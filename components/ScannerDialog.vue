@@ -8,9 +8,7 @@
         <v-toolbar-title>Сканер QR</v-toolbar-title>
         <div class="flex-grow-1" />
         <v-toolbar-items>
-          <v-btn dark text @click="close()">
-            Закрыть
-          </v-btn>
+          <v-btn dark text @click="close()">Закрыть</v-btn>
         </v-toolbar-items>
       </v-toolbar>
 
@@ -54,14 +52,10 @@ export default {
   }),
 
   computed: {
-    identifiers() {
+    identifier() {
       return this.$store.getters["identifiers/where"]({
         filter: { identifier: this.text }
       });
-    },
-
-    clientId() {
-      return _(this.identifiers).last().client_id;
     }
   },
 
@@ -86,47 +80,51 @@ export default {
           location // QR code coordinates
         } = await promise;
 
-        console.log(content);
+        // console.log(content);
 
         // const parsed = JSON.parse(content);
 
         if (content) {
           this.text = content;
-          this.loadIdentifier(content);
-          this.text = content;
-          console.log('Client Id ' + this.clientId);
-          this.addRecord();
-          this.$router.push({
-            name: "clients-id",
-            params: { id: this.clientId }
-          });
+          this.loadClient(content);
           this.close();
         } else {
           this.$toast.error("Неизвестный формат");
         }
       } catch (error) {
-        this.$toast.error('Клиент не найден. Попробуйте еще раз.');
+        this.$toast.error("Клиент не найден. Попробуйте еще раз.");
       }
     },
 
-    loadIdentifier(content) {
-      this.$store.dispatch("identifiers/loadWhere", {
-        filter: {
-          identifier: content
-        }
-      });
+    loadClient(content) {
+      this.$store
+        .dispatch("identifiers/loadWhere", {
+          filter: {
+            identifier: content
+          }
+        })
+        .then(() => {
+          console.log("Client_id" + this.identifier[0].client_id);
+          this.$router.push({
+            name: "clients-id",
+            params: { id: this.identifier[0].client_id }
+          });
+          this.addRecord(this.identifier[0].client_id);
+        });
     },
 
-    addRecord() {
-      this.$axios.post("visit-history-records", {
-        datetime:this.$moment(),
-        client_id:this.clientId,
-      }).then(async response => {
-        await this.$store.dispatch("visit-history-records/loadById", {
-          id: response.data.data.id,
-        });
-      }),
-              this.$emit("create")
+    addRecord(client_id) {
+      this.$axios
+        .post("visit-history-records", {
+          datetime: this.$moment(),
+          client_id
+        })
+        .then(async response => {
+          await this.$store.dispatch("visit-history-records/loadById", {
+            id: response.data.data.id
+          });
+        }),
+        this.$emit("create");
     },
 
     open() {

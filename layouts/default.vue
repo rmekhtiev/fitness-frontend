@@ -24,7 +24,7 @@
     </v-app-bar>
     <v-content style="background-color: rgb(248, 250, 254);">
       <v-container grid-list-md fluid>
-        <nuxt/>
+        <nuxt />
       </v-container>
 
       <scanner-dialog ref="scanner" />

@@ -84,11 +84,9 @@ export default {
 
       this.loading.hall = true;
 
-      return this.$store
-        .dispatch("halls/loadAll")
-        .then(() => {
-          this.loading.hall = false;
-        });
+      return this.$store.dispatch("halls/loadAll").then(() => {
+        this.loading.hall = false;
+      });
     },
 
     loadTrainer() {

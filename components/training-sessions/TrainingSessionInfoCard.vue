@@ -1,123 +1,132 @@
 <template>
   <div>
     <v-card class="mb-2 mx-auto">
-    <v-card-text>
-      <div class="overline">
-        Индивидуальные тренировки
-      </div>
-    </v-card-text>
+      <v-card-text>
+        <div class="overline">
+          Индивидуальные тренировки
+        </div>
+      </v-card-text>
 
-    <v-list two-line>
-      <v-skeleton-loader
-        v-if="displayTrainer"
-        :loading="!trainer"
-        type="list-item-two-line"
-      >
-        <v-list-item
-          :to="{ name: 'trainers-id', params: { id: session.trainer_id } }"
+      <v-list two-line>
+        <v-skeleton-loader
+          v-if="displayTrainer"
+          :loading="!trainer"
+          type="list-item-two-line"
         >
-          <v-list-item-content>
-            <v-list-item-subtitle class="caption">Тренер</v-list-item-subtitle>
-            <v-list-item-title v-if="trainer">
-              {{ trainer.name }}
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-skeleton-loader>
-
-      <v-skeleton-loader
-        v-if="displayClient"
-        :loading="!client"
-        type="list-item-two-line"
-      >
-        <v-list-item
-          :to="{ name: 'clients-id', params: { id: session.client_id } }"
-        >
-          <v-list-item-content>
-            <v-list-item-subtitle class="caption">Клиент</v-list-item-subtitle>
-            <v-list-item-title v-if="client">
-              {{ client.name }}
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-skeleton-loader>
-
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-subtitle class="caption">
-            Дата проведения занятий
-          </v-list-item-subtitle>
-          <v-list-item-title>
-            {{ $moment(session.date_start).format("LL") }} &mdash;
-            {{ $moment(session.date_end).format("LL") }}
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item
-        :to="{ name: 'training-sessions-id', params: { id: session.id } }"
-        active-class="none"
-      >
-        <v-list-item-content>
-          <v-list-item-subtitle class="caption">
-            Занятий запланированно
-          </v-list-item-subtitle>
-          <v-list-item-title>
-            {{ session.events_count }}
-            <span class="grey--text">
-              ({{ session.events_count - session.past_events_count }} осталось)
-            </span>
-          </v-list-item-title>
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-icon>mdi-pencil</v-icon>
-        </v-list-item-action>
-      </v-list-item>
-      <v-list-item
-      >
-        <v-list-item-content>
-          <v-list-item-subtitle class="caption">
-            Комментарий
-          </v-list-item-subtitle>
-          <v-flex style="padding-left: 0" v-if="session.comment">
-            {{session.comment}}
-          </v-flex>
-          <v-flex style="padding-left: 0" class="grey--text" v-else>Без комментария</v-flex>
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-icon @click="commentSession">mdi-pencil</v-icon>
-        </v-list-item-action>
-      </v-list-item>
-    </v-list>
-
-    <v-card-actions>
-      <v-spacer />
-      <v-menu v-if="!session.sold" bottom left>
-        <template v-slot:activator="{ on }">
-          <v-btn v-on="on" text color="red">
-            Оформить продажу
-          </v-btn>
-        </template>
-
-        <v-list dense flat>
           <v-list-item
-            v-for="method in ['cash', 'transfer', 'card']"
-            @click="sellTrainingSession(session, method)"
+            :to="{ name: 'trainers-id', params: { id: session.trainer_id } }"
           >
-            <v-list-item-icon>
-              <v-icon>mdi-cash-usd-outline</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content class="pr-6">
-              <v-list-item-title>
-                {{ $t("methods." + method) }}
+            <v-list-item-content>
+              <v-list-item-subtitle class="caption"
+                >Тренер</v-list-item-subtitle
+              >
+              <v-list-item-title v-if="trainer">
+                {{ trainer.name }}
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-        </v-list>
-      </v-menu>
-    </v-card-actions>
-  </v-card>
-    <training-session-comment-dialog ref="sessionComment" :session="session"></training-session-comment-dialog>
+        </v-skeleton-loader>
+
+        <v-skeleton-loader
+          v-if="displayClient"
+          :loading="!client"
+          type="list-item-two-line"
+        >
+          <v-list-item
+            :to="{ name: 'clients-id', params: { id: session.client_id } }"
+          >
+            <v-list-item-content>
+              <v-list-item-subtitle class="caption"
+                >Клиент</v-list-item-subtitle
+              >
+              <v-list-item-title v-if="client">
+                {{ client.name }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-skeleton-loader>
+
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-subtitle class="caption">
+              Дата проведения занятий
+            </v-list-item-subtitle>
+            <v-list-item-title>
+              {{ $moment(session.date_start).format("LL") }} &mdash;
+              {{ $moment(session.date_end).format("LL") }}
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item
+          :to="{ name: 'training-sessions-id', params: { id: session.id } }"
+          active-class="none"
+        >
+          <v-list-item-content>
+            <v-list-item-subtitle class="caption">
+              Занятий запланированно
+            </v-list-item-subtitle>
+            <v-list-item-title>
+              {{ session.events_count }}
+              <span class="grey--text">
+                ({{ session.events_count - session.past_events_count }}
+                осталось)
+              </span>
+            </v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-icon>mdi-pencil</v-icon>
+          </v-list-item-action>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-subtitle class="caption">
+              Комментарий
+            </v-list-item-subtitle>
+            <v-flex v-if="session.comment" style="padding-left: 0">
+              {{ session.comment }}
+            </v-flex>
+            <v-flex v-else style="padding-left: 0" class="grey--text"
+              >Без комментария</v-flex
+            >
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-icon @click="commentSession">mdi-pencil</v-icon>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
+
+      <v-card-actions>
+        <v-spacer />
+        <v-menu v-if="!session.sold" bottom left>
+          <template v-slot:activator="{ on }">
+            <v-btn text color="red" v-on="on">
+              Оформить продажу
+            </v-btn>
+          </template>
+
+          <v-list dense flat>
+            <v-list-item
+              v-for="method in ['cash', 'transfer', 'card']"
+              @click="sellTrainingSession(session, method)"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-cash-usd-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content class="pr-6">
+                <v-list-item-title>
+                  {{ $t("methods." + method) }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-card-actions>
+    </v-card>
+    <training-session-comment-dialog
+      ref="sessionComment"
+      :session="session"
+    ></training-session-comment-dialog>
   </div>
 </template>
 
@@ -127,7 +136,7 @@ import TrainingSessionCommentDialog from "./TrainingSessionCommentDialog";
 
 export default {
   name: "TrainingSessionInfoCard",
-  components: {TrainingSessionCommentDialog},
+  components: { TrainingSessionCommentDialog },
   mixins: [trainingSessionsMixin],
 
   props: {
@@ -157,16 +166,16 @@ export default {
       });
     }
   },
-  methods:{
-    commentSession(){
+  methods: {
+    commentSession() {
       this.$refs.sessionComment.open().then(form => {
         this.$axios
-                .patch("training-sessions/" + this.session.id, form)
-                .then(async response => {
-                  await this.$store.dispatch("training-sessions/loadById", {
-                    id: response.data.data.id
-                  });
-                });
+          .patch("training-sessions/" + this.session.id, form)
+          .then(async response => {
+            await this.$store.dispatch("training-sessions/loadById", {
+              id: response.data.data.id
+            });
+          });
 
         this.$emit("update");
       });

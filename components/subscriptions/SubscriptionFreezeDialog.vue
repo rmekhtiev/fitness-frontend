@@ -15,14 +15,17 @@
       </v-toolbar>
 
       <v-card-text>
-        <subscription-freeze-form :subscription="subscription" v-model="form" :is-edit="isEdit" />
+        <subscription-freeze-form
+          v-model="form"
+          :subscription="subscription"
+          :is-edit="isEdit"
+        />
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-
 import SubscriptionFreezeForm from "./SubscriptionFreezeForm";
 export default {
   name: "SubscriptionFreezeDialog",
@@ -73,34 +76,34 @@ export default {
 
   created() {
     if (this.client) {
-      this.form.client_id = this.client.id
+      this.form.client_id = this.client.id;
     }
 
     if (this.subscription) {
-      Object.assign(this.form, this.subscription)
+      Object.assign(this.form, this.subscription);
     }
   },
 
   methods: {
     open() {
-      this.dialog = true
+      this.dialog = true;
 
       return new Promise((resolve, reject) => {
-        this.resolve = resolve
-        this.reject = reject
-      })
+        this.resolve = resolve;
+        this.reject = reject;
+      });
     },
 
     save() {
-      this.resolve(this.form)
-      this.dialog = false
+      this.resolve(this.form);
+      this.dialog = false;
     },
 
     cancel() {
-      this.dialog = false
-    },
+      this.dialog = false;
+    }
   }
-}
+};
 </script>
 
 <style scoped></style>

@@ -11,7 +11,7 @@ export default {
     },
 
     primaryHall() {
-      return this.$store.getters["halls/byId"]({ id: this.issue.hall_id })
+      return this.$store.getters["halls/byId"]({ id: this.issue.hall_id });
     },
 
     updatedDay() {

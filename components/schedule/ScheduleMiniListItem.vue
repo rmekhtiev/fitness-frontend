@@ -20,7 +20,7 @@
     <v-list-item-action>
       <v-menu bottom left>
         <template v-slot:activator="{ on }">
-          <v-btn v-on="on" icon>
+          <v-btn icon v-on="on">
             <v-icon color="grey lighten-1">
               mdi-dots-horizontal
             </v-icon>

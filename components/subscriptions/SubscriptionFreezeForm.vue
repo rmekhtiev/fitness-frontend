@@ -1,4 +1,3 @@
-
 <template>
   <v-form>
     <v-dialog
@@ -33,20 +32,20 @@
       </v-date-picker>
     </v-dialog>
     <v-dialog
-            ref="frozenTillDialog"
-            v-model="modal.frozen_till"
-            :return-value.sync="value.frozen_till"
-            persistent
-            full-width
-            width="290px"
+      ref="frozenTillDialog"
+      v-model="modal.frozen_till"
+      :return-value.sync="value.frozen_till"
+      persistent
+      full-width
+      width="290px"
     >
       <template v-slot:activator="{ on }">
         <v-text-field
-                :value="$moment(value.frozen_till).format('ll')"
-                label="Окончание заморозки"
-                name="frozen_till"
-                readonly
-                v-on="on"
+          :value="$moment(value.frozen_till).format('ll')"
+          label="Окончание заморозки"
+          name="frozen_till"
+          readonly
+          v-on="on"
         />
       </template>
       <v-date-picker v-model="value.frozen_till" scrollable locale="ru-ru">
@@ -55,9 +54,9 @@
           Cancel
         </v-btn>
         <v-btn
-                text
-                color="primary"
-                @click="$refs.frozenTillDialog.save(value.frozen_till)"
+          text
+          color="primary"
+          @click="$refs.frozenTillDialog.save(value.frozen_till)"
         >
           OK
         </v-btn>
@@ -73,7 +72,7 @@
     >
       <template v-slot:activator="{ on }">
         <v-text-field
-                v-model="value.valid_till"
+          v-model="value.valid_till"
           :value="validTill"
           label="Окончание действия абонимента"
           name="valid_till"
@@ -99,9 +98,9 @@
 </template>
 
 <script>
-import _ from "lodash"
+import _ from "lodash";
 
-import auth from "../../mixins/auth"
+import auth from "../../mixins/auth";
 
 export default {
   name: "SubscriptionFreezeForm",
@@ -122,33 +121,35 @@ export default {
       type: Object,
       required: false,
       default: () => ({})
-    },
+    }
   },
   data: () => ({
     modal: {
       frozen_start: false,
       valid_till: false,
-      frozen_till: false,
+      frozen_till: false
     }
   }),
 
-   computed: {
+  computed: {
     validTill() {
-      let diff = this.$moment(this.value.frozen_till).diff(
-              this.value.frozen_start,
-              "days"
+      const diff = this.$moment(this.value.frozen_till).diff(
+        this.value.frozen_start,
+        "days"
       );
       this.value.valid_till = this.subscription.valid_till;
-      this.value.valid_till =  this.$moment(this.value.valid_till).add(diff, "day").format("YYYY-MM-DD")
+      this.value.valid_till = this.$moment(this.value.valid_till)
+        .add(diff, "day")
+        .format("YYYY-MM-DD");
       return this.value.valid_till;
     },
     defaultForm() {
       return {
         client_id: this.$route.params.id,
         frozen_start: this.$moment().format("YYYY-MM-DD"),
-        frozen_till:this.$moment().format("YYYY-MM-DD"),
-        valid_till:this.validTill,
-      }
+        frozen_till: this.$moment().format("YYYY-MM-DD"),
+        valid_till: this.validTill
+      };
     }
   },
 
@@ -163,7 +164,7 @@ export default {
 
     this.$emit("input", newVal);
   }
-}
+};
 </script>
 
 <style scoped></style>

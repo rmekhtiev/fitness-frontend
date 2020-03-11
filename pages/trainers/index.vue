@@ -40,7 +40,10 @@
 
           <v-flex xs4 md4>
             <div style="display: flex; width: 100%">
-              <div style="flex: 1 1 0%;" class="overline text-truncate text-right">
+              <div
+                style="flex: 1 1 0%;"
+                class="overline text-truncate text-right"
+              >
                 Номер телефона
               </div>
             </div>
@@ -85,7 +88,11 @@
       <v-icon>mdi-plus</v-icon>
     </v-btn>
 
-    <trainer-dialog ref="trainerDialog" :employees="freeEmployees" title="Создать тренера" />
+    <trainer-dialog
+      ref="trainerDialog"
+      :employees="freeEmployees"
+      title="Создать тренера"
+    />
   </div>
 </template>
 

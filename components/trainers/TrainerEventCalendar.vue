@@ -1,13 +1,9 @@
-<template>
-
-</template>
+<template> </template>
 
 <script>
-    export default {
-        name: "TrainerEventCalendar"
-    }
+export default {
+  name: "TrainerEventCalendar"
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
