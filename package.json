@@ -31,6 +31,7 @@
     "vue-infinite-scroll": "^2.0.2",
     "vue-qrcode-reader": "^2.0.4",
     "vue-the-mask": "^0.11.1",
+    "vue-web-cam": "^1.9.0",
     "vuelidate": "^0.7.4",
     "vuetify-datetime-picker": "^2.1.1",
     "vuex-persistedstate": "^2.5.4"

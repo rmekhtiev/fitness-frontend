@@ -61,7 +61,8 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     "@nuxtjs/axios",
     "@nuxtjs/auth",
-    "@nuxtjs/sentry"
+    "@nuxtjs/sentry",
+    'vue-web-cam/nuxt'
   ],
 
   /*
@@ -73,7 +74,7 @@ export default {
     prefix: "/api/",
     port: "80",
 
-    proxy: true
+    proxy: false
   },
 
   proxy: {

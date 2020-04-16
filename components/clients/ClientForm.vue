@@ -137,7 +137,6 @@ export default {
         primary_hall_id: this.me.associated_employee
           ? this.me.associated_employee.hall_id
           : null,
-        questionnaire_status: "unfilled"
       };
     }
   },
