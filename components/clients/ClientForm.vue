@@ -34,6 +34,15 @@
       required
     />
 
+    <v-text-field
+      v-model="value.birth_date"
+      label="Дата рождения"
+      hint="ДД/ММ/ГГГГ"
+      v-mask="'##/##/####'"
+      persistent-hint
+      prepend-icon="event"
+    ></v-text-field>
+
     <v-select
       v-model="value.gender"
       :items="[
@@ -71,6 +80,14 @@
       name="whats_app"
       prepend-icon="mdi-whatsapp"
     />
+    <v-select
+      v-model="value.questionnaire_status"
+      label="Статус заполнения анкеты"
+      :items="questionnaire_statuses"
+      item-text="name"
+      item-value="value"
+      prepend-icon="mdi-file-outline"
+    />
   </v-form>
 </template>
 
@@ -107,12 +124,20 @@ export default {
     }
   },
 
+  data: () => ({
+    questionnaire_statuses: [
+      { name: "Заполнена", value: "filled" },
+      { name: "Не заполнена", value: "unfilled" }
+    ]
+  }),
+
   computed: {
     defaultForm() {
       return {
         primary_hall_id: this.me.associated_employee
           ? this.me.associated_employee.hall_id
-          : null
+          : null,
+        questionnaire_status: "unfilled"
       };
     }
   },

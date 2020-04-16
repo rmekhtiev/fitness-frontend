@@ -8,6 +8,9 @@
             {{ client.name }}
           </v-list-item-title>
           <v-list-item-subtitle>{{ client.full_name }}</v-list-item-subtitle>
+          <v-list-item-subtitle>{{
+            $moment(client.birth_date).format("ll")
+          }}</v-list-item-subtitle>
 
           <div style="position: absolute; right: .5rem; top: .5rem;">
             <v-btn
@@ -117,6 +120,21 @@
             <v-list-item-title>{{ primaryHall.title }}</v-list-item-title>
             <v-list-item-subtitle>
               {{ primaryHall.address }}
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon color="primary">
+              mdi-file-outline
+            </v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Статус анкеты</v-list-item-title>
+            <v-list-item-subtitle
+              >{{ $t("questionnaire_statuses." + client.questionnaire_status) }}
             </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>

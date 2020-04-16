@@ -35,6 +35,10 @@ export default ({ app }) => {
             ready: "Готово"
           }
         },
+        questionnaire_statuses: {
+          filled: "Заполнена",
+          unfilled: "Не заполнена",
+        },
         users: {
           primary_role: {
             name: {
