@@ -65,7 +65,9 @@ export default {
     resolve: null,
     reject: null,
 
-    form: {},
+    form: {
+      avatar: null
+    },
 
     img: null,
     camera: null,
@@ -94,9 +96,6 @@ export default {
   },
 
   created() {
-    if (this.client) {
-      Object.assign(this.form, this.client);
-    }
   },
 
   methods: {
