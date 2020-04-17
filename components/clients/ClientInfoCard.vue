@@ -63,6 +63,23 @@
         </v-list-item-content>
       </v-list-item>
 
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-subtitle class="caption">
+            Комментарий
+          </v-list-item-subtitle>
+          <v-flex v-if="client.comment" style="padding-left: 0">
+            {{ client.comment }}
+          </v-flex>
+          <v-flex v-else style="padding-left: 0" class="grey--text"
+            >Без комментария</v-flex
+          >
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-icon @click="commentClient()">mdi-pencil</v-icon>
+        </v-list-item-action>
+      </v-list-item>
+
       <v-list two-line>
         <v-list-item
           v-if="client.phone_number"
@@ -176,6 +193,13 @@
         title="Фотография клиента"
         is-edit
       />
+      <client-comment-dialog
+        v-if="isHallAdmin || isOwner"
+        ref="comment"
+        :client="client"
+        title="Комментарий к клиенту"
+        is-edit
+      />
       <confirm ref="delete" />
     </template>
     <v-skeleton-loader
@@ -194,10 +218,16 @@ import selectedHallAware from "../../mixins/selected-hall-aware";
 import Confirm from "../Confirm";
 import ClientDialog from "./ClientDialog";
 import ClientCameraDialog from "./ClientCameraDialog";
+import ClientCommentDialog from "./ClientCommentDialog";
 
 export default {
   name: "ClientInfoCard",
-  components: { ClientCameraDialog, ClientDialog, Confirm },
+  components: {
+    ClientCommentDialog,
+    ClientCameraDialog,
+    ClientDialog,
+    Confirm
+  },
   // extend: VCard,
 
   mixins: [selectedHallAware, routable, auth],
@@ -274,13 +304,24 @@ export default {
           }
         });
     },
+    commentClient() {
+      this.$refs.comment.open().then(form => {
+        this.$axios
+          .patch("clients/" + this.client.id, form)
+          .then(async response => {
+            await this.$store.dispatch("clients/loadById", {
+              id: response.data.data.id
+            });
+          });
+      });
+    },
     updateWhatsAppNumber() {
       return this.client.whats_app_number
         .replace(/-/g, "")
         .replace(/\s/g, "")
         .replace("(", "")
         .replace(")", "");
-    },
+    }
   }
 };
 </script>
