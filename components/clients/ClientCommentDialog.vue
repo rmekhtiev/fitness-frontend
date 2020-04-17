@@ -58,7 +58,7 @@ export default {
   }),
 
   created() {
-    if (this.session) {
+    if (this.client) {
       Object.assign(this.form, this.client);
     }
   },
