@@ -96,11 +96,18 @@ export default {
   },
 
   created() {
+    if (this.client) {
+      Object.assign(this.form, this.client);
+    }
   },
 
   methods: {
     open() {
       this.dialog = true;
+
+      if (this.client) {
+        Object.assign(this.form, this.client);
+      }
 
       return new Promise((resolve, reject) => {
         this.resolve = resolve;
