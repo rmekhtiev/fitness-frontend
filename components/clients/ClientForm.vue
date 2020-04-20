@@ -36,9 +36,9 @@
 
     <v-text-field
       v-model="value.birth_date"
+      v-mask="'##/##/####'"
       label="Дата рождения"
       hint="ДД/ММ/ГГГГ"
-      v-mask="'##/##/####'"
       persistent-hint
       prepend-icon="event"
     ></v-text-field>
@@ -80,6 +80,27 @@
       name="whats_app"
       prepend-icon="mdi-whatsapp"
     />
+    <v-select
+      v-model="value.prefers"
+      :items="prefers"
+      attach
+      chips
+      label="Предпочтения"
+      multiple
+    >
+      <template v-slot:selection="prefers">
+        <v-chip>
+          {{ $t("prefers." + prefers.item) }}
+        </v-chip>
+      </template>
+      <template v-slot:item="prefers">
+        <template>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t("prefers." + prefers.item) }}</v-list-item-title>
+          </v-list-item-content>
+        </template>
+      </template>
+    </v-select>
     <v-select
       v-model="value.questionnaire_status"
       label="Статус заполнения анкеты"
@@ -128,7 +149,8 @@ export default {
     questionnaire_statuses: [
       { name: "Заполнена", value: "filled" },
       { name: "Не заполнена", value: "unfilled" }
-    ]
+    ],
+    prefers: ["gym", "straiting", "personal", "single"]
   }),
 
   computed: {
@@ -136,7 +158,7 @@ export default {
       return {
         primary_hall_id: this.me.associated_employee
           ? this.me.associated_employee.hall_id
-          : null,
+          : null
       };
     }
   },

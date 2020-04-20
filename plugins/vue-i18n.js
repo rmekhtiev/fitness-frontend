@@ -39,6 +39,12 @@ export default ({ app }) => {
           filled: "Заполнена",
           unfilled: "Не заполнена",
         },
+        prefers: {
+          gym: "Тренировки в зале",
+          straiting: "Стрейчинг",
+          personal: "Персональные тренировки",
+          single: "Разовые тренировки"
+        },
         users: {
           primary_role: {
             name: {
