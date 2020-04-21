@@ -39,6 +39,13 @@
           @input="loadFiltered"
         />
       </v-flex>
+      <v-flex md3>
+        <v-switch
+          v-model="filter.birthday"
+          label="День рождения в ближайшую неделю"
+          @change="loadFiltered"
+        />
+      </v-flex>
     </v-layout>
 
     <v-data-iterator
