@@ -43,6 +43,13 @@ export default {
   }),
 
   computed: {
+    defaultForm() {
+      return {
+        free_training_expiration_date: this.$moment()
+          .add(1, "month")
+          .format("YYYY-MM-DD")
+      };
+    },
     textFieldValue() {
       return this.value.free_training_expiration_date
         ? this.$moment(this.value.free_training_expiration_date).format("ll")

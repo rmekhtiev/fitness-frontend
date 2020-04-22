@@ -13,7 +13,7 @@
               >Статус бесплатной тренировки</v-list-item-subtitle
             >
             <v-list-item-title>
-              {{ freeTraining.status }}
+              {{ $t('free_training_statuses.' + client.free_training_status) }}
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -22,8 +22,8 @@
             <v-list-item-subtitle
               >Дата истечения тренировки</v-list-item-subtitle
             >
-            <v-list-item-title v-if="freeTraining.expiration_date">
-              {{ $moment(freeTraining.expiration_date).format("ll") }}
+            <v-list-item-title v-if="client.free_training_expiration_date">
+              {{ $moment(client.free_training_expiration_date).format("ll") }}
             </v-list-item-title>
             <v-list-item-title v-else>Не установлена</v-list-item-title>
           </v-list-item-content>
@@ -33,8 +33,8 @@
             <v-list-item-subtitle
               >Дата использования тренировки</v-list-item-subtitle
             >
-            <v-list-item-title v-if="freeTraining.use_date">
-              {{ $moment(freeTraining.use_date).format("ll") }}
+            <v-list-item-title v-if="client.free_training_use_date">
+              {{ $moment(client.free_training_use_date).format("ll") }}
             </v-list-item-title>
             <v-list-item-title v-else>Не проведена</v-list-item-title>
           </v-list-item-content>
@@ -43,7 +43,7 @@
           <v-list-item-content>
             <div v-if="!client.free_training_use_date">
               <v-btn
-                v-if="freeTraining.allow_to_set"
+                v-if="client.free_training_status === 'not_scheduled'"
                 @click="updateFreeTraining()"
                 >Назначить бесплатную тренировку</v-btn
               >
@@ -90,35 +90,6 @@ export default {
     client() {
       return this.$store.getters["clients/byId"]({ id: this.$route.params.id });
     },
-    freeTraining() {
-      const freeTraining = {
-        status: null,
-        expiration_date: this.client.free_training_expiration_date,
-        use_date: this.client.free_training_use_date,
-        allow_to_set: false
-      };
-      if (this.client.free_training_use_date) {
-        freeTraining.status = "Использована";
-      } else if (
-        this.client.free_training_expiration_date >=
-        this.$moment().format("YYYY-MM-DD")
-      ) {
-        freeTraining.status = "Доступна для использования";
-        // freeTraining.use_date = "-";
-      } else if (
-        this.client.free_training_expiration_date <
-        this.$moment().format("YYYY-MM-DD")
-      ) {
-        freeTraining.status = "Просрочена";
-        // freeTraining.use_date = "-";
-      } else {
-        freeTraining.status = "Не назначена";
-        // freeTraining.use_date = "-";
-        // freeTraining.expiration_date = "-";
-        freeTraining.allow_to_set = true;
-      }
-      return freeTraining;
-    }
   },
   methods: {
     updateFreeTraining() {

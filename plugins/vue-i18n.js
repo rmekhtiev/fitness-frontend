@@ -45,6 +45,12 @@ export default ({ app }) => {
           personal: "Персональные тренировки",
           single: "Разовые тренировки"
         },
+        free_training_statuses: {
+          expired: "Просрочена",
+          used: "Проведена",
+          not_scheduled: "Не назначена",
+          available: "Доступна для проведения"
+        },
         users: {
           primary_role: {
             name: {
