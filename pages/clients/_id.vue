@@ -150,6 +150,7 @@
         />
       </v-flex>
       <v-flex xs12 sm6 lg4 xl3>
+        <client-free-training-info-card />
         <v-card class="mb-2 mx-auto">
           <v-card-text>
             <div class="overline">
@@ -311,6 +312,7 @@ import SubscriptionDialog from "../../components/subscriptions/SubscriptionDialo
 import ClientIdentifierDialog from "../../components/clients/ClientIdentifierDialog";
 import TrainingSessionDialog from "../../components/training-sessions/TrainingSessionDialog";
 import TrainingSessionInfoCard from "../../components/training-sessions/TrainingSessionInfoCard";
+import ClientFreeTrainingInfoCard from "~/components/clients/ClientFreeTrainingInfoCard";
 
 export default {
   head() {
@@ -322,6 +324,7 @@ export default {
   },
 
   components: {
+    ClientFreeTrainingInfoCard,
     TrainingSessionInfoCard,
     TrainingSessionDialog,
     ClientIdentifierDialog,
@@ -463,7 +466,7 @@ export default {
       return this.$store.getters["training-sessions/where"]({
         filter: this.trainingSessionsFilter
       });
-    }
+    },
   },
 
   fetch: ({ store, params, $moment }) => {

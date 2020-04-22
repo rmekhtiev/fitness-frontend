@@ -34,6 +34,15 @@
       required
     />
 
+    <v-text-field
+      v-model="value.birth_date"
+      v-mask="'##/##/####'"
+      label="Дата рождения"
+      hint="ДД/ММ/ГГГГ"
+      persistent-hint
+      prepend-icon="event"
+    ></v-text-field>
+
     <v-select
       v-model="value.gender"
       :items="[
@@ -71,6 +80,35 @@
       name="whats_app"
       prepend-icon="mdi-whatsapp"
     />
+    <v-select
+      v-model="value.prefers"
+      :items="prefers"
+      attach
+      chips
+      label="Предпочтения"
+      multiple
+    >
+      <template v-slot:selection="prefers">
+        <v-chip>
+          {{ $t("prefers." + prefers.item) }}
+        </v-chip>
+      </template>
+      <template v-slot:item="prefers">
+        <template>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t("prefers." + prefers.item) }}</v-list-item-title>
+          </v-list-item-content>
+        </template>
+      </template>
+    </v-select>
+    <v-select
+      v-model="value.questionnaire_status"
+      label="Статус заполнения анкеты"
+      :items="questionnaire_statuses"
+      item-text="name"
+      item-value="value"
+      prepend-icon="mdi-file-outline"
+    />
   </v-form>
 </template>
 
@@ -106,6 +144,14 @@ export default {
       default: false
     }
   },
+
+  data: () => ({
+    questionnaire_statuses: [
+      { name: "Заполнена", value: "filled" },
+      { name: "Не заполнена", value: "unfilled" }
+    ],
+    prefers: ["gym", "straiting", "personal", "single"]
+  }),
 
   computed: {
     defaultForm() {

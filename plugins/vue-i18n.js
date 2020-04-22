@@ -35,6 +35,22 @@ export default ({ app }) => {
             ready: "Готово"
           }
         },
+        questionnaire_statuses: {
+          filled: "Заполнена",
+          unfilled: "Не заполнена",
+        },
+        prefers: {
+          gym: "Тренировки в зале",
+          straiting: "Стрейчинг",
+          personal: "Персональные тренировки",
+          single: "Разовые тренировки"
+        },
+        free_training_statuses: {
+          expired: "Просрочена",
+          used: "Проведена",
+          not_scheduled: "Не назначена",
+          available: "Доступна для проведения"
+        },
         users: {
           primary_role: {
             name: {
