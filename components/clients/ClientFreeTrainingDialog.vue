@@ -5,7 +5,7 @@
         <v-btn icon dark @click="cancel()">
           <v-icon>mdi-close</v-icon>
         </v-btn>
-        <v-toolbar-title>{{ title }}</v-toolbar-title>
+        <v-toolbar-title>{{ title }} {{ client.name }}</v-toolbar-title>
         <div class="flex-grow-1" />
         <v-toolbar-items>
           <v-btn dark text @click="save">
@@ -15,45 +15,31 @@
       </v-toolbar>
 
       <v-card-text>
-        <client-form
-          v-model="form"
-          :halls="$store.getters['halls/all']"
-          :is-edit="isEdit"
-        />
+        <client-free-training-form v-model="form" />
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import ClientForm from "./ClientForm";
+import ClientFreeTrainingForm from "~/components/clients/ClientFreeTrainingForm";
+
 export default {
-  name: "ClientDialog",
-
-  components: {
-    ClientForm
-  },
-
+  name: "ClientFreeTrainingDialog",
+  components: { ClientFreeTrainingForm },
   props: {
     fullscreen: {
       type: Boolean,
       default: true
     },
-
     title: {
       type: String,
       default: ""
     },
-
     client: {
       type: Object,
       required: false,
       default: () => ({})
-    },
-
-    isEdit: {
-      type: Boolean,
-      default: false
     }
   },
 
@@ -63,7 +49,9 @@ export default {
     resolve: null,
     reject: null,
 
-    form: {}
+    form: {
+      free_training_expiration_date: null,
+    }
   }),
 
   created() {
@@ -79,8 +67,6 @@ export default {
       if (this.client) {
         Object.assign(this.form, this.client);
       }
-
-      this.form.birth_date = this.$moment(this.form.birth_date).format("DD-MM-YYYY");
 
       return new Promise((resolve, reject) => {
         this.resolve = resolve;

@@ -39,6 +39,26 @@
           @input="loadFiltered"
         />
       </v-flex>
+      <v-flex md3>
+        <v-select
+          v-model="filter.prefers"
+          label="Предпочтения"
+          :items="prefers"
+          item-text="name"
+          item-value="value"
+          single-line
+          filled
+          clearable
+          @input="loadFiltered"
+        />
+      </v-flex>
+      <v-flex md3>
+        <v-switch
+          v-model="filter.birthday"
+          label="День рождения"
+          @change="loadFiltered"
+        />
+      </v-flex>
     </v-layout>
 
     <v-data-iterator
@@ -114,7 +134,13 @@ export default {
       itemsPerPage: 50,
       page: 1
     },
-    footerProps: { "items-per-page-options": [15, 30, 50] }
+    footerProps: { "items-per-page-options": [15, 30, 50] },
+    prefers: [
+      { value: "gym", name: "Тренировки в зале" },
+      { value: "straiting", name: "Стрейчинг" },
+      { value: "personal", name: "Тренировки с тренером" },
+      { value: "single", name: "Разовые тренировки" }
+    ]
   }),
 
   computed: {

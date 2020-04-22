@@ -176,8 +176,6 @@ export default {
               id: response.data.data.id
             });
           });
-
-        this.$emit("update");
       });
     }
   }

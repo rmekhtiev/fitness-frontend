@@ -2,14 +2,33 @@
   <v-card :class="classes" :to="to">
     <template v-if="client">
       <v-list-item>
-        <v-list-item-avatar color="grey" />
+        <v-list-item-content>
+          <v-avatar class="profile" color="grey" size="250" tile>
+            <v-img v-if="client.avatar" :src="client.avatar"></v-img>
+          </v-avatar>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="headline">
             {{ client.name }}
           </v-list-item-title>
           <v-list-item-subtitle>{{ client.full_name }}</v-list-item-subtitle>
+          <v-list-item-subtitle>{{
+            $moment(client.birth_date).format("ll")
+          }}</v-list-item-subtitle>
 
           <div style="position: absolute; right: .5rem; top: .5rem;">
+            <v-btn
+              v-if="isHallAdmin || isOwner"
+              color="primary"
+              text
+              small
+              @click="photoClient()"
+            >
+              <v-icon>mdi-camera</v-icon>
+            </v-btn>
+
             <v-btn
               v-if="isHallAdmin || isOwner"
               color="primary"
@@ -41,6 +60,40 @@
               <v-icon>mdi-open-in-new</v-icon>
             </v-btn>
           </div>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-subtitle class="caption">
+            Комментарий
+          </v-list-item-subtitle>
+          <v-flex v-if="client.comment" style="padding-left: 0">
+            {{ client.comment }}
+          </v-flex>
+          <v-flex v-else style="padding-left: 0" class="grey--text"
+            >Без комментария</v-flex
+          >
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-icon @click="commentClient()">mdi-pencil</v-icon>
+        </v-list-item-action>
+      </v-list-item>
+
+      <v-list-item>
+        <v-list-item-icon>
+          <v-icon color="primary">
+            mdi-star
+          </v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title>Предпочтения</v-list-item-title>
+          <template v-for="item in client.prefers">
+            <v-list-item-subtitle>{{
+              $t("prefers." + item)
+            }}</v-list-item-subtitle>
+          </template>
         </v-list-item-content>
       </v-list-item>
 
@@ -120,6 +173,21 @@
             </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
+
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon color="primary">
+              mdi-file-outline
+            </v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Статус анкеты</v-list-item-title>
+            <v-list-item-subtitle
+              >{{ $t("questionnaire_statuses." + client.questionnaire_status) }}
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
       <!--      <v-card-actions v-if="client.active_subscriptions">-->
       <!--        <v-spacer />-->
@@ -133,6 +201,20 @@
         ref="edit"
         :client="client"
         title="Редактирование клиента"
+        is-edit
+      />
+      <client-camera-dialog
+        v-if="isHallAdmin || isOwner"
+        ref="camera"
+        :client="client"
+        title="Фотография клиента"
+        is-edit
+      />
+      <client-comment-dialog
+        v-if="isHallAdmin || isOwner"
+        ref="comment"
+        :client="client"
+        title="Комментарий к клиенту"
         is-edit
       />
       <confirm ref="delete" />
@@ -152,10 +234,31 @@ import selectedHallAware from "../../mixins/selected-hall-aware";
 
 import Confirm from "../Confirm";
 import ClientDialog from "./ClientDialog";
+import ClientCameraDialog from "./ClientCameraDialog";
+import ClientCommentDialog from "./ClientCommentDialog";
+
+function dataURLtoFile(dataurl, filename) {
+  const arr = dataurl.split(",");
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+
+  return new File([u8arr], filename, { type: mime });
+}
 
 export default {
   name: "ClientInfoCard",
-  components: { ClientDialog, Confirm },
+  components: {
+    ClientCommentDialog,
+    ClientCameraDialog,
+    ClientDialog,
+    Confirm
+  },
   // extend: VCard,
 
   mixins: [selectedHallAware, routable, auth],
@@ -204,6 +307,27 @@ export default {
         this.$emit("update");
       });
     },
+
+    photoClient() {
+      this.$refs.camera.open().then(form => {
+        const file = dataURLtoFile(form.avatar);
+        const data = new FormData();
+        data.append("avatar", file);
+
+        this.$axios
+          .post("clients/" + this.client.id + "/avatar", data, {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          })
+          .then(async response => {
+            await this.$store.dispatch("clients/loadById", {
+              id: this.client.id
+            });
+          });
+      });
+    },
+
     deleteClient() {
       this.$refs.delete
         .open(
@@ -220,6 +344,17 @@ export default {
           }
         });
     },
+    commentClient() {
+      this.$refs.comment.open().then(form => {
+        this.$axios
+          .patch("clients/" + this.client.id, form)
+          .then(async response => {
+            await this.$store.dispatch("clients/loadById", {
+              id: response.data.data.id
+            });
+          });
+      });
+    },
     updateWhatsAppNumber() {
       return this.client.whats_app_number
         .replace(/-/g, "")
@@ -227,21 +362,6 @@ export default {
         .replace("(", "")
         .replace(")", "");
     }
-
-    // addRecord() {
-    //   this.$axios
-    //     .post("visit-history-records", {
-    //       datetime: this.$moment(),
-    //       client_id: this.client.id,
-    //       hall_id: this.client.primary_hall_id
-    //     })
-    //     .then(response => {
-    //       this.$store.dispatch("visit-history-records/loadById", {
-    //         id: response.data.data.id
-    //       });
-    //     });
-    //   this.$emit("createVisitHistoryRecord");
-    // }
   }
 };
 </script>
