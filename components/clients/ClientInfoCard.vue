@@ -90,7 +90,9 @@
         <v-list-item-content>
           <v-list-item-title>Предпочтения</v-list-item-title>
           <template v-for="item in client.prefers">
-            <v-list-item-subtitle>{{ $t("prefers." + item) }}</v-list-item-subtitle>
+            <v-list-item-subtitle>{{
+              $t("prefers." + item)
+            }}</v-list-item-subtitle>
           </template>
         </v-list-item-content>
       </v-list-item>
@@ -235,6 +237,20 @@ import ClientDialog from "./ClientDialog";
 import ClientCameraDialog from "./ClientCameraDialog";
 import ClientCommentDialog from "./ClientCommentDialog";
 
+function dataURLtoFile(dataurl, filename) {
+  const arr = dataurl.split(",");
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+
+  return new File([u8arr], filename, { type: mime });
+}
+
 export default {
   name: "ClientInfoCard",
   components: {
@@ -294,8 +310,16 @@ export default {
 
     photoClient() {
       this.$refs.camera.open().then(form => {
+        const file = dataURLtoFile(form.avatar);
+        const data = new FormData();
+        data.append("avatar", file);
+
         this.$axios
-          .post("clients/" + this.client.id + "/avatar", form)
+          .post("clients/" + this.client.id + "/avatar", data, {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          })
           .then(async response => {
             await this.$store.dispatch("clients/loadById", {
               id: this.client.id
@@ -303,6 +327,7 @@ export default {
           });
       });
     },
+
     deleteClient() {
       this.$refs.delete
         .open(
