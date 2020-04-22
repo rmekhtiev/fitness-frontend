@@ -33,16 +33,27 @@
       prepend-icon=" "
       required
     />
-
-    <v-text-field
-      v-model="value.birth_date"
-      v-mask="'##/##/####'"
-      label="Дата рождения"
-      hint="ДД/ММ/ГГГГ"
-      persistent-hint
-      prepend-icon="event"
-    ></v-text-field>
-
+    <v-menu
+      v-model="menu"
+      :close-on-content-click="false"
+      transition="scale-transition"
+      offset-y
+      min-width="290px"
+    >
+      <template v-slot:activator="{ on }">
+        <v-text-field
+          v-model="formatDate"
+          label="Дата рождения"
+          prepend-icon="event"
+          readonly
+          v-on="on"
+        ></v-text-field>
+      </template>
+      <v-date-picker
+        v-model="value.birth_date"
+        @input="menu = false"
+      ></v-date-picker>
+    </v-menu>
     <v-select
       v-model="value.gender"
       :items="[
@@ -96,7 +107,9 @@
       <template v-slot:item="prefers">
         <template>
           <v-list-item-content>
-            <v-list-item-title>{{ $t("prefers." + prefers.item) }}</v-list-item-title>
+            <v-list-item-title>{{
+              $t("prefers." + prefers.item)
+            }}</v-list-item-title>
           </v-list-item-content>
         </template>
       </template>
@@ -150,7 +163,8 @@ export default {
       { name: "Заполнена", value: "filled" },
       { name: "Не заполнена", value: "unfilled" }
     ],
-    prefers: ["gym", "straiting", "personal", "single"]
+    prefers: ["gym", "straiting", "personal", "single"],
+    menu: false
   }),
 
   computed: {
@@ -160,6 +174,11 @@ export default {
           ? this.me.associated_employee.hall_id
           : null
       };
+    },
+    formatDate() {
+      if(this.value.birth_date){
+        return this.$moment(this.value.birth_date).format("DD-MM-YYYY");
+      }
     }
   },
   watch: {
