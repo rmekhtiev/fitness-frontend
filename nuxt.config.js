@@ -70,15 +70,15 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    host: "fitness.test",
+    host: "crm.multipower05.ru",
     prefix: "/api/",
     port: "80",
 
-    proxy: false
+    proxy: true
   },
 
   proxy: {
-    "/api/": process.env.API_URL || "http://fitness-backend.test"
+    "/api/": process.env.API_URL || "https://crm.multipower05.ru"
   },
 
   router: {
