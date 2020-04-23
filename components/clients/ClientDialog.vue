@@ -80,8 +80,6 @@ export default {
         Object.assign(this.form, this.client);
       }
 
-      this.form.birth_date = this.$moment(this.form.birth_date).format("DD-MM-YYYY");
-
       return new Promise((resolve, reject) => {
         this.resolve = resolve;
         this.reject = reject;
