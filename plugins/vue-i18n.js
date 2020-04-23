@@ -41,7 +41,7 @@ export default ({ app }) => {
         },
         prefers: {
           gym: "Тренировки в зале",
-          straiting: "Стрейчинг",
+          straiting: "Стретчинг",
           personal: "Персональные тренировки",
           single: "Разовые тренировки"
         },
