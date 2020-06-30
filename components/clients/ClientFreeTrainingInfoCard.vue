@@ -56,11 +56,11 @@
                   color="primary"
                   class="mb-2"
                   @click="trainClient()"
-                  >Провести бесплатную тренировку</v-btn
+                  >Провести</v-btn
                 >
 
                 <v-btn @click="updateFreeTraining()"
-                  >Изменить условия бесплатной тренировки</v-btn
+                  >Изменить условия</v-btn
                 >
               </div>
             </div>
