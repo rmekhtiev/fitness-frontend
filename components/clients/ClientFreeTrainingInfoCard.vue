@@ -7,7 +7,7 @@
         </div>
       </v-card-text>
       <v-list>
-        <v-list-item>
+        <v-list-item two-line>
           <v-list-item-content>
             <v-list-item-subtitle
               >Статус бесплатной тренировки</v-list-item-subtitle
@@ -17,7 +17,7 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item>
+        <v-list-item two-line>
           <v-list-item-content>
             <v-list-item-subtitle
               >Дата истечения тренировки</v-list-item-subtitle
@@ -28,7 +28,7 @@
             <v-list-item-title v-else>Не установлена</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item>
+        <v-list-item two-line>
           <v-list-item-content>
             <v-list-item-subtitle
               >Дата использования тренировки</v-list-item-subtitle
@@ -59,9 +59,9 @@
                   >Провести</v-btn
                 >
 
-                <v-btn @click="updateFreeTraining()"
-                  >Изменить условия</v-btn
-                >
+                <v-btn @click="updateFreeTraining()">
+                  Изменить условия
+                </v-btn>
               </div>
             </div>
           </v-list-item-content>

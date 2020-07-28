@@ -3,7 +3,7 @@
     <v-layout row wrap>
       <v-flex xs12 sm6 lg4 xl3>
         <client-info-card :client="client" class="mb-2 mx-auto" />
-        <client-identifiers
+        <client-identifiers-card
           v-if="identifiers"
           :client="client"
           :identifiers="identifiers"
@@ -135,61 +135,8 @@
       </v-flex>
       <v-flex xs12 sm6 lg4 xl3>
         <client-free-training-info-card />
-        <v-card class="mb-2 mx-auto">
-          <v-card-text>
-            <div class="overline">
-              История абонементов
-            </div>
-          </v-card-text>
-
-          <v-list>
-            <v-card-text v-if="!subscriptions" class="text-center">
-              <v-icon style="font-size: 4rem">mdi-inbox</v-icon>
-              <br />
-              Пусто
-            </v-card-text>
-            <v-list v-for="item in subscriptions" v-else dense>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon>mdi-account-badge-horizontal-outline</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-subtitle>
-                    с
-                    {{ $moment.utc(item.issue_date).format("DD-MM-YYYY") }}
-                    &mdash; по
-                    {{ $moment.utc(item.valid_till).format("DD-MM-YYYY") }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-list>
-        </v-card>
-        <v-card class="mb-2 mx-auto">
-          <v-card-text>
-            <div class="overline">
-              История посещений
-            </div>
-          </v-card-text>
-
-          <v-timeline dense>
-            <v-list v-if="!loading.records">
-              <template v-for="(record, index) in records.slice(0, 10)">
-                <v-timeline-item small>
-                  {{ recordTime(record) }}
-                </v-timeline-item>
-              </template>
-            </v-list>
-            <v-card-text v-else class="text-center">
-              <v-progress-linear
-                height="16"
-                rounded
-                color="primary"
-                indeterminate
-              />
-            </v-card-text>
-          </v-timeline>
-        </v-card>
+        <client-subscriptions-history-card :subscriptions="subscriptions" />
+        <client-visit-history-card :records="records" />
       </v-flex>
     </v-layout>
 
@@ -307,7 +254,9 @@ import TrainingSessionDialog from "../../components/training-sessions/TrainingSe
 import TrainingSessionInfoCard from "../../components/training-sessions/TrainingSessionInfoCard";
 import ClientFreeTrainingInfoCard from "~/components/clients/ClientFreeTrainingInfoCard";
 import auth from "~/mixins/auth";
-import ClientIdentifiers from "~/components/clients/ClientIdentifiers";
+import ClientIdentifiersCard from "~/components/clients/ClientIdentifiersCard";
+import ClientSubscriptionsHistoryCard from "~/components/clients/ClientSubscriptionsHistoryCard";
+import ClientVisitHistoryCard from "~/components/clients/ClientVisitHistoryCard";
 
 export default {
   head() {
@@ -319,7 +268,9 @@ export default {
   },
 
   components: {
-    ClientIdentifiers,
+    ClientVisitHistoryCard,
+    ClientSubscriptionsHistoryCard,
+    ClientIdentifiersCard,
     ClientFreeTrainingInfoCard,
     TrainingSessionInfoCard,
     TrainingSessionDialog,
@@ -695,13 +646,6 @@ export default {
           this.loading.trainingSessions = false;
         });
     },
-
-    recordTime(record) {
-      return this.$moment
-        .utc(record.datetime)
-        .local()
-        .format("D MMMM YYYY года в HH:mm");
-    }
   }
 };
 </script>
