@@ -220,57 +220,69 @@
           </v-icon>
         </v-btn>
       </template>
-      <v-tooltip :value="tooltips" left>
-        <template v-slot:activator="{ on }">
+      <v-tooltip left>
+        <template v-slot:activator="{ on, attrs }">
           <v-btn
             fab
-            dark
-            small
             color="green"
+            dark
+            v-bind="attrs"
+            v-on="on"
             @click.native="openLockerClaimDialog"
           >
-            <v-icon>mdi-locker</v-icon>
+            <v-icon>mdi-alpha-i-box</v-icon>
           </v-btn>
         </template>
-        <span>Шкафчик</span>
+        <span>Привязать шкафчик</span>
       </v-tooltip>
-      <v-tooltip :value="tooltips" left>
-        <template v-slot:activator="{ on }">
+      <v-tooltip left>
+        <template v-slot:activator="{ on, attrs }">
           <v-btn
-            fab
-            dark
-            small
-            color="red"
-            @click.native="openSubscriptionDialog"
+                  fab
+                  color="primary"
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
+                  @click.native="openSubscriptionDialog"
           >
-            <v-icon>mdi-account-badge-horizontal-outline</v-icon>
+            <v-icon>mdi-badge-account-horizontal</v-icon>
           </v-btn>
         </template>
         <span>Абонемент</span>
       </v-tooltip>
-      <v-tooltip :value="tooltips" left>
-        <template v-slot:activator="{ on }">
-          <v-btn fab dark small color="blue" @click.native="addIdentifier">
+      <v-tooltip left>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+                  fab
+                  color="purple"
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
+                  @click.native="addIdentifier"
+          >
             <v-icon>mdi-qrcode</v-icon>
           </v-btn>
         </template>
         <span>Привязать идентификатор</span>
       </v-tooltip>
-      <v-tooltip :value="tooltips" left>
-        <template v-slot:activator="{ on }">
+      <v-tooltip left>
+        <template v-slot:activator="{ on, attrs }">
           <v-btn
-            fab
-            dark
-            small
-            color="purple"
-            @click.native="openTrainingSessionsDialog"
+                  fab
+                  color="red"
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
+                  @click.native="openTrainingSessionsDialog"
           >
-            <v-icon>mdi-account-star</v-icon>
+            <v-icon>mdi-alpha-i-box</v-icon>
           </v-btn>
         </template>
         <span>Индивид. тренировки</span>
       </v-tooltip>
     </v-speed-dial>
+
+
 
     <locker-claim-dialog
       ref="lockerClaimDialog"
@@ -297,7 +309,6 @@
 <script>
 import _ from "lodash";
 
-import fabWithTooltips from "../../mixins/fab-with-tooltips";
 import client from "../../mixins/client";
 
 import selectedHallAware from "../../mixins/selected-hall-aware";
@@ -335,7 +346,7 @@ export default {
     LockerClaimDialog
   },
 
-  mixins: [selectedHallAware, client, fabWithTooltips],
+  mixins: [selectedHallAware, client],
 
   data: () => ({
     dialogs: {
@@ -347,7 +358,9 @@ export default {
       groups: true,
       records: true,
       subscriptions: true
-    }
+    },
+
+    fab: false,
   }),
 
   computed: {
