@@ -1,7 +1,7 @@
 <template>
   <div id="clients">
-    <v-layout id="filters">
-      <v-flex md3>
+    <v-layout id="filters" row wrap>
+      <v-flex xs12 sm6 md3>
         <v-text-field
           v-model="filter.search"
           prepend-inner-icon="search"
@@ -13,7 +13,7 @@
         />
       </v-flex>
 
-      <v-flex md3>
+      <v-flex xs12 sm6 md3>
         <v-select
           v-model="filter.status"
           :items="statuses"
@@ -25,7 +25,7 @@
         />
       </v-flex>
 
-      <v-flex md3>
+      <v-flex xs12 sm6 md3>
         <v-select
           v-model="filter.primary_hall_id"
           :items="halls"
@@ -39,7 +39,7 @@
           @input="loadFiltered"
         />
       </v-flex>
-      <v-flex md3>
+      <v-flex xs12 sm6 md3>
         <v-select
           v-model="filter.prefers"
           label="Предпочтения"
@@ -52,9 +52,10 @@
           @input="loadFiltered"
         />
       </v-flex>
-      <v-flex md3>
+      <v-flex xs12 sm6 md3>
         <v-switch
           v-model="filter.birthday"
+          inset
           label="День рождения"
           @change="loadFiltered"
         />

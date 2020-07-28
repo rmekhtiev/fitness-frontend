@@ -1,7 +1,7 @@
 <template>
   <div v-if="group">
     <v-layout row wrap>
-      <v-flex xs12 sm6 lg4 xl3 class="mb-4">
+      <v-flex xs12 lg4 xl3 class="mb-4">
         <group-info-card
           :group="group"
           class="mb-2 mx-auto"
