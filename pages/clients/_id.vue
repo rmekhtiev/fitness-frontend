@@ -2,29 +2,13 @@
   <div v-if="client" id="client">
     <v-layout row wrap>
       <v-flex xs12 sm6 lg4 xl3>
-        <!-- Client info -->
         <client-info-card :client="client" class="mb-2 mx-auto" />
-        <v-card>
-          <!--          {{identifiers.client_id}}-->
-          <v-alert
-            v-if="identifiers && identifiers.client_id"
-            border="right"
-            colored-border
-            type="success"
-            elevation="2"
-          >
-            У клиента есть привязанная карточка
-          </v-alert>
-          <v-alert
-            v-else
-            border="right"
-            colored-border
-            type="error"
-            elevation="2"
-          >
-            У клиента нет привязанных карточек
-          </v-alert>
-        </v-card>
+        <client-identifiers
+          v-if="identifiers"
+          :client="client"
+          :identifiers="identifiers"
+          class="mb-2 mx-auto"
+        />
 
         <!-- Active subscriptions -->
         <template
@@ -230,7 +214,7 @@
             v-on="on"
             @click.native="openLockerClaimDialog"
           >
-            <v-icon>mdi-alpha-i-box</v-icon>
+            <v-icon>mdi-locker</v-icon>
           </v-btn>
         </template>
         <span>Привязать шкафчик</span>
@@ -238,12 +222,12 @@
       <v-tooltip left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-                  fab
-                  color="primary"
-                  dark
-                  v-bind="attrs"
-                  v-on="on"
-                  @click.native="openSubscriptionDialog"
+            fab
+            color="primary"
+            dark
+            v-bind="attrs"
+            v-on="on"
+            @click.native="openSubscriptionDialog"
           >
             <v-icon>mdi-badge-account-horizontal</v-icon>
           </v-btn>
@@ -253,12 +237,12 @@
       <v-tooltip left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-                  fab
-                  color="purple"
-                  dark
-                  v-bind="attrs"
-                  v-on="on"
-                  @click.native="addIdentifier"
+            fab
+            color="purple"
+            dark
+            v-bind="attrs"
+            v-on="on"
+            @click.native="addIdentifier"
           >
             <v-icon>mdi-qrcode</v-icon>
           </v-btn>
@@ -268,12 +252,12 @@
       <v-tooltip left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-                  fab
-                  color="red"
-                  dark
-                  v-bind="attrs"
-                  v-on="on"
-                  @click.native="openTrainingSessionsDialog"
+            fab
+            color="red"
+            dark
+            v-bind="attrs"
+            v-on="on"
+            @click.native="openTrainingSessionsDialog"
           >
             <v-icon>mdi-alpha-i-box</v-icon>
           </v-btn>
@@ -281,8 +265,6 @@
         <span>Индивид. тренировки</span>
       </v-tooltip>
     </v-speed-dial>
-
-
 
     <locker-claim-dialog
       ref="lockerClaimDialog"
@@ -324,6 +306,8 @@ import ClientIdentifierDialog from "../../components/clients/ClientIdentifierDia
 import TrainingSessionDialog from "../../components/training-sessions/TrainingSessionDialog";
 import TrainingSessionInfoCard from "../../components/training-sessions/TrainingSessionInfoCard";
 import ClientFreeTrainingInfoCard from "~/components/clients/ClientFreeTrainingInfoCard";
+import auth from "~/mixins/auth";
+import ClientIdentifiers from "~/components/clients/ClientIdentifiers";
 
 export default {
   head() {
@@ -335,6 +319,7 @@ export default {
   },
 
   components: {
+    ClientIdentifiers,
     ClientFreeTrainingInfoCard,
     TrainingSessionInfoCard,
     TrainingSessionDialog,
@@ -346,7 +331,7 @@ export default {
     LockerClaimDialog
   },
 
-  mixins: [selectedHallAware, client],
+  mixins: [selectedHallAware, client, auth],
 
   data: () => ({
     dialogs: {
@@ -360,7 +345,7 @@ export default {
       subscriptions: true
     },
 
-    fab: false,
+    fab: false
   }),
 
   computed: {
@@ -424,11 +409,9 @@ export default {
     },
 
     identifiers() {
-      return _(
-        this.$store.getters["identifiers/where"]({
-          filter: this.identifierFilter
-        })
-      ).last();
+      return this.$store.getters["identifiers/where"]({
+        filter: this.identifierFilter
+      });
     },
 
     lockerClaims() {
@@ -479,7 +462,7 @@ export default {
       return this.$store.getters["training-sessions/where"]({
         filter: this.trainingSessionsFilter
       });
-    },
+    }
   },
 
   fetch: ({ store, params, $moment }) => {
