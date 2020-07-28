@@ -96,6 +96,7 @@
       :items="prefers"
       attach
       chips
+      prepend-icon="mdi-star"
       label="Предпочтения"
       multiple
     >

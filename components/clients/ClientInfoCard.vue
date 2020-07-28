@@ -14,10 +14,12 @@
             {{ client.name }}
           </v-list-item-title>
           <v-list-item-subtitle>{{ client.full_name }}</v-list-item-subtitle>
-          <v-list-item-subtitle>{{
-            $moment(client.birth_date).format("ll")
-          }}</v-list-item-subtitle>
-
+          <v-list-item-subtitle v-if="client.birth_date">
+            {{ $moment(client.birth_date).format("ll") }}
+          </v-list-item-subtitle>
+          <v-list-item-subtitle v-else>
+            Дата рождения не указана
+          </v-list-item-subtitle>
           <div style="position: absolute; right: .5rem; top: .5rem;">
             <v-btn
               v-if="isHallAdmin || isOwner"
