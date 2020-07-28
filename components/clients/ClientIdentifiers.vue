@@ -12,20 +12,17 @@
             <v-list-item v-if="item" two-line>
               <v-list-item-content>
                 <v-list-item-title>
-                  <div>Идентификатор #{{ index + 1 }}</div>
-                  <div style="position: absolute; right: .5rem; top: .5rem;">
-                    <v-btn icon @click="deleteIdentifier(item)"
-                      ><v-icon>mdi-delete</v-icon></v-btn
-                    >
-                  </div>
+                  Идентификатор #{{ index + 1 }}
                 </v-list-item-title>
-                <v-list-item-subtitle
-                  >от
-                  {{
-                    $moment(item.created_at).format("ll")
-                  }}</v-list-item-subtitle
-                >
+                <v-list-item-subtitle>
+                  от {{ $moment(item.created_at).format("ll") }}
+                </v-list-item-subtitle>
               </v-list-item-content>
+              <v-list-item-action>
+                <v-btn icon @click="deleteIdentifier(item)">
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </v-list-item-action>
             </v-list-item>
           </template>
         </v-list>
