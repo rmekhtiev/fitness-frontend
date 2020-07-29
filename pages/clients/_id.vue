@@ -2,29 +2,13 @@
   <div v-if="client" id="client">
     <v-layout row wrap>
       <v-flex xs12 sm6 lg4 xl3>
-        <!-- Client info -->
         <client-info-card :client="client" class="mb-2 mx-auto" />
-        <v-card>
-          <!--          {{identifiers.client_id}}-->
-          <v-alert
-            v-if="identifiers && identifiers.client_id"
-            border="right"
-            colored-border
-            type="success"
-            elevation="2"
-          >
-            У клиента есть привязанная карточка
-          </v-alert>
-          <v-alert
-            v-else
-            border="right"
-            colored-border
-            type="error"
-            elevation="2"
-          >
-            У клиента нет привязанных карточек
-          </v-alert>
-        </v-card>
+        <client-identifiers-card
+          v-if="identifiers"
+          :client="client"
+          :identifiers="identifiers"
+          class="mb-2 mx-auto"
+        />
 
         <!-- Active subscriptions -->
         <template
@@ -151,61 +135,8 @@
       </v-flex>
       <v-flex xs12 sm6 lg4 xl3>
         <client-free-training-info-card />
-        <v-card class="mb-2 mx-auto">
-          <v-card-text>
-            <div class="overline">
-              История абонементов
-            </div>
-          </v-card-text>
-
-          <v-list>
-            <v-card-text v-if="!subscriptions" class="text-center">
-              <v-icon style="font-size: 4rem">mdi-inbox</v-icon>
-              <br />
-              Пусто
-            </v-card-text>
-            <v-list v-for="item in subscriptions" v-else dense>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon>mdi-account-badge-horizontal-outline</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-subtitle>
-                    с
-                    {{ $moment.utc(item.issue_date).format("DD-MM-YYYY") }}
-                    &mdash; по
-                    {{ $moment.utc(item.valid_till).format("DD-MM-YYYY") }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-list>
-        </v-card>
-        <v-card class="mb-2 mx-auto">
-          <v-card-text>
-            <div class="overline">
-              История посещений
-            </div>
-          </v-card-text>
-
-          <v-timeline dense>
-            <v-list v-if="!loading.records">
-              <template v-for="(record, index) in records.slice(0, 10)">
-                <v-timeline-item small>
-                  {{ recordTime(record) }}
-                </v-timeline-item>
-              </template>
-            </v-list>
-            <v-card-text v-else class="text-center">
-              <v-progress-linear
-                height="16"
-                rounded
-                color="primary"
-                indeterminate
-              />
-            </v-card-text>
-          </v-timeline>
-        </v-card>
+        <client-subscriptions-history-card :subscriptions="subscriptions" />
+        <client-visit-history-card :records="records" />
       </v-flex>
     </v-layout>
 
@@ -220,52 +151,62 @@
           </v-icon>
         </v-btn>
       </template>
-      <v-tooltip :value="tooltips" left>
-        <template v-slot:activator="{ on }">
+      <v-tooltip left>
+        <template v-slot:activator="{ on, attrs }">
           <v-btn
             fab
-            dark
-            small
             color="green"
+            dark
+            v-bind="attrs"
+            v-on="on"
             @click.native="openLockerClaimDialog"
           >
             <v-icon>mdi-locker</v-icon>
           </v-btn>
         </template>
-        <span>Шкафчик</span>
+        <span>Привязать шкафчик</span>
       </v-tooltip>
-      <v-tooltip :value="tooltips" left>
-        <template v-slot:activator="{ on }">
+      <v-tooltip left>
+        <template v-slot:activator="{ on, attrs }">
           <v-btn
             fab
+            color="primary"
             dark
-            small
-            color="red"
+            v-bind="attrs"
+            v-on="on"
             @click.native="openSubscriptionDialog"
           >
-            <v-icon>mdi-account-badge-horizontal-outline</v-icon>
+            <v-icon>mdi-badge-account-horizontal</v-icon>
           </v-btn>
         </template>
         <span>Абонемент</span>
       </v-tooltip>
-      <v-tooltip :value="tooltips" left>
-        <template v-slot:activator="{ on }">
-          <v-btn fab dark small color="blue" @click.native="addIdentifier">
+      <v-tooltip left>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            fab
+            color="purple"
+            dark
+            v-bind="attrs"
+            v-on="on"
+            @click.native="addIdentifier"
+          >
             <v-icon>mdi-qrcode</v-icon>
           </v-btn>
         </template>
         <span>Привязать идентификатор</span>
       </v-tooltip>
-      <v-tooltip :value="tooltips" left>
-        <template v-slot:activator="{ on }">
+      <v-tooltip left>
+        <template v-slot:activator="{ on, attrs }">
           <v-btn
             fab
+            color="red"
             dark
-            small
-            color="purple"
+            v-bind="attrs"
+            v-on="on"
             @click.native="openTrainingSessionsDialog"
           >
-            <v-icon>mdi-account-star</v-icon>
+            <v-icon>mdi-alpha-i-box</v-icon>
           </v-btn>
         </template>
         <span>Индивид. тренировки</span>
@@ -297,7 +238,6 @@
 <script>
 import _ from "lodash";
 
-import fabWithTooltips from "../../mixins/fab-with-tooltips";
 import client from "../../mixins/client";
 
 import selectedHallAware from "../../mixins/selected-hall-aware";
@@ -313,6 +253,10 @@ import ClientIdentifierDialog from "../../components/clients/ClientIdentifierDia
 import TrainingSessionDialog from "../../components/training-sessions/TrainingSessionDialog";
 import TrainingSessionInfoCard from "../../components/training-sessions/TrainingSessionInfoCard";
 import ClientFreeTrainingInfoCard from "~/components/clients/ClientFreeTrainingInfoCard";
+import auth from "~/mixins/auth";
+import ClientIdentifiersCard from "~/components/clients/ClientIdentifiersCard";
+import ClientSubscriptionsHistoryCard from "~/components/clients/ClientSubscriptionsHistoryCard";
+import ClientVisitHistoryCard from "~/components/clients/ClientVisitHistoryCard";
 
 export default {
   head() {
@@ -324,6 +268,9 @@ export default {
   },
 
   components: {
+    ClientVisitHistoryCard,
+    ClientSubscriptionsHistoryCard,
+    ClientIdentifiersCard,
     ClientFreeTrainingInfoCard,
     TrainingSessionInfoCard,
     TrainingSessionDialog,
@@ -335,7 +282,7 @@ export default {
     LockerClaimDialog
   },
 
-  mixins: [selectedHallAware, client, fabWithTooltips],
+  mixins: [selectedHallAware, client, auth],
 
   data: () => ({
     dialogs: {
@@ -347,7 +294,9 @@ export default {
       groups: true,
       records: true,
       subscriptions: true
-    }
+    },
+
+    fab: false
   }),
 
   computed: {
@@ -411,11 +360,9 @@ export default {
     },
 
     identifiers() {
-      return _(
-        this.$store.getters["identifiers/where"]({
-          filter: this.identifierFilter
-        })
-      ).last();
+      return this.$store.getters["identifiers/where"]({
+        filter: this.identifierFilter
+      });
     },
 
     lockerClaims() {
@@ -466,7 +413,7 @@ export default {
       return this.$store.getters["training-sessions/where"]({
         filter: this.trainingSessionsFilter
       });
-    },
+    }
   },
 
   fetch: ({ store, params, $moment }) => {
@@ -699,13 +646,6 @@ export default {
           this.loading.trainingSessions = false;
         });
     },
-
-    recordTime(record) {
-      return this.$moment
-        .utc(record.datetime)
-        .local()
-        .format("D MMMM YYYY года в HH:mm");
-    }
   }
 };
 </script>
