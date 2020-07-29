@@ -174,7 +174,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item>
+        <v-list-item v-if="client.prefers">
           <v-list-item-icon>
             <v-icon color="primary">
               mdi-star
@@ -184,9 +184,9 @@
           <v-list-item-content>
             <v-list-item-title>Предпочтения</v-list-item-title>
             <template v-for="item in client.prefers">
-              <v-list-item-subtitle>{{
-                $t("prefers." + item)
-                }}</v-list-item-subtitle>
+              <v-list-item-subtitle>
+                {{ $t("prefers." + item) }}
+              </v-list-item-subtitle>
             </template>
           </v-list-item-content>
         </v-list-item>
