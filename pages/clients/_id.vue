@@ -482,10 +482,8 @@ export default {
 
     addIdentifier() {
       this.$refs.clientIdentifierDialog.open().then(form => {
-        this.$axios.post("identifiers", form).then(async response => {
-          await this.$store.dispatch("identifiers/loadById", {
-            id: response.data.data.id
-          });
+        this.$axios.post("identifiers", form).then(() => {
+          this.loadIdentifiers()
         });
       });
     },
