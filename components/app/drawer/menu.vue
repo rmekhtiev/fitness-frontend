@@ -170,11 +170,6 @@ export default {
   data: () => ({
     mainActions: [
       { title: "Главная", icon: "mdi-home-outline", to: { name: "index" } },
-      {
-        title: "Журнал",
-        icon: "mdi-calendar-check-outline",
-        to: { name: "activity" }
-      }
     ],
 
     hallActions: [
@@ -185,7 +180,7 @@ export default {
       },
       {
         title: "Индивидуальные занятия",
-        icon: "mdi-account-multiple-outline",
+        icon: "mdi-alpha-i-box",
         to: { name: "training-sessions" }
       },
       {
@@ -195,7 +190,7 @@ export default {
       },
       {
         title: "Сотрудники",
-        icon: "mdi-account-badge-horizontal-outline",
+        icon: "mdi-account-box-multiple",
         to: { name: "employees" }
       },
       { title: "Тренеры", icon: "mdi-account-star", to: { name: "trainers" } },
@@ -212,7 +207,7 @@ export default {
       { title: "Залы", icon: "mdi-domain", to: { name: "halls" } },
       {
         title: "Пользователи",
-        icon: "mdi-account-card-details",
+        icon: "mdi-account-box",
         to: { name: "users" }
       },
       { title: "Заявки", icon: "mdi-phone", to: { name: "requests" } }
