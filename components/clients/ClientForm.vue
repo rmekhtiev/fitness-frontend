@@ -8,6 +8,7 @@
       prepend-icon="mdi-domain"
       item-text="title"
       item-value="id"
+      :disabled="isHallAdmin"
     />
 
     <v-text-field
