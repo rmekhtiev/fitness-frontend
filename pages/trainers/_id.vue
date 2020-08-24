@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-layout row wrap>
-      <v-flex xs12 sm12 lg4 xl3>
+      <v-flex xs12 lg4 xl3>
         <trainer-info-card :trainer="trainer" class="mb-2 mx-auto" />
 
         <!-- Training sessions -->

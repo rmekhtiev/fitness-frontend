@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-layout wrap row class="mb-4">
-      <v-flex xs6>
+      <v-flex xs12 sm6 lg3>
         <hall-info-card></hall-info-card>
       </v-flex>
     </v-layout>

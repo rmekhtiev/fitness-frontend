@@ -87,6 +87,7 @@ export default {
         if (content) {
           this.text = content;
           this.loadClient(content);
+          this.$toast.success("Клиент успешно найден");
           this.close();
         } else {
           this.$toast.error("Неизвестный формат");
