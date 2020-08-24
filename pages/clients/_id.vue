@@ -151,14 +151,12 @@
           </v-icon>
         </v-btn>
       </template>
-      <v-tooltip left>
+      <v-tooltip :value="tooltips" left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             fab
             color="green"
             dark
-            v-bind="attrs"
-            v-on="on"
             @click.native="openLockerClaimDialog"
           >
             <v-icon>mdi-locker</v-icon>
@@ -166,14 +164,12 @@
         </template>
         <span>Привязать шкафчик</span>
       </v-tooltip>
-      <v-tooltip left>
-        <template v-slot:activator="{ on, attrs }">
+      <v-tooltip :value="tooltips" left>
+        <template v-slot:activator="{ on }">
           <v-btn
             fab
             color="primary"
             dark
-            v-bind="attrs"
-            v-on="on"
             @click.native="openSubscriptionDialog"
           >
             <v-icon>mdi-badge-account-horizontal</v-icon>
@@ -181,14 +177,12 @@
         </template>
         <span>Абонемент</span>
       </v-tooltip>
-      <v-tooltip left>
+      <v-tooltip :value="tooltips" left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             fab
             color="purple"
             dark
-            v-bind="attrs"
-            v-on="on"
             @click.native="addIdentifier"
           >
             <v-icon>mdi-qrcode</v-icon>
@@ -196,14 +190,12 @@
         </template>
         <span>Привязать идентификатор</span>
       </v-tooltip>
-      <v-tooltip left>
+      <v-tooltip :value="tooltips" left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             fab
             color="red"
             dark
-            v-bind="attrs"
-            v-on="on"
             @click.native="openTrainingSessionsDialog"
           >
             <v-icon>mdi-alpha-i-box</v-icon>
@@ -254,6 +246,7 @@ import TrainingSessionDialog from "../../components/training-sessions/TrainingSe
 import TrainingSessionInfoCard from "../../components/training-sessions/TrainingSessionInfoCard";
 import ClientFreeTrainingInfoCard from "~/components/clients/ClientFreeTrainingInfoCard";
 import auth from "~/mixins/auth";
+import fabWithTooltips from "~/mixins/fab-with-tooltips";
 import ClientIdentifiersCard from "~/components/clients/ClientIdentifiersCard";
 import ClientSubscriptionsHistoryCard from "~/components/clients/ClientSubscriptionsHistoryCard";
 import ClientVisitHistoryCard from "~/components/clients/ClientVisitHistoryCard";
@@ -282,7 +275,7 @@ export default {
     LockerClaimDialog
   },
 
-  mixins: [selectedHallAware, client, auth],
+  mixins: [selectedHallAware, client, auth, fabWithTooltips],
 
   data: () => ({
     dialogs: {
@@ -482,10 +475,8 @@ export default {
 
     addIdentifier() {
       this.$refs.clientIdentifierDialog.open().then(form => {
-        this.$axios.post("identifiers", form).then(async response => {
-          await this.$store.dispatch("identifiers/loadById", {
-            id: response.data.data.id
-          });
+        this.$axios.post("identifiers", form).then(   () => {
+          this.loadIdentifiers()
         });
       });
     },

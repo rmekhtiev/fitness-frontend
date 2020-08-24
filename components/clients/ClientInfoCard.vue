@@ -14,10 +14,12 @@
             {{ client.name }}
           </v-list-item-title>
           <v-list-item-subtitle>{{ client.full_name }}</v-list-item-subtitle>
-          <v-list-item-subtitle>{{
-            $moment(client.birth_date).format("ll")
-          }}</v-list-item-subtitle>
-
+          <v-list-item-subtitle v-if="client.birth_date">
+            {{ $moment(client.birth_date).format("ll") }}
+          </v-list-item-subtitle>
+          <v-list-item-subtitle v-else>
+            Дата рождения не указана
+          </v-list-item-subtitle>
           <div style="position: absolute; right: .5rem; top: .5rem;">
             <v-btn
               v-if="isHallAdmin || isOwner"
@@ -172,7 +174,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item>
+        <v-list-item v-if="client.prefers">
           <v-list-item-icon>
             <v-icon color="primary">
               mdi-star
@@ -182,9 +184,9 @@
           <v-list-item-content>
             <v-list-item-title>Предпочтения</v-list-item-title>
             <template v-for="item in client.prefers">
-              <v-list-item-subtitle>{{
-                $t("prefers." + item)
-                }}</v-list-item-subtitle>
+              <v-list-item-subtitle>
+                {{ $t("prefers." + item) }}
+              </v-list-item-subtitle>
             </template>
           </v-list-item-content>
         </v-list-item>

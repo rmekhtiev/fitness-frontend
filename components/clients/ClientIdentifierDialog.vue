@@ -53,12 +53,6 @@ export default {
     resolve: null,
     reject: null,
 
-    paymentMethods: [
-      { value: "cash", text: "Наличные" },
-      { value: "transfer", text: "Перевод на карту" },
-      { value: "card", text: "Оплата картой" }
-    ],
-
     form: {
       client_id: null,
       identifier: null
@@ -96,7 +90,8 @@ export default {
           this.text = content;
           this.form.client_id = this.$route.params.id;
           this.form.identifier = this.text;
-          this.$toast.success("Success");
+          this.$toast.success("Идентификатор успешно привязан");
+          this.save();
         } else {
           this.$toast.error("Неизвестный формат");
         }
