@@ -11,10 +11,7 @@
         />
 
         <!-- Active subscriptions -->
-        <template
-          v-for="item in activeSubscriptions"
-          v-if="client.active_subscriptions.length > 0"
-        >
+        <template v-for="item in activeSubscriptions" v-if="client.active_subscriptions.length > 0">
           <subscription-info-card
             :client="client"
             :subscription="item"
@@ -27,11 +24,7 @@
           v-for="item in inactiveSubscriptions"
           v-if="client.inactive_subscriptions.length > 0"
         >
-          <subscription-info-card
-            :client="client"
-            :subscription="item"
-            class="mb-2 mx-auto"
-          />
+          <subscription-info-card :client="client" :subscription="item" class="mb-2 mx-auto" />
         </template>
         <!-- No subscriptions -->
         <v-card
@@ -41,9 +34,7 @@
           "
         >
           <v-card-text>
-            <div class="overline">
-              Активные абонементы отстутсвуют
-            </div>
+            <div class="overline">Активные абонементы отстутсвуют</div>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -52,51 +43,36 @@
         <!-- Lockers info -->
         <v-card class="mb-2 mx-auto">
           <v-card-text>
-            <div class="overline">
-              Шкафчики
-            </div>
+            <div class="overline">Шкафчики</div>
           </v-card-text>
 
           <template v-if="!loading.lockers">
             <v-card-text v-if="lockerClaims.length === 0" class="text-center">
               <v-icon style="font-size: 4rem">mdi-inbox</v-icon>
-              <br />
-              Пусто
+              <br />Пусто
             </v-card-text>
 
             <template v-for="(claim, index) in lockerClaims" v-else>
-              <locker-claim-list-item :key="'claim' + index" :claim="claim">
-              </locker-claim-list-item>
+              <locker-claim-list-item :key="'claim' + index" :claim="claim"></locker-claim-list-item>
 
-              <v-divider
-                v-if="index + 1 < lockerClaims.length"
-                :key="'claim-divider' + index"
-              />
+              <v-divider v-if="index + 1 < lockerClaims.length" :key="'claim-divider' + index" />
             </template>
           </template>
           <v-card-text v-else class="text-center">
-            <v-progress-linear
-              height="16"
-              rounded
-              color="primary"
-              indeterminate
-            />
+            <v-progress-linear height="16" rounded color="primary" indeterminate />
           </v-card-text>
         </v-card>
 
         <!-- Groups info -->
         <v-card class="mb-2 mx-auto">
           <v-card-text>
-            <div class="overline">
-              Группы
-            </div>
+            <div class="overline">Группы</div>
           </v-card-text>
 
           <v-list v-if="!loading.groups">
             <v-card-text v-if="groupsIds.length === 0" class="text-center">
               <v-icon style="font-size: 4rem">mdi-inbox</v-icon>
-              <br />
-              Пусто
+              <br />Пусто
             </v-card-text>
             <template v-for="(group, index) in groups" v-else>
               <v-list-item
@@ -108,21 +84,20 @@
                 </v-list-item-content>
               </v-list-item>
 
-              <v-divider
-                v-if="index + 1 < lockerClaims.length"
-                :key="'claim-divider' + index"
-              />
+              <v-divider v-if="index + 1 < lockerClaims.length" :key="'claim-divider' + index" />
             </template>
           </v-list>
           <v-card-text v-else class="text-center">
-            <v-progress-linear
-              height="16"
-              rounded
-              color="primary"
-              indeterminate
-            />
+            <v-progress-linear height="16" rounded color="primary" indeterminate />
           </v-card-text>
         </v-card>
+
+        <template v-for="item in activeSubscriptions">
+          <subscription-alert
+            :subscription="item"
+            class="mb-2 mx-auto"
+          />
+        </template>
 
         <!-- Training sessions -->
         <training-session-info-card
@@ -143,12 +118,8 @@
     <v-speed-dial v-model="fab" fixed bottom right>
       <template v-slot:activator>
         <v-btn v-model="fab" color="primary" dark fab>
-          <v-icon v-if="fab">
-            mdi-close
-          </v-icon>
-          <v-icon v-else>
-            mdi-plus
-          </v-icon>
+          <v-icon v-if="fab">mdi-close</v-icon>
+          <v-icon v-else>mdi-plus</v-icon>
         </v-btn>
       </template>
       <v-tooltip :value="tooltips" left>
@@ -205,11 +176,7 @@
       </v-tooltip>
     </v-speed-dial>
 
-    <locker-claim-dialog
-      ref="lockerClaimDialog"
-      :client="client"
-      title="Новая бронь шкафчика"
-    />
+    <locker-claim-dialog ref="lockerClaimDialog" :client="client" title="Новая бронь шкафчика" />
     <subscription-dialog
       ref="subscriptionDialog"
       :title="'Создать абонемент для ' + client.name"
@@ -237,6 +204,7 @@ import selectedHallAware from "../../mixins/selected-hall-aware";
 import ClientInfoCard from "../../components/clients/ClientInfoCard";
 
 import SubscriptionInfoCard from "../../components/subscriptions/SubscriptionInfoCard";
+import SubscriptionAlert from "../../components/subscriptions/SubscriptionAlert";
 
 import LockerClaimListItem from "../../components/locker-claims/LockerClaimListItem";
 import LockerClaimDialog from "../../components/locker-claims/LockerClaimDialog";
@@ -272,7 +240,8 @@ export default {
     ClientInfoCard,
     SubscriptionInfoCard,
     LockerClaimListItem,
-    LockerClaimDialog
+    LockerClaimDialog,
+    SubscriptionAlert
   },
 
   mixins: [selectedHallAware, client, auth, fabWithTooltips],
