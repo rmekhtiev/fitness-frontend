@@ -92,7 +92,7 @@
           </v-card-text>
         </v-card>
 
-        <template v-if="activeSubscriptions" v-for="item in activeSubscriptions">
+        <template v-for="item in activeSubscriptions">
           <subscription-alert
             :subscription="item"
             class="mb-2 mx-auto"
