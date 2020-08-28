@@ -210,6 +210,11 @@ export default {
         icon: "mdi-account-box",
         to: { name: "users" }
       },
+      {
+        title: "История посещений",
+        icon: "mdi-alarm",
+        to: { name: "visit-history" }
+      },
       { title: "Заявки", icon: "mdi-phone", to: { name: "requests" } }
     ]
   }),
