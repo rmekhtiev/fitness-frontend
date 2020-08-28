@@ -6,7 +6,7 @@
       </div>
     </v-card-text>
 
-    <v-timeline v-if="records > 0" dense>
+    <v-timeline v-if="records" dense>
       <template v-for="item in records.slice(0, 10)">
         <v-timeline-item small>
           {{ recordTime(item) }}
