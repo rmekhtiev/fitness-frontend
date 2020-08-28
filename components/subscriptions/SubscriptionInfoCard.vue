@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-if="subscription">
     <v-card-text>
       <div v-if="isActive" class="overline">
         Активный абонемент
@@ -110,6 +110,16 @@
         Оформить продажу
       </v-btn>
 
+       <v-btn
+        v-if="this.subscription.sold == false"
+        color="red"
+        text
+        small
+        @click="deleteItem()"
+      >
+              <v-icon>mdi-delete</v-icon>
+      </v-btn>
+
       <v-btn color="primary" text small @click="updateSubscription()">
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
@@ -132,6 +142,8 @@
       :title="'Продажа'"
     />
     <confirm ref="deleteFreeze" />
+    <confirm ref="delete" />
+
   </v-card>
 </template>
 
@@ -261,7 +273,23 @@ export default {
             this.$emit("update");
           }
         });
-    }
+    },
+
+    deleteItem() {
+      this.$refs.delete
+        .open(
+          "Удалить абонемент?",
+          "Вы уверены? Это действие невозможно отменить",
+          { color: "red" }
+        )
+        .then(confirm => {
+          if (confirm) {
+            this.$store.dispatch("subscriptions/delete", { id: this.subscription.id });
+            this.$toast.success("Абонемент удален");
+            this.$emit("delete");
+          }
+        });
+    },
   }
 };
 </script>
