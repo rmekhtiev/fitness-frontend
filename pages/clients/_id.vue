@@ -92,12 +92,30 @@
           </v-card-text>
         </v-card>
 
-        <template v-for="item in activeSubscriptions">
+        <template v-if="activeSubscriptions" v-for="item in activeSubscriptions">
           <subscription-alert
             :subscription="item"
             class="mb-2 mx-auto"
           />
         </template>
+        <div v-if="(client.status === 'no_subscription' || client.status === 'expired')">
+          <v-alert type="error" prominent>
+            <v-row align="center">
+              <v-col class="grow">
+                Абонемент просрочен или отсутствует
+              </v-col>
+            </v-row>
+          </v-alert>
+        </div>
+        <div v-if="client.status === 'frozen'">
+          <v-alert type="info" prominent>
+            <v-row align="center">
+              <v-col class="grow">
+                Абонемент заморожен или неактивирован
+              </v-col>
+            </v-row>
+          </v-alert>
+        </div>
 
         <!-- Training sessions -->
         <training-session-info-card
