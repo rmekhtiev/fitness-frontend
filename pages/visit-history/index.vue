@@ -84,7 +84,7 @@
   >
     <template v-slot:header>
       <v-layout class="px-4 mt-2 mb-3" style="color: rgba(0, 0, 0, .54);">
-        <v-flex xs6 md4>
+        <v-flex xs3 sm4 class="hidden-xs-only">
           <div style="display: flex; width: 100%">
             <div style="flex: 1 1 0%;" class="overline text-truncate">
               Клиент
@@ -92,7 +92,7 @@
           </div>
         </v-flex>
 
-        <v-flex xs3 md4 class="hidden-xs-only">
+        <v-flex xs3 sm4 class="hidden-xs-only">
           <div style="display: flex; width: 100%">
             <div style="flex: 1 1 0%;" class="overline text-truncate">
               Зал
@@ -100,7 +100,7 @@
           </div>
         </v-flex>
 
-        <v-flex xs3 md4 class="hidden-xs-only">
+        <v-flex xs6 sm4 class="hidden-xs-only">
           <div style="display: flex; width: 100%">
             <div style="flex: 1 1 0%;" class="overline text-truncate">
               Дата посещения
