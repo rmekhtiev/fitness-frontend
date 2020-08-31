@@ -50,7 +50,7 @@
                   height="18"
                 >
                   <template v-slot="{ value }">
-                    <span class="caption">{{ daysTill }} дней</span>
+                    <span class="caption">{{ daysTill }}</span>
                   </template>
                 </v-progress-linear>
               </div>
@@ -183,7 +183,7 @@ export default {
       } else if (Math.abs(date.diff(now, "days")) === 1) {
         return "Завтра";
       } else {
-        return "Через " + days_till;
+        return "Через " + (days_till+1) + ' дней';
       }
     }
   }
