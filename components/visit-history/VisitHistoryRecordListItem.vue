@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    <v-flex xs3 md4 >
+    <v-flex xs5 sm4 >
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate">
           <div class="body-2 text-truncate">
@@ -13,7 +13,7 @@
       </div>
     </v-flex>
 
-    <v-flex xs3 md4>
+    <v-flex xs2 sm4>
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate">
           <div class="body-2 text-truncate">
@@ -30,11 +30,11 @@
       </div>
     </v-flex>
 
-    <v-flex xs3 md4>
+    <v-flex xs5 sm4>
       <div style="display: flex; width: 100%">
         <div style="flex: 1 1 0%;" class="text-truncate">
           <div class="body-2 text-truncate">
-            {{ $moment(record.datetime).format('LLLL') }}
+            {{ $moment(record.datetime).format('ddd, DD.MM, LT') }}
           </div>
         </div>
       </div>
