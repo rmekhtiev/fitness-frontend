@@ -183,7 +183,7 @@ export default {
       } else if (Math.abs(date.diff(now, "days")) === 1) {
         return "Завтра";
       } else {
-        return "Через " + (days_till+1) + ' дней';
+        return "Через " + (days_till + 1) + ' дней';
       }
     }
   }
