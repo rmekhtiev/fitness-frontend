@@ -2,7 +2,6 @@
 
 > Frontend for Fitness project
 
-## **ДЛЯ РУСИАНО** - Что б запустить на продакшен бек:
 
 ```bash
 export API_URL=https://crm.multipower05.ru/ && yarn dev
